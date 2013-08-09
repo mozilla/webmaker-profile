@@ -32,35 +32,24 @@ module.exports = function (grunt) {
             }
         },
         less: {
-            production: {
+            development: {
                 options: {
-                    paths: ['_fe/less']
+                    paths: ['_fe/less'],
+                    // Old fashioned source annotations
+                    // Works w. FireSass+Firebug
+                    dumpLineNumbers: 'mediaquery'
                 },
                 files: {
-                    '_fe/compiled/compiled.css': '_fe/less/main.less'
+                    '_fe/compiled/app.debug.css': '_fe/less/main.less'
                 }
-            }
-        },
-        // sass: {
-        //     dist: {
-        //         files: {
-        //             '_fe/compiled/app.css': '_fe/sass/main.scss'
-        //         }
-        //     },
-        //     dev: {
-        //         options: {
-        //             style: 'expanded',
-        //             debugInfo: true
-        //         },
-        //         files: {
-        //             '_fe/compiled/app.debug.css': '_fe/sass/main.scss'
-        //         }
-        //     }
-        // },
-        cssmin: {
-            compress: {
+            },
+            production: {
+                options: {
+                    paths: ['_fe/less/'],
+                    yuicompress: true
+                },
                 files: {
-                    "_fe/compiled/app.min.css": ["_fe/compiled/app.css"]
+                    '_fe/compiled/app.min.css': '_fe/less/main.less'
                 }
             }
         },
@@ -82,7 +71,7 @@ module.exports = function (grunt) {
                     '_fe/js/<%= pkg.namespace.toLowerCase() %>.templates.js': ["_fe/jade/**/*.jade"]
                 }
             },
-            createDistIndex: {
+            production: {
                 options: {
                     pretty: true,
                     data: {
@@ -94,7 +83,7 @@ module.exports = function (grunt) {
                     'index.html': 'index.jade'
                 }
             },
-            createDevIndex: {
+            development: {
                 options: {
                     pretty: true,
                     data: {
@@ -110,8 +99,8 @@ module.exports = function (grunt) {
         },
         watch: {
             sass: {
-                files: ['_fe/sass/**/*.scss'],
-                tasks: ['sass:dev']
+                files: ['_fe/less/**/*.less'],
+                tasks: ['less:development']
             },
             jade: {
                 files: ['_fe/jade/**/*.jade'],
@@ -119,11 +108,12 @@ module.exports = function (grunt) {
             },
             index: {
                 files: ['index.jade'],
-                tasks: ['jade:createDevIndex', 'jade:createDistIndex']
+                tasks: ['jade:development', 'jade:production']
             },
+            // New JS files are auto-added to the indexes
             js: {
                 files: ['_fe/js/**/*.js'],
-                tasks: ['jade:createDevIndex', 'jade:createDistIndex']
+                tasks: ['jade:development', 'jade:production']
             }
         },
         connect: {
@@ -137,15 +127,14 @@ module.exports = function (grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
-    grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-jade');
 
     // Recompile Jade and Sass as needed
-    grunt.registerTask('default', ['sass:dev', 'jade', 'connect', 'watch']);
+    grunt.registerTask('default', ['less:development', 'jade', 'connect', 'watch']);
 
     // Compile Jade, Sass and JS
-    grunt.registerTask('build', ['sass', 'cssmin', 'jade', 'uglify']);
+    grunt.registerTask('build', ['less:production', 'jade', 'uglify']);
 
 };
