@@ -1,0 +1,18 @@
+doctype
+html
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, target-densitydpi=160dpi, initial-scale=1.0, user-scalable=no')
+    title #{title}
+
+    //- CSS with Sass source mappings for dev; Minified CSS for dist
+    - if (typeof dev !== 'undefined' && dev === true)
+      link(href='_fe/compiled/app.debug.css', rel='stylesheet', type='text/css', media='all')
+    - else
+      link(href='_fe/compiled/app.min.css', rel='stylesheet', type='text/css', media='all')
+  body
+
+//- Non CDN libs & App Specific Code
+//- This is a list of individual files for dev and a single uglified JS file for dist
+each script in scripts
+  script(src=script)
