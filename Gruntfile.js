@@ -98,7 +98,7 @@ module.exports = function (grunt) {
             }
         },
         watch: {
-            sass: {
+            less: {
                 files: ['_fe/less/**/*.less'],
                 tasks: ['less:development']
             },
@@ -131,10 +131,10 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-jade');
 
-    // Recompile Jade and Sass as needed
+    // Recompile Jade and Less as needed
     grunt.registerTask('default', ['less:development', 'jade', 'connect', 'watch']);
 
-    // Compile Jade, Sass and JS
+    // Compile Jade, Less and JS
     grunt.registerTask('build', ['less:production', 'jade', 'uglify']);
 
 };
