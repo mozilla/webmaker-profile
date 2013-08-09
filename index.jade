@@ -5,7 +5,7 @@ html
     meta(name='viewport', content='width=device-width, target-densitydpi=160dpi, initial-scale=1.0, user-scalable=no')
     title #{title}
 
-    //- CSS with Sass source mappings for dev; Minified CSS for dist
+    //- CSS with Less inline source annotations for dev; Minified CSS for dist
     - if (typeof dev !== 'undefined' && dev === true)
       link(href='_fe/compiled/app.debug.css', rel='stylesheet', type='text/css', media='all')
     - else
