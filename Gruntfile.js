@@ -5,9 +5,6 @@
     + npm
     + grunt-cli
         > npm install -g grunt-cli
-    + ruby
-    + sass gem
-        > gem install sass
 
     Setup:
 
@@ -34,22 +31,32 @@ module.exports = function (grunt) {
                 dest: '_fe/compiled/app.min.js'
             }
         },
-        sass: {
-            dist: {
-                files: {
-                    '_fe/compiled/app.css': '_fe/sass/main.scss'
-                }
-            },
-            dev: {
+        less: {
+            production: {
                 options: {
-                    style: 'expanded',
-                    debugInfo: true
+                    paths: ['_fe/less']
                 },
                 files: {
-                    '_fe/compiled/app.debug.css': '_fe/sass/main.scss'
+                    '_fe/compiled/compiled.css': '_fe/less/main.less'
                 }
             }
         },
+        // sass: {
+        //     dist: {
+        //         files: {
+        //             '_fe/compiled/app.css': '_fe/sass/main.scss'
+        //         }
+        //     },
+        //     dev: {
+        //         options: {
+        //             style: 'expanded',
+        //             debugInfo: true
+        //         },
+        //         files: {
+        //             '_fe/compiled/app.debug.css': '_fe/sass/main.scss'
+        //         }
+        //     }
+        // },
         cssmin: {
             compress: {
                 files: {
@@ -129,7 +136,7 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-sass');
+    grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
