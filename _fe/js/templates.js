@@ -9,7 +9,7 @@ var locals_ = (locals || {}),popcornMakes = locals_.popcornMakes,thimbleMakes = 
 
 this["JST"]["header"] = function anonymous(locals) {
 var buf = [];
-var locals_ = (locals || {}),name = locals_.name;buf.push("<header><h1>" + (jade.escape((jade.interp = name) == null ? '' : jade.interp)) + "</h1></header>");;return buf.join("");
+var locals_ = (locals || {}),name = locals_.name;buf.push("<header><h1>" + (jade.escape((jade.interp = name) == null ? '' : jade.interp)) + "</h1><a href=\"#\">About Me</a></header>");;return buf.join("");
 };
 
 return this["JST"];

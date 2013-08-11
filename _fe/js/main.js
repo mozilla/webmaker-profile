@@ -7,6 +7,6 @@ requirejs.config({
 
 require(['jquery', 'templates'], function ($, templates) {
   $('body').append(templates.header({
-    name: 'Bruce Wayne'
+    name: 'Herbert West'
   }));
 });
