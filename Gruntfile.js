@@ -13,30 +13,14 @@
 */
 
 module.exports = function (grunt) {
-    var pkg = grunt.file.readJSON('package.json'),
-        scripts;
-
-    // Scripts to uglify and include (in load-order)
-    scripts = grunt.file.expand('_fe/js/lib/*.js',
-                                '_fe/js/' + pkg.namespace.toLowerCase() + '.*.js'); // All namespace prefixed JS files
+    var pkg = grunt.file.readJSON('package.json');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        uglify: {
-            options: {
-                banner: '/*! <%= pkg.name %> <%= pkg.version %> <%= grunt.template.today("yyyy-mm-dd HH:MM") %> */\n'
-            },
-            build: {
-                src: scripts,
-                dest: '_fe/compiled/app.min.js'
-            }
-        },
         less: {
             development: {
                 options: {
-                    paths: ['_fe/less'],
-                    // Old fashioned source annotations
-                    // Works w. FireSass+Firebug
+                    // Pre V3 source annotations for FireSass
                     dumpLineNumbers: 'mediaquery'
                 },
                 files: {
@@ -45,7 +29,6 @@ module.exports = function (grunt) {
             },
             production: {
                 options: {
-                    paths: ['_fe/less/'],
                     yuicompress: true
                 },
                 files: {
@@ -62,7 +45,9 @@ module.exports = function (grunt) {
                     // Convert hyphen-case to camelCase
                     processName: function (filename) {
                         filename = filename.match(/\/[a-zA-Z\-\.0-9]*(?=\.jade)/)[0].slice(1).toLowerCase();
-                        return filename.replace(/[\-\.]([a-z])/g, function (g) { return g[1].toUpperCase(); });
+                        return filename.replace(/[\-\.]([a-z])/g, function (g) {
+                            return g[1].toUpperCase();
+                        });
                     }
                 },
                 files: {
@@ -71,10 +56,8 @@ module.exports = function (grunt) {
             },
             production: {
                 options: {
-                    pretty: true,
                     data: {
-                        title: '<%= pkg.name %>',
-                        scripts: ['_fe/compiled/app.min.js']
+                        title: '<%= pkg.name %>'
                     }
                 },
                 files: {
@@ -83,11 +66,9 @@ module.exports = function (grunt) {
             },
             development: {
                 options: {
-                    pretty: true,
                     data: {
                         title: 'DEV: <%= pkg.name %>',
-                        dev: true,
-                        scripts: scripts
+                        dev: true
                     }
                 },
                 files: {
@@ -107,11 +88,16 @@ module.exports = function (grunt) {
             index: {
                 files: ['index.jade'],
                 tasks: ['jade:development', 'jade:production']
-            },
-            // New JS files are auto-added to the indexes
-            js: {
-                files: ['_fe/js/**/*.js'],
-                tasks: ['jade:development', 'jade:production']
+            }
+        },
+        requirejs: {
+            compile: {
+                options: {
+                    name: "main",
+                    baseUrl: "_fe/js/",
+                    mainConfigFile: "_fe/js/main.js",
+                    out: "_fe/compiled/app.min.js"
+                }
             }
         },
         connect: {
@@ -120,20 +106,9 @@ module.exports = function (grunt) {
                     port: 8000
                 }
             }
-        },
-        requirejs: {
-            compile: {
-              options: {
-                name: "main",
-                baseUrl: "_fe/js/",
-                mainConfigFile: "_fe/js/main.js",
-                out: "_fe/compiled/app.min.js"
-              }
-            }
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
