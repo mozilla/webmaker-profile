@@ -115,10 +115,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-contrib-requirejs');
 
-    // Recompile Jade and Less as needed
-    grunt.registerTask('default', ['less:development', 'jade', 'connect', 'watch']);
+    // Recompile Jade and Less as needed for dev
+    grunt.registerTask('default', ['less:development', 'jade:compileJSTemplates', 'jade:development', 'connect', 'watch']);
 
-    // Compile Jade, Less and JS
-    grunt.registerTask('build', ['less:production', 'jade', 'requirejs']);
-
+    // Compile Jade, Less and JS for production
+    grunt.registerTask('build', ['less:production', 'jade:compileJSTemplates', 'jade:production', 'requirejs']);
 };
