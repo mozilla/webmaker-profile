@@ -56,19 +56,17 @@ module.exports = function (grunt) {
         jade: {
             compileJSTemplates: {
                 options: {
-                    compileDebug: false,
+                    amd: true,
                     client: true,
-                    namespace: '<%= pkg.namespace %>.templates',
+                    compileDebug: false,
+                    // Convert hyphen-case to camelCase
                     processName: function (filename) {
-                        // Remove filepath and extension (_fe/jade/cool.jade -> cool)
                         filename = filename.match(/\/[a-zA-Z\-\.0-9]*(?=\.jade)/)[0].slice(1).toLowerCase();
-
-                        // Remove . and - characters and convert to camelCase
                         return filename.replace(/[\-\.]([a-z])/g, function (g) { return g[1].toUpperCase(); });
                     }
                 },
                 files: {
-                    '_fe/js/<%= pkg.namespace.toLowerCase() %>.templates.js': ["_fe/jade/**/*.jade"]
+                    '_fe/js/templates.js': ["_fe/jade/**/*.jade"]
                 }
             },
             production: {

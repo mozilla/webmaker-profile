@@ -5,17 +5,12 @@ html
     meta(name='viewport', content='width=device-width, target-densitydpi=160dpi, initial-scale=1.0, user-scalable=no')
     title #{title}
 
-    //- CSS with Less inline source annotations for dev; Minified CSS for dist
+    //- CSS with Less inline source annotations for dev; Minified CSS for prod
     - if (typeof dev !== 'undefined' && dev === true)
       link(href='_fe/compiled/app.debug.css', rel='stylesheet', type='text/css', media='all')
     - else
       link(href='_fe/compiled/app.min.css', rel='stylesheet', type='text/css', media='all')
   body
 
-//- Non CDN libs & App Specific Code
-//- This is a list of individual files for dev and a single uglified JS file for dist
-each script in scripts
-  script(src=script)
-
-script
-  WMP.main.init();
+//- TODO: Load concat version of JS for Production
+script(data-main='_fe/js/main', src='_fe/js/require.js')

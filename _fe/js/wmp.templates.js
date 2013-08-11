@@ -1,3 +1,5 @@
+define(['jade'], function(jade) { if(jade && jade['runtime'] !== undefined) { jade = jade.runtime; }
+
 this["WMP"] = this["WMP"] || {};
 this["WMP"]["templates"] = this["WMP"]["templates"] || {};
 
@@ -20,3 +22,7 @@ buf.push('<header><h1>' + escape((interp = name) == null ? '' : interp) + '</h1>
 }
 return buf.join("");
 };
+
+return this["WMP"]["templates"];
+
+});
