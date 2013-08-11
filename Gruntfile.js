@@ -120,6 +120,16 @@ module.exports = function (grunt) {
                     port: 8000
                 }
             }
+        },
+        requirejs: {
+            compile: {
+              options: {
+                name: "main",
+                baseUrl: "_fe/js/",
+                mainConfigFile: "_fe/js/main.js",
+                out: "_fe/compiled/app.min.js"
+              }
+            }
         }
     });
 
@@ -128,11 +138,12 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-jade');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
 
     // Recompile Jade and Less as needed
     grunt.registerTask('default', ['less:development', 'jade', 'connect', 'watch']);
 
     // Compile Jade, Less and JS
-    grunt.registerTask('build', ['less:production', 'jade', 'uglify']);
+    grunt.registerTask('build', ['less:production', 'jade', 'requirejs']);
 
 };
