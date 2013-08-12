@@ -2,6 +2,7 @@
   "name": "Webmaker Profile",
   "dependencies": {
     "jquery": "~2.0.3",
-    "jade": "~0.34.1"
+    "jade": "~0.34.1",
+    "text": "~2.0.10"
   }
 }
