@@ -7,10 +7,13 @@ requirejs.config({
 });
 
 require(['jquery', 'templates', 'text!fake.json'], function ($, templates, tileData) {
-  var tileData = JSON.parse(tileData);
+  var tileData = JSON.parse(tileData)
 
   $('body').append(templates.header({
     name: 'Herbert West'
   }));
-  $('body').append(templates.tiles(tileData));
+
+  $('body').append(templates.tiles({
+    tiles: tileData
+  }));
 });
