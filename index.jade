@@ -14,7 +14,7 @@ html
 
 //- Load individual JS files for dev and one concat file for prod
 - if (typeof dev !== 'undefined' && dev === true)
-  script(data-main='_fe/js/main', src='_fe/js/require.js')
+  script(data-main='_fe/js/main', src='_fe/js/lib/require.js')
 - else
-  script(src='_fe/js/require.js')
+  script(src='_fe/js/lib/require.js')
   script(src='_fe/compiled/app.min.js')
