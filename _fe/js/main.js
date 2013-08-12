@@ -9,4 +9,6 @@ require(['jquery', 'templates'], function ($, templates) {
   $('body').append(templates.header({
     name: 'Herbert West'
   }));
+
+  $('body').append(templates.tiles());
 });
