@@ -9,7 +9,44 @@ var locals_ = (locals || {}),popcornMakes = locals_.popcornMakes,thimbleMakes = 
 
 this["JST"]["tiles"] = function anonymous(locals) {
 var buf = [];
-buf.push("<ul class=\"tiles\"><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>");;return buf.join("");
+var locals_ = (locals || {}),makes = locals_.makes;buf.push("<section class=\"tile-container\"><ul class=\"tiles\">");
+// iterate makes
+;(function(){
+  var $$obj = makes;
+  if ('number' == typeof $$obj.length) {
+
+    for (var i = 0, $$l = $$obj.length; i < $$l; i++) {
+      var make = $$obj[i];
+
+switch (make.type){
+case "webmaker":
+buf.push("<li" + (jade.attrs({ "class": [("tile " + (make.type) + "")] }, {"class":true})) + ">" + (jade.escape((jade.interp = make.title) == null ? '' : jade.interp)) + "</li>");
+  break;
+default:
+buf.push("<li class=\"tile\">" + (jade.escape((jade.interp = make.title) == null ? '' : jade.interp)) + "</li>");
+  break;
+}
+    }
+
+  } else {
+    var $$l = 0;
+    for (var i in $$obj) {
+      $$l++;      var make = $$obj[i];
+
+switch (make.type){
+case "webmaker":
+buf.push("<li" + (jade.attrs({ "class": [("tile " + (make.type) + "")] }, {"class":true})) + ">" + (jade.escape((jade.interp = make.title) == null ? '' : jade.interp)) + "</li>");
+  break;
+default:
+buf.push("<li class=\"tile\">" + (jade.escape((jade.interp = make.title) == null ? '' : jade.interp)) + "</li>");
+  break;
+}
+    }
+
+  }
+}).call(this);
+
+buf.push("</ul></section>");;return buf.join("");
 };
 
 this["JST"]["header"] = function anonymous(locals) {

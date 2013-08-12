@@ -1,8 +1,8 @@
-ul.tiles
-  li
-  li
-  li
-  li
-  li
-  li
-  li
+section.tile-container
+  ul.tiles
+    each make, i in makes
+      case make.type
+        when "webmaker"
+          li(class="tile #{make.type}") #{make.title}
+        default
+          li.tile #{make.title}
