@@ -1,7 +1,7 @@
 requirejs.config({
   paths: {
-    jquery: 'lib/jquery-1.8.3.min',
-    jade: 'lib/jade-runtime'
+    jquery: '../../bower_components/jquery/jquery',
+    jade: '../../bower_components/jade/runtime'
   }
 });
 
