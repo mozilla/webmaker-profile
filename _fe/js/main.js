@@ -7,7 +7,8 @@ requirejs.config({
 
 require(['jquery', 'templates'], function ($, templates) {
   $('body').append(templates.header({
-    name: 'Herbert West'
+    name: 'Herbert West',
+    username: 'reanimator2000'
   }));
 
   $('body').append(templates.tiles());

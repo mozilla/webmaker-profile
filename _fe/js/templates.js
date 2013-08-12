@@ -14,7 +14,7 @@ buf.push("<ul class=\"tiles\"><li></li><li></li><li></li><li></li><li></li><li><
 
 this["JST"]["header"] = function anonymous(locals) {
 var buf = [];
-var locals_ = (locals || {}),name = locals_.name;buf.push("<header><h1>" + (jade.escape((jade.interp = name) == null ? '' : jade.interp)) + "</h1><a href=\"#\">About Me</a></header>");;return buf.join("");
+var locals_ = (locals || {}),name = locals_.name,username = locals_.username;buf.push("<header><h1>" + (jade.escape((jade.interp = name) == null ? '' : jade.interp)) + "</h1><h2>" + (jade.escape((jade.interp = username) == null ? '' : jade.interp)) + "</h2></header>");;return buf.join("");
 };
 
 return this["JST"];
