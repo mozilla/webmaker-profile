@@ -10,6 +10,20 @@ require(['jquery', 'templates'], function ($, templates) {
     name: 'Herbert West',
     username: 'reanimator2000'
   }));
-
-  $('body').append(templates.tiles());
+  $('body').append(templates.tiles({
+    makes: [
+      {
+        title: 'Test Thimble',
+        type: 'webmaker'
+      },
+      {
+        title: 'Test Popcorn',
+        type: 'webmaker'
+      },
+      {
+        title: 'Vimeo whatever',
+        type: 'video'
+      }
+    ]
+  }));
 });
