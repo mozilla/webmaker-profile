@@ -1,4 +1,4 @@
-define(['jquery', 'templates', 'hackable-tile', 'jqueryui'], function ($, templates, HackableTile) {
+define(['jquery', 'js/templates', 'masonry', 'js/hackable-tile', 'jqueryui'], function($, templates, masonry, HackableTile) {
   return {
     init: function () {
       var self = this;
