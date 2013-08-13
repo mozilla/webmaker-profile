@@ -26,12 +26,24 @@
 // Imports --------------------------------------------------------------------
 
 @import "../../bower_components/lesshat/lesshat";
+
+// Font Awesome
+// Use http://fortawesome.github.io/Font-Awesome/cheatsheet/ as a guide
+@import "../../bower_components/font-awesome/less/variables.less";
+@import "../../bower_components/font-awesome/less/icons.less";
+@import "../../bower_components/font-awesome/less/path.less";
+@import "../../bower_components/font-awesome/less/mixins.less";
+@import "../../bower_components/font-awesome/less/core.less";
+@FontAwesomePath: "/bower_components/font-awesome/font";
+
 @import "resets";
 @import "mixins";
 @import "global"; // Header, Footer, Etc.
 
+
 // Components -----------------------------------------------------------------
 
+@import "components/ui";
 @import "components/stats";
 @import "components/tiles";
 @import "components/popcorn-tile";
