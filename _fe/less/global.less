@@ -1,9 +1,10 @@
 // Global styles (Header, Footer, Content wrapper)
 
 body > header {
+  position: relative;
   background: @white;
   padding: 10px;
-  border-bottom: 1px solid fade(darken(@green, 10%), 90%);
+  border-bottom: 1px solid fade(darken(@green, 20%), 90%);
   font-size: 0.5em;
   .flex-display;
   .justify-content(center);
@@ -40,4 +41,15 @@ body > header {
   h2 {
     font-size: 2.33em;
   }
+}
+
+#add-tile {
+  @size: 60px;
+  position: absolute;
+  top: 50%;
+  margin-top: (@size/-2);
+  right: 3%;
+  font-size: 20px;
+  height: @size;
+  width: @size;
 }
