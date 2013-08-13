@@ -1,4 +1,4 @@
-define(['jquery', 'js/templates', 'masonry', 'jqueryui', ], function($, templates, masonry) {
+define(['jquery', 'js/templates', 'masonry', 'jqueryui'], function($, templates, masonry) {
   return {
     init: function() {
       $('.sortable').sortable( { revert: true });
