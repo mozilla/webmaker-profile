@@ -2,10 +2,33 @@
 
 body > header {
   background: @white;
-  padding: 20px;
-  margin-bottom: 20px;
+  padding: 10px;
+  border-bottom: 1px solid fade(darken(@green, 10%), 90%);
+  font-size: 0.5em;
+  overflow: hidden; // Clear floats
 
-  a {
-    font-size: 1.66em;
+  img {
+    border-radius: 50%;
+    width: 17.5%;
+    float: left;
+    margin-right: 2.5%;
+    .box-shadow(0 0 1px fade(@black, 70%));
+
+    @media (min-width: @width-medium) {
+      width: 10%;
+    }
+  }
+
+  .meta {
+    width: 80%;
+  }
+
+  @media (min-width: @width-medium) {
+    padding: 20px;
+    font-size: 0.66em;
+  }
+
+  h2 {
+    font-size: 2.33em;
   }
 }
