@@ -8,9 +8,9 @@ requirejs.config({
   }
 });
 
+require(['jquery', 'templates', 'tiles', 'text!json/fake.json'], function ($, templates, tiles, fakeData) {
+  var data = JSON.parse(fakeData)
 
-require(['jquery', 'templates', 'tiles', 'text!json/fake.json'], function ($, templates, tiles, tileData) {
-  var tileData = JSON.parse(tileData)
 
   $('body').append(templates.header({
     name: 'Herbert West',
@@ -18,7 +18,7 @@ require(['jquery', 'templates', 'tiles', 'text!json/fake.json'], function ($, te
   }));
 
   $('body').append(templates.tiles({
-    tiles: tileData.makes
+    tiles: data.makes
   }));
 
   tiles.init();
