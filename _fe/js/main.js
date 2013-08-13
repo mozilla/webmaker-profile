@@ -7,7 +7,7 @@ requirejs.config({
   }
 });
 
-require(['jquery', 'templates', 'tiles', 'text!fake.json'], function ($, templates, tiles, tileData) {
+require(['jquery', 'templates', 'tiles', 'hackable-tile', 'text!fake.json'], function ($, templates, tiles, HackableTile, tileData) {
   tileData = JSON.parse(tileData);
 
   $('body').append(templates.header({
@@ -20,4 +20,9 @@ require(['jquery', 'templates', 'tiles', 'text!fake.json'], function ($, templat
   }));
 
   tiles.init();
+
+  $('.tiles').append('<li class="tile webmaker hackable">Hackable</li>');
+
+  var hackableTile = new HackableTile($('.hackable'), {});
+
 });
