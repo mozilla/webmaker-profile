@@ -8,7 +8,7 @@ define(['jquery', 'templates', 'jqueryui', ], function($, templates) {
       var tileString = '';
       data.forEach(function (tile, i) {
         // TODO: Some type checking
-        var tileTemplate = templates['defaultTile'];
+        var tileTemplate = templates[tile.type + 'Tile' ] || templates.defaultTile;
         tileString += tileTemplate(tile);
       });
       return tileString;
