@@ -1,29 +1,23 @@
 requirejs.config({
   paths: {
+    text: '../../bower_components/text/text',
     jquery: '../../bower_components/jquery/jquery',
+    jqueryui: '../../bower_components/jquery-ui/ui/jquery-ui',
     jade: '../../bower_components/jade/runtime'
   }
 });
 
-require(['jquery', 'templates'], function ($, templates) {
+require(['jquery', 'templates', 'tiles', 'text!fake.json'], function ($, templates, tiles, tileData) {
+  tileData = JSON.parse(tileData);
+
   $('body').append(templates.header({
     name: 'Herbert West',
     username: 'reanimator2000'
   }));
+
   $('body').append(templates.tiles({
-    makes: [
-      {
-        title: 'Test Thimble',
-        type: 'webmaker'
-      },
-      {
-        title: 'Test Popcorn',
-        type: 'webmaker'
-      },
-      {
-        title: 'Vimeo whatever',
-        type: 'video'
-      }
-    ]
+    tiles: tileData
   }));
+
+  tiles.init();
 });
