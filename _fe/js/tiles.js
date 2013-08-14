@@ -29,7 +29,8 @@ define([
 
       // Setup ------------------------------------------------------------------
       self.packery = new Packery(opts.container, {
-        transitionDuration: 0
+        columnWidth: self.container.querySelector('.grid-sizer'),
+        itemSelector: '.tile'
       });
 
       // Event Delegation -------------------------------------------------------
@@ -42,7 +43,8 @@ define([
     addAndBindDraggable: function (element, method) {
       var self = this;
       // Prepended or appended?
-      var method = ['prepended', 'appended'].indexOf(method) > 0 ? method : 'appended';
+      var method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
+
       var draggie;
       self.packery[method](element);
 
@@ -56,13 +58,14 @@ define([
       var hackableTile = new HackableTile($hackableTile, {
         packery: self.packery
       });
+
       self.$tiles.prepend($hackableTile);
       self.addAndBindDraggable($hackableTile[0], 'prepended');
       self.packery.layout();
     },
     render: function (data) {
       var self = this;
-      var tileString = '';
+      var tileString = self.container.innerHTML;
       var tiles;
 
       data.forEach(function (tile, i) {
