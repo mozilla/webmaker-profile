@@ -1,10 +1,14 @@
 // Global styles (Header, Footer, Content wrapper)
 
+// For the background of the app
+@backgroundcolor: @green;
+
 body > header {
   position: relative;
   background: @white;
   padding: 10px;
-  border-bottom: 1px solid fade(darken(@green, 20%), 90%);
+  border-bottom: 1px solid fade(darken(@backgroundcolor, 20%), 90%);
+  box-shadow: 0 2px 5px -3px fade(@black, 10%);
   font-size: 0.5em;
   .flex-display;
   .justify-content(center);
@@ -20,9 +24,10 @@ body > header {
 
     img {
       border-radius: 50%;
-      .box-shadow(0 0 1px fade(@black, 70%));
-      padding: 5px;
+      box-shadow: 0 3px 5px -3px fade(@black, 30%);
+      padding: 3px;
       background: @green;
+      border: 1px solid darken(@green, 15%);
       max-width: 100%;
       height: auto;
     }

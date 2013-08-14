@@ -93,9 +93,9 @@ module.exports = function (grunt) {
         requirejs: {
             compile: {
                 options: {
-                    name: "main",
-                    baseUrl: "_fe/js/",
+                    baseUrl: "./bower_components",
                     mainConfigFile: "_fe/js/main.js",
+                    include: ["main"],
                     out: "_fe/compiled/app.min.js"
                 }
             }

@@ -1,13 +1,14 @@
 requirejs.config({
-  baseUrl: '/bower_components',
+  baseUrl: '../bower_components',
   paths: {
-    json: '../../_fe/json',
-    js: '../../_fe/js',
+    json: '../_fe/json',
+    js: '../_fe/js',
+    main: '../_fe/js/main',
     text: 'text/text',
-    masonry: 'masonry/masonry',
     jquery: 'jquery/jquery',
     jqueryui: 'jquery-ui/ui/jquery-ui',
-    jade: 'jade/runtime'
+    jade: 'jade/runtime',
+    imagesloaded: 'imagesloaded/imagesloaded',
   }
 });
 
@@ -22,6 +23,8 @@ require(['jquery', 'js/templates', 'js/tiles', 'text!json/fake.json'], function 
   }));
 
   $body.append($tileContainer);
-  $tileContainer.append(tiles.render(data.makes));
-  tiles.init();
+  tiles.init({
+    container: $tileContainer[0]
+  });
+  tiles.render(data.makes);
 });
