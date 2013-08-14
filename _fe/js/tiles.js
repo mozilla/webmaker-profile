@@ -5,6 +5,7 @@ define([
   'imagesloaded',
   'draggabilly/draggabilly',
   'js/hackable-tile',
+  'js/photobooth-tile',
   'jqueryui'
 ], function (
   $,
@@ -12,7 +13,8 @@ define([
   Packery,
   imagesLoaded,
   Draggabilly,
-  HackableTile
+  HackableTile,
+  PhotoBoothTile
 ) {
   return {
     init: function (options) {
@@ -37,7 +39,7 @@ define([
 
       self.$addTile.on('click', function (event) {
         event.preventDefault();
-        self.addHackableTile();
+        self.addPhotoBooth();
       });
     },
     addAndBindDraggable: function (element, method) {
@@ -64,6 +66,15 @@ define([
 
       self.$tiles.prepend($hackableTile);
       self.addAndBindDraggable($hackableTile[0], 'prepended');
+      self.packery.layout();
+    },
+    addPhotoBooth: function() {
+      var self = this;
+      var $photoBooth = $(templates.photoboothTile());
+      var photoBooth = new PhotoBoothTile($photoBooth[0]);
+      self.$tiles.prepend($photoBooth);
+      photoBooth.init();
+      self.packery.prepended($photoBooth[0]);
       self.packery.layout();
     },
     render: function (data) {
