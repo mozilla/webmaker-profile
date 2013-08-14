@@ -1,9 +1,11 @@
-define(['jquery', 'js/templates'], function ($, templates) {
+define(['jquery', 'js/templates', 'komponent'], function ($, templates) {
 
   var HackableTile = function (target, options) {
     var self = this;
     var defaults;
     var option;
+
+    self.callbacks = {};
 
     // Options ----------------------------------------------------------------
 
@@ -14,7 +16,6 @@ define(['jquery', 'js/templates'], function ($, templates) {
     }
 
     self.options = defaults;
-    self.packery = self.options.packery;
 
     // Element references -----------------------------------------------------
 
@@ -40,7 +41,7 @@ define(['jquery', 'js/templates'], function ($, templates) {
       self.$saveButton.hide();
       self.$hackButton.fadeTo(400, 1);
       self.$hackedContent.show();
-      self.packery.layout();
+      self.fire('resize');
     });
 
     self.$hackButton.on('click', function (event) {
@@ -48,21 +49,31 @@ define(['jquery', 'js/templates'], function ($, templates) {
       self.$hackButton.fadeTo(400, 0.5);
       self.$saveButton.show();
       self.$textarea.focus();
-      self.packery.layout();
+      self.fire('resize');
     });
   };
 
-  HackableTile.prototype = {
-    pullText: function () {
-      var self = this;
-      var textContent = self.$textarea.val();
+  HackableTile.prototype = new Komponent();
 
-      if (textContent.length) {
-        self.$hackedContent.html(textContent);
-        self.$hackedContent.show();
+  HackableTile.prototype.pullText = function () {
+    var self = this;
+    var textContent = self.$textarea.val();
+
+    function wrapImg(text) {
+      return '<img src="' + text + '">';
+    }
+
+    if (textContent.length) {
+      if (textContent) {
+        self.$hackedContent.html(wrapImg(textContent));
+        self.$textarea.val(wrapImg(textContent));
       } else {
-        self.$hackedContent.hide();
+        self.$hackedContent.html(textContent);
       }
+
+      self.$hackedContent.show();
+    } else {
+      self.$hackedContent.hide();
     }
   };
 

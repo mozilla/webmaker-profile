@@ -43,7 +43,7 @@ define([
     addAndBindDraggable: function (element, method) {
       var self = this;
       // Prepended or appended?
-      var method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
+      method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
 
       var draggie;
       self.packery[method](element);
@@ -55,8 +55,10 @@ define([
     addHackableTile: function () {
       var self = this;
       var $hackableTile = $('<li class="tile webmaker hackable"></li>');
-      var hackableTile = new HackableTile($hackableTile, {
-        packery: self.packery
+      var hackableTile = new HackableTile($hackableTile);
+
+      hackableTile.on('resize', function () {
+        self.packery.layout();
       });
 
       self.$tiles.prepend($hackableTile);
