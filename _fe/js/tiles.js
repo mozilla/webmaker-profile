@@ -28,7 +28,7 @@ define([
       // Properties -------------------------------------------------------------
 
       // Setup ------------------------------------------------------------------
-      self.packery = new Packery(opts.container, {
+      self.packery = new Packery(options.container, {
         columnWidth: self.container.querySelector('.grid-sizer'),
         itemSelector: '.tile'
       });
