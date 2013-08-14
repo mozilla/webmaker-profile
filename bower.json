@@ -10,7 +10,7 @@
     "masonry": "~3.1.1",
     "packery": "~1.1.0",
     "imagesloaded": "~3.0.4",
-    "draggabilly": "git://github.com/desandro/draggabilly#558775d9e2b8dc79926f0b124f5b0a5731d5205e"
+    "draggabilly": "~1.0.5"
   },
   "resolutions": {
     "jquery": "~2.0.3"

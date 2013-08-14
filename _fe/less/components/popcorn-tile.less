@@ -1,8 +1,15 @@
 .tile.popcorn {
   height: auto;
   .title {
-    font-size: 2em;
-    font-weight: 200;
+    &:before {
+      color: #CCC;
+      content: "Video / ";
+    }
+  }
+  .thumbnail {
     margin-bottom: 0.5em;
+  }
+  .description {
+    margin-bottom: 0;
   }
 }
