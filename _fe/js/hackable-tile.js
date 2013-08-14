@@ -1,4 +1,4 @@
-define(['jquery', 'js/templates', 'imagesloaded', 'komponent'], function ($, templates, imagesLoaded) {
+define(['jquery', 'templates', 'imagesloaded', 'komponent'], function ($, templates, imagesLoaded) {
 
   var HackableTile = function (target, options) {
     var self = this;
@@ -78,9 +78,7 @@ define(['jquery', 'js/templates', 'imagesloaded', 'komponent'], function ($, tem
     if (textContent.length) {
       // Fire resize when all inserted images load
       imagesLoaded(self.$hackedContent, function () {
-        console.log('load');
         self.fire('resize');
-
       });
 
       // Wrap Image URL in IMG tag

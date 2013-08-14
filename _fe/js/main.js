@@ -14,11 +14,12 @@ requirejs.config({
     jquery: 'jquery/jquery',
     jqueryui: 'jquery-ui/ui/jquery-ui',
     jade: 'jade/runtime',
-    imagesloaded: 'imagesloaded/imagesloaded'
+    imagesloaded: 'imagesloaded/imagesloaded',
+    templates: '../_fe/compiled/jade-templates'
   }
 });
 
-require(['jquery', 'js/templates', 'js/tiles', 'text!json/fake.json'], function ($, templates, tiles, fakeData) {
+require(['jquery', 'templates', 'js/tiles', 'text!json/fake.json'], function ($, templates, tiles, fakeData) {
   var data = JSON.parse(fakeData);
   var $body = $('body');
   var $tileContainer = $(templates.tileContainer());
