@@ -1,6 +1,6 @@
 define([
   'jquery',
-  'js/templates',
+  'templates',
   'packery/js/packery',
   'imagesloaded',
   'draggabilly/draggabilly',

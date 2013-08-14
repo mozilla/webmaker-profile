@@ -51,7 +51,7 @@ module.exports = function (grunt) {
                     }
                 },
                 files: {
-                    '_fe/js/templates.js': ["_fe/jade/**/*.jade"]
+                    '_fe/compiled/jade-templates.js': ["_fe/jade/**/*.jade"]
                 }
             },
             production: {
