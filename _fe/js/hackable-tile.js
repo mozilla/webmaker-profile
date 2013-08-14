@@ -14,6 +14,7 @@ define(['jquery', 'js/templates'], function ($, templates) {
     }
 
     self.options = defaults;
+    self.packery = self.options.packery;
 
     // Element references -----------------------------------------------------
 
@@ -35,11 +36,13 @@ define(['jquery', 'js/templates'], function ($, templates) {
       self.$hackedContent.html(self.$textarea.val());
       self.$textarea.hide();
       self.$hackedContent.show();
+      self.packery.layout();
     });
 
     self.$hackButton.on('click', function (event) {
       self.$textarea.show();
       self.$textarea.focus();
+      self.packery.layout();
     });
   };
 
