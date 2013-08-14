@@ -57,6 +57,7 @@ define([
       var $hackableTile = $('<li class="tile webmaker hackable"></li>');
       var hackableTile = new HackableTile($hackableTile);
 
+      // Reflow Packery when the hackable tile's layout changes
       hackableTile.on('resize', function () {
         self.packery.layout();
       });

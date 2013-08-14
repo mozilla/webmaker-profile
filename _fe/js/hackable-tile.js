@@ -64,6 +64,7 @@ define(['jquery', 'js/templates', 'komponent'], function ($, templates) {
     }
 
     if (textContent.length) {
+      // Wrap Image URL in IMG tag
       if (textContent) {
         self.$hackedContent.html(wrapImg(textContent));
         self.$textarea.val(wrapImg(textContent));
@@ -75,6 +76,11 @@ define(['jquery', 'js/templates', 'komponent'], function ($, templates) {
     } else {
       self.$hackedContent.hide();
     }
+
+    // TODO: Temp hack; need to make a content loaded event (use imagesloaded)
+    setTimeout(function() {
+      self.fire('resize');
+    }, 1000);
   };
 
   return HackableTile;
