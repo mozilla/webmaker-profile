@@ -14,6 +14,7 @@ define(['jquery', 'js/templates'], function ($, templates) {
     }
 
     self.options = defaults;
+    self.packery = self.options.packery;
 
     // Element references -----------------------------------------------------
 
@@ -38,6 +39,8 @@ define(['jquery', 'js/templates'], function ($, templates) {
       self.$hackButton.show();
       self.$saveButton.hide();
       self.$hackButton.fadeTo(400, 1);
+      self.$hackedContent.show();
+      self.packery.layout();
     });
 
     self.$hackButton.on('click', function (event) {
@@ -45,6 +48,7 @@ define(['jquery', 'js/templates'], function ($, templates) {
       self.$hackButton.fadeTo(400, 0.5);
       self.$saveButton.show();
       self.$textarea.focus();
+      self.packery.layout();
     });
   };
 

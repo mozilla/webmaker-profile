@@ -1,24 +1,36 @@
-define(['jquery', 'js/templates', 'masonry', 'js/hackable-tile', 'jqueryui'], function($, templates, masonry, HackableTile) {
+define([
+  'jquery',
+  'js/templates',
+  'packery/js/packery',
+  'imagesloaded',
+  'draggabilly/draggabilly',
+  'js/hackable-tile',
+  'jqueryui'
+], function (
+  $,
+  templates,
+  Packery,
+  imagesLoaded,
+  Draggabilly,
+  HackableTile
+) {
   return {
-    init: function () {
+    init: function (options) {
+      options = options || {};
       var self = this;
 
       // Element references -----------------------------------------------------
 
-      self.$sortable = $('.sortable');
+      self.container = options.container;
       self.$tiles = $('.tiles');
       self.$addTile = $('#add-tile');
 
       // Properties -------------------------------------------------------------
 
       // Setup ------------------------------------------------------------------
-
-      self.$sortable.sortable({
-        revert: true
-      });
-
-      self.$tiles.draggable({
-        handle: '.handle'
+      self.packery = new Packery(options.container, {
+        columnWidth: self.container.querySelector('.grid-sizer'),
+        itemSelector: '.tile'
       });
 
       // Event Delegation -------------------------------------------------------
@@ -28,24 +40,47 @@ define(['jquery', 'js/templates', 'masonry', 'js/hackable-tile', 'jqueryui'], fu
         self.addHackableTile();
       });
     },
+    addAndBindDraggable: function (element, method) {
+      var self = this;
+      // Prepended or appended?
+      var method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
+
+      var draggie;
+      self.packery[method](element);
+
+      draggie = new Draggabilly(element);
+      self.packery.bindDraggabillyEvents(draggie);
+      return element;
+    },
     addHackableTile: function () {
       var self = this;
       var $hackableTile = $('<li class="tile webmaker hackable"></li>');
-      var hackableTile = new HackableTile($hackableTile);
+      var hackableTile = new HackableTile($hackableTile, {
+        packery: self.packery
+      });
 
       self.$tiles.prepend($hackableTile);
+      self.addAndBindDraggable($hackableTile[0], 'prepended');
+      self.packery.layout();
     },
     render: function (data) {
       var self = this;
-      var tileString = '';
+      var tileString = self.container.innerHTML;
+      var tiles;
 
       data.forEach(function (tile, i) {
         // TODO: Some type checking
         var tileTemplate = templates[tile.type + 'Tile'] || templates.defaultTile;
         tileString += tileTemplate(tile);
       });
-
-      return tileString;
+      self.container.innerHTML = tileString;
+      tiles = self.container.querySelectorAll('.tile');
+      for (var i = 0; i < tiles.length; i++) {
+        self.addAndBindDraggable(tiles[i]);
+      }
+      imagesLoaded(self.container, function(e) {
+        self.packery.layout();
+      });
     }
   };
 });

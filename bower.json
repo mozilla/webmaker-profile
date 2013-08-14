@@ -7,7 +7,10 @@
     "jade": "~0.34.1",
     "text": "~2.0.10",
     "font-awesome": "~3.2.1",
-    "masonry": "~3.1.1"
+    "masonry": "~3.1.1",
+    "packery": "~1.1.0",
+    "imagesloaded": "~3.0.4",
+    "draggabilly": "~1.0.5"
   },
   "resolutions": {
     "jquery": "~2.0.3"
