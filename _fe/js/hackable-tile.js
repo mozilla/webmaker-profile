@@ -1,4 +1,4 @@
-define(['jquery', 'js/templates', 'komponent'], function ($, templates) {
+define(['jquery', 'js/templates', 'imagesloaded', 'komponent'], function ($, templates, imagesLoaded) {
 
   var HackableTile = function (target, options) {
     var self = this;
@@ -34,26 +34,38 @@ define(['jquery', 'js/templates', 'komponent'], function ($, templates) {
 
     // Event Delegation -------------------------------------------------------
 
-    self.$textarea.on('blur', function (event) {
-      self.pullText();
-      self.$textarea.hide();
-      self.$hackButton.show();
-      self.$saveButton.hide();
-      self.$hackButton.fadeTo(400, 1);
-      self.$hackedContent.show();
-      self.fire('resize');
+    self.$saveButton.on('click', function (event) {
+      self.showMake();
     });
 
     self.$hackButton.on('click', function (event) {
-      self.$textarea.show();
-      self.$hackButton.fadeTo(400, 0.5);
-      self.$saveButton.show();
-      self.$textarea.focus();
-      self.fire('resize');
+      self.showEditor();
     });
   };
 
   HackableTile.prototype = new Komponent();
+
+  HackableTile.prototype.showEditor = function () {
+    var self = this;
+
+    self.$textarea.show();
+    self.$hackButton.fadeTo(400, 0.5);
+    self.$saveButton.show();
+    self.$textarea.focus();
+    self.fire('resize');
+  };
+
+  HackableTile.prototype.showMake = function () {
+    var self = this;
+
+    self.pullText();
+    self.$textarea.hide();
+    self.$hackButton.show();
+    self.$saveButton.hide();
+    self.$hackButton.fadeTo(400, 1);
+    self.$hackedContent.show();
+    self.fire('resize');
+  };
 
   HackableTile.prototype.pullText = function () {
     var self = this;
@@ -64,10 +76,19 @@ define(['jquery', 'js/templates', 'komponent'], function ($, templates) {
     }
 
     if (textContent.length) {
+      // Fire resize when all inserted images load
+      imagesLoaded(self.$hackedContent, function () {
+        console.log('load');
+        self.fire('resize');
+
+      });
+
       // Wrap Image URL in IMG tag
-      if (textContent) {
-        self.$hackedContent.html(wrapImg(textContent));
-        self.$textarea.val(wrapImg(textContent));
+      if (textContent.match(/(.jpg|.png|.gif)$/)) {
+        var imgHTML = wrapImg(textContent);
+
+        self.$hackedContent.html(imgHTML);
+        self.$textarea.val(imgHTML);
       } else {
         self.$hackedContent.html(textContent);
       }
@@ -76,11 +97,6 @@ define(['jquery', 'js/templates', 'komponent'], function ($, templates) {
     } else {
       self.$hackedContent.hide();
     }
-
-    // TODO: Temp hack; need to make a content loaded event (use imagesloaded)
-    setTimeout(function() {
-      self.fire('resize');
-    }, 1000);
   };
 
   return HackableTile;
