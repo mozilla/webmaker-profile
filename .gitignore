@@ -3,6 +3,5 @@ node_modules
 bower_components
 TODO.txt
 _fe/compiled/
-_fe/js/templates.js
 index.html
 index.dev.html
