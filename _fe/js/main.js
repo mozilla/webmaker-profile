@@ -1,6 +1,12 @@
 requirejs.config({
   baseUrl: '../bower_components',
+  shim: {
+    'komponent/komponent': {
+      exports: 'Komponent'
+    }
+  },
   paths: {
+    komponent: 'komponent/komponent',
     json: '../_fe/json',
     js: '../_fe/js',
     main: '../_fe/js/main',
@@ -8,7 +14,7 @@ requirejs.config({
     jquery: 'jquery/jquery',
     jqueryui: 'jquery-ui/ui/jquery-ui',
     jade: 'jade/runtime',
-    imagesloaded: 'imagesloaded/imagesloaded',
+    imagesloaded: 'imagesloaded/imagesloaded'
   }
 });
 
