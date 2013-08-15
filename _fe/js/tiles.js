@@ -74,6 +74,9 @@ define([
       var photoBooth = new PhotoBoothTile($photoBooth[0]);
       self.$tiles.prepend($photoBooth);
       photoBooth.init();
+      photoBooth.on('resize', function () {
+        self.packery.layout();
+      });
       self.packery.prepended($photoBooth[0]);
       self.packery.layout();
     },
