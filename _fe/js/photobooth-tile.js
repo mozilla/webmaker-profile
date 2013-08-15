@@ -84,7 +84,7 @@ define(['jquery', 'templates', 'komponent'], function ($, templates) {
       },
       function (stream) {
         if (navigator.mozGetUserMedia) {
-          video.mozSrcObject = stream;
+          self.video.mozSrcObject = stream;
         } else {
           var vendorURL = window.URL || window.webkitURL;
           self.video.src = vendorURL.createObjectURL(stream);

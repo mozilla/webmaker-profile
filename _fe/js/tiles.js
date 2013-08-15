@@ -46,7 +46,6 @@ define([
           self.addPhotoBooth();
           toggle = 1;
         }
-
       });
     },
     addAndBindDraggable: function (element, method) {
