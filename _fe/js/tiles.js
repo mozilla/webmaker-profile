@@ -50,6 +50,7 @@ define([
 
       draggie = new Draggabilly(element);
       self.packery.bindDraggabillyEvents(draggie);
+
       return element;
     },
     addHackableTile: function () {
@@ -76,11 +77,14 @@ define([
         var tileTemplate = templates[tile.type + 'Tile'] || templates.defaultTile;
         tileString += tileTemplate(tile);
       });
+
       self.container.innerHTML = tileString;
       tiles = self.container.querySelectorAll('.tile');
-      for (var i = 0; i < tiles.length; i++) {
+
+      for (var i = 0, ii = tiles.length; i < ii; i++) {
         self.addAndBindDraggable(tiles[i]);
       }
+
       imagesLoaded(self.container, function(e) {
         self.packery.layout();
       });
