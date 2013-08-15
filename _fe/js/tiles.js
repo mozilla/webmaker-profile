@@ -36,16 +36,23 @@ define([
       });
 
       // Event Delegation -------------------------------------------------------
-
+      var toggle = 0;
       self.$addTile.on('click', function (event) {
         event.preventDefault();
-        self.addPhotoBooth();
+        if ( toggle ) {
+          self.addHackableTile();
+          toggle = 0;
+        } else {
+          self.addPhotoBooth();
+          toggle = 1;
+        }
+
       });
     },
     addAndBindDraggable: function (element, method) {
       var self = this;
       // Prepended or appended?
-      method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
+      var method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
 
       var draggie;
       self.packery[method](element);
