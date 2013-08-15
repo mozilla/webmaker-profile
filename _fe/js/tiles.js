@@ -5,6 +5,7 @@ define([
   'imagesloaded',
   'draggabilly/draggabilly',
   'js/hackable-tile',
+  'js/photobooth-tile',
   'jqueryui'
 ], function (
   $,
@@ -12,7 +13,8 @@ define([
   Packery,
   imagesLoaded,
   Draggabilly,
-  HackableTile
+  HackableTile,
+  PhotoBoothTile
 ) {
   return {
     init: function (options) {
@@ -34,16 +36,22 @@ define([
       });
 
       // Event Delegation -------------------------------------------------------
-
+      var toggle = 0;
       self.$addTile.on('click', function (event) {
         event.preventDefault();
-        self.addHackableTile();
+        if ( toggle ) {
+          self.addHackableTile();
+          toggle = 0;
+        } else {
+          self.addPhotoBooth();
+          toggle = 1;
+        }
       });
     },
     addAndBindDraggable: function (element, method) {
       var self = this;
       // Prepended or appended?
-      method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
+      var method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
 
       var draggie;
       self.packery[method](element);
@@ -64,6 +72,18 @@ define([
 
       self.$tiles.prepend($hackableTile);
       self.addAndBindDraggable($hackableTile[0], 'prepended');
+      self.packery.layout();
+    },
+    addPhotoBooth: function() {
+      var self = this;
+      var $photoBooth = $(templates.photoboothTile());
+      var photoBooth = new PhotoBoothTile($photoBooth[0]);
+      self.$tiles.prepend($photoBooth);
+      photoBooth.init();
+      photoBooth.on('resize', function () {
+        self.packery.layout();
+      });
+      self.packery.prepended($photoBooth[0]);
       self.packery.layout();
     },
     render: function (data) {
