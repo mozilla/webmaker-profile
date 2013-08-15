@@ -3,6 +3,11 @@
     opacity: 0;
     visibility: hidden;
   }
+  .status {
+    font-size: 2em;
+    color: #777;
+    text-align: center;
+  }
   .photobooth-container {
     position: relative;
   }
@@ -11,8 +16,6 @@
   }
   canvas {
     position: absolute;
-    background: red;
-    width: 100%;
     visibility: hidden;
   }
   .output-img {
@@ -21,7 +24,7 @@
     top: 0;
     left: 0;
     z-index: 1;
-    .transition(all 0.2s linear);
+    transition: all 0.2s linear;
     &.hidden {
       opacity: 0;
       visibility: hidden;

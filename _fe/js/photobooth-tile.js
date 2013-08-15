@@ -10,12 +10,11 @@ define(['jquery', 'templates', 'komponent'], function ($, templates) {
 
     self.callbacks = {};
     self.streaming = false;
-    self.video = container.querySelector('video');
-    self.$video = $(self.video);
+    self.$video = $('video', container);
     self.$photo = $('img', container);
-    self.canvas = container.querySelector('canvas');
-    self.$canvas = $(self.canvas);
+    self.$canvas = $('canvas', container);
     self.$startbtn = $('.trigger', container);
+    self.$statusMessage = $('.status', container);
     self.width = $('.grid-sizer').width();
 
   };
@@ -24,19 +23,6 @@ define(['jquery', 'templates', 'komponent'], function ($, templates) {
 
   Photobooth.prototype.init = function () {
     var self = this;
-
-    self.video.addEventListener('canplay', function () {
-      if (!self.streaming) {
-        self.height = self.video.videoHeight / (self.video.videoWidth / self.width);
-        self.$video.attr('width', self.width);
-        self.$video.attr('height', self.height);
-        self.$canvas.attr('width', self.width);
-        self.$canvas.attr('height', self.height);
-        self.$startbtn.removeClass('hidden');
-        self.streaming = true;
-        self.fire('resize');
-      }
-    }, false);
 
     function resetWidthHeight() {
       self.$photo.css({
@@ -48,6 +34,7 @@ define(['jquery', 'templates', 'komponent'], function ($, templates) {
     }
 
     function startVideo(e) {
+      e.stopPropagation();
       self.$video.attr('width', self.width);
       self.$video.attr('height', self.height);
       self.$canvas.attr('width', self.width);
@@ -59,12 +46,13 @@ define(['jquery', 'templates', 'komponent'], function ($, templates) {
       self.fire('resize');
     }
 
-    function takePicture(err) {
+    function takePicture(e) {
+      e.stopPropagation();
       var data;
 
       self.$canvas.width(self.width);
       self.$canvas.height(self.height);
-      self.$canvas[0].getContext('2d').drawImage(self.video, 0, 0, self.width, self.height);
+      self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
       data = self.$canvas[0].toDataURL('image/png');
       self.$photo.attr('src', data);
       self.$photo.removeClass('hidden');
@@ -76,6 +64,19 @@ define(['jquery', 'templates', 'komponent'], function ($, templates) {
       self.fire('resize');
     }
 
+    self.$video.on('canplay', function () {
+      if (!self.streaming) {
+        self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
+        self.$video.attr('width', self.width);
+        self.$video.attr('height', self.height);
+        self.$canvas.attr('width', self.width);
+        self.$canvas.attr('height', self.height);
+        self.$startbtn.removeClass('hidden');
+        self.streaming = true;
+        self.fire('resize');
+      }
+    });
+
     self.$startbtn.click(takePicture);
 
     navigator.getMedia({
@@ -84,15 +85,22 @@ define(['jquery', 'templates', 'komponent'], function ($, templates) {
       },
       function (stream) {
         if (navigator.mozGetUserMedia) {
-          self.video.mozSrcObject = stream;
+          self.$video[0].mozSrcObject = stream;
         } else {
           var vendorURL = window.URL || window.webkitURL;
-          self.video.src = vendorURL.createObjectURL(stream);
+          self.$video[0].src = vendorURL.createObjectURL(stream);
         }
-        self.video.play();
+        self.$video[0].play();
+        self.$statusMessage.empty();
       },
       function (err) {
-        console.log('Error - getUserMedia not working');
+        var message = "Oops, there was an error accessing your webcam"
+        if ( err.PERMISSION_DENIED ) {
+          message = "Looks like you denied us permission to use your camera :("
+        } else if ( err.NOT_SUPPORTED ) {
+          message = "Oops, your browser doesn't support access to your webcam"
+        }
+        self.$statusMessage.html(message)
       }
     );
   };
