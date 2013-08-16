@@ -1,10 +1,5 @@
 requirejs.config({
   baseUrl: '../bower_components',
-  shim: {
-    'komponent/komponent': {
-      exports: 'Komponent'
-    }
-  },
   paths: {
     komponent: 'komponent/komponent',
     json: '../_fe/json',
