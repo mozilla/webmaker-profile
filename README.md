@@ -23,3 +23,7 @@ Currently you may have to run `bower install` after `npm install`.
 
 - **grunt** - Recompile Jade and Less as needed for dev. Run a server at [localhost:8000](http://localhost:8000).
 - **grunt build** - Compile Jade, Less and JS for production.
+
+## Staging
+
+[http://wm-profile.herokuapp.com/](http://wm-profile.herokuapp.com/)
