@@ -16,7 +16,6 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
     self.$startbtn = $('.trigger', container);
     self.$statusMessage = $('.status', container);
     self.width = $('.grid-sizer').width();
-
   };
 
   Photobooth.prototype = new Komponent();
@@ -90,17 +89,20 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
           var vendorURL = window.URL || window.webkitURL;
           self.$video[0].src = vendorURL.createObjectURL(stream);
         }
+
         self.$video[0].play();
         self.$statusMessage.empty();
       },
       function (err) {
-        var message = "Oops, there was an error accessing your webcam"
-        if ( err.PERMISSION_DENIED ) {
-          message = "Looks like you denied us permission to use your camera :("
-        } else if ( err.NOT_SUPPORTED ) {
-          message = "Oops, your browser doesn't support access to your webcam"
+        var message = 'Oops, there was an error accessing your webcam';
+
+        if (err.PERMISSION_DENIED) {
+          message = 'Looks like you denied us permission to use your camera :(';
+        } else if (err.NOT_SUPPORTED) {
+          message = 'Oops, your browser doesn\'t support access to your webcam';
         }
-        self.$statusMessage.html(message)
+
+        self.$statusMessage.html(message);
       }
     );
   };
