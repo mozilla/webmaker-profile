@@ -51,7 +51,7 @@ define([
     addAndBindDraggable: function (element, method) {
       var self = this;
       // Prepended or appended?
-      var method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
+      method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
 
       var draggie;
       self.packery[method](element);
@@ -92,7 +92,7 @@ define([
       var tileString = self.container.innerHTML;
       var tiles;
 
-      data.forEach(function (tile, i) {
+      data.forEach(function (tile) {
         // TODO: Some type checking
         var tileTemplate = templates[tile.type + 'Tile'] || templates.defaultTile;
         tileString += tileTemplate(tile);
@@ -105,7 +105,7 @@ define([
         self.addAndBindDraggable(tiles[i]);
       }
 
-      imagesLoaded(self.container, function(e) {
+      imagesLoaded(self.container, function() {
         self.packery.layout();
       });
     }

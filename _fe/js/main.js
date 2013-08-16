@@ -14,7 +14,12 @@ requirejs.config({
   }
 });
 
-require(['jquery', 'templates', 'js/tiles', 'text!json/fake.json'], function ($, templates, tiles, fakeData) {
+require([
+  'jquery',
+  'templates',
+  'js/tiles',
+  'text!json/fake.json'
+], function ($, templates, tiles, fakeData) {
   var data = JSON.parse(fakeData);
   var $body = $('body');
   var $tileContainer = $(templates.tileContainer());
