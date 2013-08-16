@@ -1,4 +1,9 @@
-define(['jquery', 'templates', 'imagesloaded', 'komponent'], function ($, templates, imagesLoaded) {
+define([
+  'jquery',
+  'templates',
+  'imagesloaded',
+  'komponent'
+], function ($, templates, imagesLoaded, Komponent) {
 
   var HackableTile = function (target, options) {
     var self = this;
