@@ -1,10 +1,5 @@
 requirejs.config({
   baseUrl: '../bower_components',
-  shim: {
-    'komponent/komponent': {
-      exports: 'Komponent'
-    }
-  },
   paths: {
     komponent: 'komponent/komponent',
     json: '../_fe/json',
@@ -25,13 +20,16 @@ require(['jquery', 'templates', 'js/tiles', 'text!json/fake.json'], function ($,
   var $tileContainer = $(templates.tileContainer());
 
   $body.append(templates.header({
-    name: 'Herbert West',
-    username: 'reanimator2000'
+    avatarSrc: data.avatarSrc,
+    name: data.realName,
+    username: data.username
   }));
 
   $body.append($tileContainer);
+
   tiles.init({
     container: $tileContainer[0]
   });
+
   tiles.render(data.makes);
 });

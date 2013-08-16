@@ -1,4 +1,4 @@
-define(['jquery', 'templates', 'komponent'], function ($, templates) {
+define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) {
 
   navigator.getMedia = (navigator.getUserMedia ||
     navigator.webkitGetUserMedia ||
