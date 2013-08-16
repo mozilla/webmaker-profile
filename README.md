@@ -1,6 +1,12 @@
 # Webmaker Profile
 
-Prototype of user.makes.org profile.
+Prototype of *USERNAME.makes.org* profile.
+
+## Build Dependencies
+
+- npm
+- grunt CLI `npm install -g grunt-cli`
+- bower `npm install -g bower`
 
 ## Installation
 
@@ -8,6 +14,10 @@ Prototype of user.makes.org profile.
 git clone https://github.com/gvn/webmaker-profile.git
 npm install
 ```
+
+### Bower
+
+Currently you may have to run `bower install` after `npm install`.
 
 ## Grunt Tasks
 

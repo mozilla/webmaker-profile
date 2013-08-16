@@ -1,0 +1,46 @@
+.tile.photobooth {
+  .hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+  .status {
+    font-size: 2em;
+    color: #777;
+    text-align: center;
+  }
+  .photobooth-container {
+    position: relative;
+  }
+  video {
+    width: 100%;
+  }
+  canvas {
+    position: absolute;
+    visibility: hidden;
+  }
+  .output-img {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    transition: all 0.2s linear;
+    &.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+  }
+  .button-container {
+    padding-top: 1em;
+    text-align: center;
+  }
+  .button.trigger {
+    padding: 14px 20px;
+    display: inline-block;
+    font-size: 2em;
+    &:after {
+      .icon(@camera);
+    }
+  }
+}
