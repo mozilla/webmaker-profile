@@ -39,11 +39,11 @@ define([
 
     // Event Delegation -------------------------------------------------------
 
-    self.$saveButton.on('click', function (event) {
+    self.$saveButton.on('click', function () {
       self.showMake();
     });
 
-    self.$hackButton.on('click', function (event) {
+    self.$hackButton.on('click', function () {
       self.showEditor();
     });
   };
