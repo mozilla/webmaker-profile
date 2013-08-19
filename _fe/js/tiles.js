@@ -27,26 +27,55 @@ define([
       self.$tiles = $('.tiles');
       self.$addTile = $('#add-tile');
 
+      // Tile Selector
+      self.$tileSelector = $(templates.selectorTile());
+      self.$btnPhoto = self.$tileSelector.find('.photo');
+      self.$btnHackable = self.$tileSelector.find('.hackable');
+
       // Properties -------------------------------------------------------------
 
+      self.isSelectorVisible = false;
+
       // Setup ------------------------------------------------------------------
+
       self.packery = new Packery(options.container, {
         columnWidth: self.container.querySelector('.grid-sizer'),
         itemSelector: '.tile'
       });
 
       // Event Delegation -------------------------------------------------------
-      var toggle = 0;
+
       self.$addTile.on('click', function (event) {
         event.preventDefault();
-        if ( toggle ) {
-          self.addHackableTile();
-          toggle = 0;
-        } else {
-          self.addPhotoBooth();
-          toggle = 1;
+
+        if (!self.isSelectorVisible) {
+          self.showSelectorTile();
         }
       });
+
+      self.$btnPhoto.on('click', function () {
+        self.addPhotoBooth();
+        self.hideSelectorTile();
+      });
+
+      self.$btnHackable.on('click', function () {
+        self.addHackableTile();
+        self.hideSelectorTile();
+      });
+    },
+    showSelectorTile: function () {
+      var self = this;
+
+      self.$tiles.prepend(self.$tileSelector);
+      self.addAndBindDraggable(self.$tileSelector[0], 'prepended');
+      self.packery.layout();
+      self.isSelectorVisible = true;
+    },
+    hideSelectorTile: function () {
+      var self = this;
+
+      self.$tileSelector.detach();
+      self.isSelectorVisible = false;
     },
     addAndBindDraggable: function (element, method) {
       var self = this;
@@ -72,10 +101,11 @@ define([
       });
 
       self.$tiles.prepend($hackableTile);
+      hackableTile.showEditor();
       self.addAndBindDraggable($hackableTile[0], 'prepended');
       self.packery.layout();
     },
-    addPhotoBooth: function() {
+    addPhotoBooth: function () {
       var self = this;
       var $photoBooth = $(templates.photoboothTile());
       var photoBooth = new PhotoBoothTile($photoBooth[0]);
@@ -105,7 +135,7 @@ define([
         self.addAndBindDraggable(tiles[i]);
       }
 
-      imagesLoaded(self.container, function() {
+      imagesLoaded(self.container, function () {
         self.packery.layout();
       });
     }
