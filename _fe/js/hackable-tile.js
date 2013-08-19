@@ -53,8 +53,8 @@ define([
   HackableTile.prototype.showEditor = function () {
     var self = this;
 
+    self.$hackButton.addClass('disabled');
     self.$textarea.show();
-    self.$hackButton.fadeTo(400, 0.5);
     self.$saveButton.show();
     self.$textarea.focus();
     self.fire('resize');
@@ -64,10 +64,10 @@ define([
     var self = this;
 
     self.pullText();
+    self.$hackButton.removeClass('disabled');
     self.$textarea.hide();
     self.$hackButton.show();
     self.$saveButton.hide();
-    self.$hackButton.fadeTo(400, 1);
     self.$hackedContent.show();
     self.fire('resize');
   };
