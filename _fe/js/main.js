@@ -1,16 +1,18 @@
 requirejs.config({
   baseUrl: '../bower_components',
   paths: {
-    komponent: 'komponent/komponent',
-    json: '../_fe/json',
-    js: '../_fe/js',
-    main: '../_fe/js/main',
-    text: 'text/text',
+    imagesloaded: 'imagesloaded/imagesloaded',
+    jade: 'jade/runtime',
     jquery: 'jquery/jquery',
     jqueryui: 'jquery-ui/ui/jquery-ui',
-    jade: 'jade/runtime',
-    imagesloaded: 'imagesloaded/imagesloaded',
-    templates: '../_fe/compiled/jade-templates'
+    js: '../_fe/js',
+    json: '../_fe/json',
+    komponent: 'komponent/komponent',
+    lodash: 'lodash/lodash',
+    main: '../_fe/js/main',
+    store: 'store.js/store',
+    templates: '../_fe/compiled/jade-templates',
+    text: 'text/text'
   }
 });
 
