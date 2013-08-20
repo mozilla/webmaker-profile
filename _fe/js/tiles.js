@@ -47,6 +47,26 @@ define([
           toggle = 1;
         }
       });
+      self.$tiles.on('click', '.js-tile-up', function(e){
+        var currentTile = $(e.target).parents('.tile')[0];
+        var items = self.packery.items;
+        var originalIndex = $.inArray(self.packery.getItem(currentTile), items);
+        var newIndex = originalIndex - 1;
+        if (newIndex !== -1) {
+          items.splice(newIndex, 0, items.splice(originalIndex, 1)[0] );
+          self.packery.layout();
+        }
+      });
+      self.$tiles.on('click', '.js-tile-down', function(e){
+        var currentTile = $(e.target).parents('.tile')[0];
+        var items = self.packery.items;
+        var originalIndex = $.inArray(self.packery.getItem(currentTile), items)
+        var newIndex = originalIndex + 1;
+        if (newIndex !== items.length) {
+          items.splice(newIndex, 0, items.splice(originalIndex, 1)[0] );
+          self.packery.layout();
+        }
+      });
     },
     addAndBindDraggable: function (element, method) {
       var self = this;
@@ -56,8 +76,11 @@ define([
       var draggie;
       self.packery[method](element);
 
-      draggie = new Draggabilly(element);
-      self.packery.bindDraggabillyEvents(draggie);
+      var arrowsPresent = $('.movement-arrows', element).is(':visible');
+      if (arrowsPresent === false) {
+        draggie = new Draggabilly(element);
+        self.packery.bindDraggabillyEvents(draggie);
+      }
 
       return element;
     },

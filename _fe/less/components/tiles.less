@@ -18,13 +18,24 @@ ul.tiles {
     margin: 0 (@gutter/2) @gutter (@gutter/2);
 
     h3 {
+      display: inline-block;
       font-size: 2em;
       line-height: 1.2;
       font-weight: inherit;
       margin: 0 0 0.5em 0;
     }
 
+    .movement-arrows {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      font-size: 24px;
+    }
+
     @media (min-width: @width-medium) {
+      .movement-arrows {
+        display: none;
+      }
       width:(50% - @gutter);
     }
 
