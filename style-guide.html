@@ -3,29 +3,36 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0, user-scalable=no">
-  <title>Style Guide</title>
+  <title>Webmaker | Style Guide</title>
   <link href="_fe/compiled/app.debug.css" rel="stylesheet" type="text/css" media="all">
   <style>
-    h1.styleGuide {
+    body {
+      padding: 20px;
+      background: #fff;
+    }
+    h1.style-guide {
       font-size: 2em;
       margin-bottom: 1em;
       border-bottom:1px dotted #999;
       line-height: 2em;
     }
-    h2.styleGuide {
+    h2.style-guide {
       font-size: 1.6em;
       margin-bottom: 0.5em;
     }
-    section.styleGuide section {
+    section.style-guide {
+      background: #fff;
+    }
+    section.style-guide section {
       margin-bottom: 2em;
     }
   </style>
 </head>
 <body>
 
-  <section class="styleGuide">
+  <section class="style-guide">
 
-    <h1 class="styleGuide">Typography</h1>
+    <h1 class="style-guide">Typography</h1>
 
     <section>
       <h1>H1 Header</h1>
@@ -40,27 +47,32 @@
 
   </section>
 
-  <section class="styleGuide">
+  <section class="style-guide">
 
-    <h1 class="styleGuide">Form Elements</h1>
+    <h1 class="style-guide">Form Elements</h1>
 
     <section>
-      <h2 class="styleGuide">Text Input</h2>
+      <h2 class="style-guide">Text Input</h2>
       <input type="text">
     </section>
 
     <section>
-      <h2 class="styleGuide">Button</h2>
-      <button>Button</button>
+      <h2 class="style-guide">Button (.button)</h2>
+      <button class="button">Button</button>
     </section>
 
     <section>
-      <h2 class="styleGuide">Text Area</h2>
+      <h2 class="style-guide">Button (.button.disabled)</h2>
+      <button class="button disabled">Button</button>
+    </section>
+
+    <section>
+      <h2 class="style-guide">Text Area</h2>
       <textarea></textarea>
     </section>
 
     <section>
-      <h2 class="styleGuide">Select</h2>
+      <h2 class="style-guide">Select</h2>
 
       <select>
         <option>One</option>
@@ -70,12 +82,12 @@
     </section>
 
     <section>
-      <h2 class="styleGuide">Submit</h2>
+      <h2 class="style-guide">Submit</h2>
       <input type="submit">
     </section>
 
     <section>
-      <h2 class="styleGuide">Radio Button</h2>
+      <h2 class="style-guide">Radio Button</h2>
 
       <input type="radio" name="fpo">
       <input type="radio" name="fpo">
@@ -83,7 +95,7 @@
     </section>
 
     <section>
-      <h2 class="styleGuide">Checkbox</h2>
+      <h2 class="style-guide">Checkbox</h2>
 
       <input type="checkbox">
       <input type="checkbox">
