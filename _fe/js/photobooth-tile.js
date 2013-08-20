@@ -48,7 +48,7 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
     function takePicture(e) {
       e.stopPropagation();
       var data;
-
+      self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
       self.$canvas.width(self.width);
       self.$canvas.height(self.height);
       self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
@@ -63,7 +63,10 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
       self.fire('resize');
     }
 
-    self.$video.on('canplay', function () {
+    function onTimeUpdate() {
+      if(!self.$video[0].videoHeight) {
+        return;
+      }
       if (!self.streaming) {
         self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
         self.$video.attr('width', self.width);
@@ -74,22 +77,17 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
         self.streaming = true;
         self.fire('resize');
       }
-    });
-
+      self.$video.off('timeupdate', onTimeUpdate);
+    }
+    self.$video.on('timeupdate', onTimeUpdate);
     self.$startbtn.click(takePicture);
 
     navigator.getMedia({
-        video: true,
-        audio: false
+        video: true
       },
       function (stream) {
-        if (navigator.mozGetUserMedia) {
-          self.$video[0].mozSrcObject = stream;
-        } else {
-          var vendorURL = window.URL || window.webkitURL;
-          self.$video[0].src = vendorURL.createObjectURL(stream);
-        }
-
+        self.stream = window.URL.createObjectURL(stream);
+        self.$video[0].src = self.stream;
         self.$video[0].play();
         self.$statusMessage.empty();
       },
