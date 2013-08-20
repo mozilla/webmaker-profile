@@ -45,7 +45,7 @@ define([
       });
 
       // Event Delegation -------------------------------------------------------
-      self.packery.on('dragItemPositioned', function(packery, item) {
+      self.packery.on('dragItemPositioned', function() {
         self.packery.layout();
       });
 
