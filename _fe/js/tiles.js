@@ -37,6 +37,10 @@ define([
       });
 
       // Event Delegation -------------------------------------------------------
+      self.packery.on('dragItemPositioned', function(packery, item) {
+        self.packery.layout();
+      });
+
       var toggle = 0;
       self.$addTile.on('click', function (event) {
         event.preventDefault();
@@ -64,7 +68,7 @@ define([
     },
     addHackableTile: function () {
       var self = this;
-      var $hackableTile = $('<li class="tile webmaker hackable"></li>');
+      var $hackableTile = $('<div class="tile webmaker hackable"></div>');
       var hackableTile = new HackableTile($hackableTile);
 
       // Reflow Packery when the hackable tile's layout changes
