@@ -31,7 +31,8 @@ define([
 
       // Setup ------------------------------------------------------------------
       self.packery = new Packery(options.container, {
-        columnWidth: self.container.querySelector('.grid-sizer'),
+        columnWidth: '.grid-sizer',
+        gutter: '.gutter-sizer',
         itemSelector: '.tile'
       });
 
