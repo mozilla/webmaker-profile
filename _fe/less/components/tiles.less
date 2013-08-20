@@ -8,6 +8,12 @@ ul.tiles {
   .grid-sizer,
   .tile {
     width: 100% - @gutter;
+    @media (min-width: @width-medium) {
+      width:(50% - @gutter);
+    }
+    @media (min-width: @width-large) {
+      width: (100% / 4 - @gutter);
+    }
   }
 
   li {
