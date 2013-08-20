@@ -1,35 +1,32 @@
-ul.tiles {
+.tiles {
   @gutter: 0.5%;
-
   margin: @gutter 0;
 
-  // For packery
-  .grid-sizer {
-    visibility: hidden;
+  .gutter-sizer {
+    width: @gutter;
+  }
+  .grid-sizer,
+  .tile {
+    width: 100% - @gutter;
+    @media (min-width: @width-medium) {
+      width:(50% - @gutter);
+    }
+    @media (min-width: @width-large) {
+      width: (100% / 4 - @gutter);
+    }
   }
 
-  li {
+  .tile {
     border: 1px solid darken(@backgroundcolor, 8%);
     background: @white;
     padding: (@gutter * 3);
     font-weight: 200;
-    float: left;
-    width: (100% - @gutter);
-    margin: 0 (@gutter/2) @gutter (@gutter/2);
 
     h3 {
       font-size: 2em;
       line-height: 1.2;
       font-weight: inherit;
       margin: 0 0 0.5em 0;
-    }
-
-    @media (min-width: @width-medium) {
-      width:(50% - @gutter);
-    }
-
-    @media (min-width: @width-large) {
-      width: (100% / 4 - @gutter);
     }
   }
 }

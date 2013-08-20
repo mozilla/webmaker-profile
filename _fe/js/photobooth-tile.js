@@ -34,10 +34,10 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
 
     function startVideo(e) {
       e.stopPropagation();
-      self.$video.attr('width', self.width);
-      self.$video.attr('height', self.height);
-      self.$canvas.attr('width', self.width);
-      self.$canvas.attr('height', self.height);
+      self.$video.attr('width', '100%');
+      self.$video.attr('height', self.width/self.height);
+      self.$canvas.attr('width', '100%');
+      self.$canvas.attr('height', self.width/self.height);
       self.$photo.addClass('hidden');
       self.$startbtn.removeClass('edit');
       self.$startbtn.off('click', startVideo);

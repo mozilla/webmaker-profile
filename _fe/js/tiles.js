@@ -39,11 +39,15 @@ define([
       // Setup ------------------------------------------------------------------
 
       self.packery = new Packery(options.container, {
-        columnWidth: self.container.querySelector('.grid-sizer'),
+        columnWidth: '.grid-sizer',
+        gutter: '.gutter-sizer',
         itemSelector: '.tile'
       });
 
       // Event Delegation -------------------------------------------------------
+      self.packery.on('dragItemPositioned', function(packery, item) {
+        self.packery.layout();
+      });
 
       self.$addTile.on('click', function (event) {
         event.preventDefault();
@@ -92,7 +96,7 @@ define([
     },
     addHackableTile: function () {
       var self = this;
-      var $hackableTile = $('<li class="tile webmaker hackable"></li>');
+      var $hackableTile = $('<div class="tile webmaker hackable"></div>');
       var hackableTile = new HackableTile($hackableTile);
 
       // Reflow Packery when the hackable tile's layout changes
