@@ -60,6 +60,7 @@ define([
           self.showSelectorTile();
         }
       });
+
       self.$tiles.on('click', '.js-tile-up', function(e){
         var currentTile = $(e.target).parents('.tile')[0];
         var items = self.packery.items;
@@ -70,10 +71,11 @@ define([
           self.packery.layout();
         }
       });
+
       self.$tiles.on('click', '.js-tile-down', function(e){
         var currentTile = $(e.target).parents('.tile')[0];
         var items = self.packery.items;
-        var originalIndex = $.inArray(self.packery.getItem(currentTile), items)
+        var originalIndex = $.inArray(self.packery.getItem(currentTile), items);
         var newIndex = originalIndex + 1;
         if (newIndex !== items.length) {
           items.splice(newIndex, 0, items.splice(originalIndex, 1)[0] );
@@ -131,10 +133,11 @@ define([
       var draggie;
       self.packery[method](element);
 
-      var arrowsPresent = $('.movement-arrows', element).is(':visible');
-      if (arrowsPresent === false) {
+      var isMobile = $('.mobile').css('display') !== 'none';
+      if (isMobile === false) {
         draggie = new Draggabilly(element);
         self.packery.bindDraggabillyEvents(draggie);
+        $('.movement-arrows', element).hide();
       }
 
       return element;
@@ -188,7 +191,7 @@ define([
       var storedOrder = self.fetchOrder();
       var sortedData = [];
 
-      if (storedOrder) {
+      if (storedOrder.length) {
         storedOrder.forEach(function (id) {
           sortedData.push(_.find(data, {id: id}));
         });

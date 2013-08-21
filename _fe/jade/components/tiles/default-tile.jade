@@ -1,8 +1,6 @@
+include ../arrow-container
+
 div(class="tile #{type}")
   h3 #{title}
-  div.movement-arrows
-    button.js-tile-up
-      i.icon-arrow-up
-    button.js-tile-down
-      i.icon-arrow-down
+  mixin arrowtainer
   p #{description}

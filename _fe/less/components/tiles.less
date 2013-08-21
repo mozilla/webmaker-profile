@@ -23,7 +23,6 @@
     font-weight: 200;
 
     h3 {
-      display: inline-block;
       font-size: 2em;
       line-height: 1.2;
       font-weight: inherit;
@@ -32,20 +31,13 @@
 
     .movement-arrows {
       position: absolute;
-      top: 5px;
+      bottom: 5px;
       right: 5px;
-      font-size: 24px;
-    }
+      font-size: 20px;
 
-    @media (min-width: @width-medium) {
-      .movement-arrows {
-        display: none;
+      button:not(:last-of-type) {
+        margin-right: 5px;
       }
-      width:(50% - @gutter);
-    }
-
-    @media (min-width: @width-large) {
-      width: (100% / 4 - @gutter);
     }
   }
 }

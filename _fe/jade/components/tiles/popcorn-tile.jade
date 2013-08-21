@@ -1,9 +1,7 @@
+include ../arrow-container
+
 div(class="tile #{type}")
   h3.handle.title #{title}
-  div.movement-arrows
-    button.js-tile-up
-      i.icon-arrow-up
-    button.js-tile-down
-      i.icon-arrow-down
+  mixin arrowtainer
   img.thumbnail(src="#{thumbnail}")
   p.description #{description}
