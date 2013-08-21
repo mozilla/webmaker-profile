@@ -12,7 +12,9 @@
     "imagesloaded": "3.0.4",
     "draggabilly": "1.0.5",
     "komponent": "0.4.0",
-    "requirejs": "2.1.8"
+    "requirejs": "2.1.8",
+    "store.js": "1.3.9",
+    "lodash": "1.3.1"
   },
   "resolutions": {
     "jquery": "2.0.3"
