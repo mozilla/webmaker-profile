@@ -162,7 +162,7 @@ define([
       var tiles;
 
       // Sort data if a different order has been stored
-      var storedOrder = self.fetchOrder();
+      var storedOrder; // = self.fetchOrder();
       var sortedData = [];
 
       if (storedOrder) {
