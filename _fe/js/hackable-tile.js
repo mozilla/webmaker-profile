@@ -12,6 +12,12 @@ define([
 
     self.callbacks = {};
 
+    self.MEDIAURL_REGEX = {
+      'YouTube': /^.*v=([a-zA-Z0-9_-]+).*$/,
+      'Vimeo': /^.*\/([0-9]+).*/
+    };
+
+
     // Options ----------------------------------------------------------------
 
     defaults = {};
@@ -80,6 +86,27 @@ define([
       return '<img src="' + text + '">';
     }
 
+    function wrapYoutube(url) {
+      var id = url.match(self.MEDIAURL_REGEX.YouTube);
+      if(id){
+        id = id[1]; // second result in array is the ID if there is a match
+        var $container = $('<div class="video-container">').append($('<iframe ' +
+          'type="text/html" src="http://www.youtube.com/embed/' + id + '">'));
+        return $container;
+      }
+    }
+
+    function wrapVimeo(url) {
+      var id = url.match(self.MEDIAURL_REGEX.Vimeo);
+      if(id){
+        id = id[1]; // second result in array is the ID if there is a match
+        var $container = $('<div class="video-container">').append($('<iframe ' +
+          'type="text/html" src="http://player.vimeo.com/video/' + id + '" ' +
+          'webkitAllowFullScreen mozallowfullscreen allowFullScreen>'));
+        return $container;
+      }
+    }
+
     if (textContent.length) {
       // Fire resize when all inserted images load
       imagesLoaded(self.$hackedContent, function () {
@@ -92,6 +119,23 @@ define([
 
         self.$hackedContent.html(imgHTML);
         self.$textarea.val(imgHTML);
+      } else if (textContent.match(/youtube/)) {
+        var ytHTML = wrapYoutube(textContent)[0];
+        $(ytHTML).data('aspectRatio', ytHTML.height / ytHTML.width)
+          .removeAttr('height')
+          .removeAttr('width');
+
+        self.$hackedContent.html(ytHTML);
+        self.$textarea.val(ytHTML);
+      } else if (textContent.match(/vimeo/)) {
+        var vHTML = wrapVimeo(textContent);
+        $(vHTML).data('aspectRatio', vHTML.height / vHTML.width)
+          .removeAttr('height')
+          .removeAttr('width');
+
+        self.$hackedContent.html(vHTML);
+        self.$textarea.val(vHTML);
+      
       } else {
         self.$hackedContent.html(textContent);
       }
