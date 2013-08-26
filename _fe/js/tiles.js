@@ -191,7 +191,7 @@ define([
       var storedOrder; // = self.fetchOrder();
       var sortedData = [];
 
-      if (storedOrder.length) {
+      if (storedOrder && storedOrder.length) {
         storedOrder.forEach(function (id) {
           sortedData.push(_.find(data, {id: id}));
         });
