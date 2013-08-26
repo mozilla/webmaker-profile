@@ -1,7 +1,8 @@
-include ../arrow-container
+include ../tile-common
 
 div(class="tile #{type}")
   h3.handle.title #{title}
   mixin arrowtainer
   img.thumbnail(src="#{thumbnail}")
   p.description #{description}
+  mixin loader
