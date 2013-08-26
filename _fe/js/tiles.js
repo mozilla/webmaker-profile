@@ -140,7 +140,7 @@ define([
         $('.movement-arrows', element).hide();
       }
 
-      return element;
+      return draggie;
     },
     /**
      * Create a hackable tile and append it
@@ -175,6 +175,13 @@ define([
         self.packery.layout();
       });
       self.packery.prepended($photoBooth[0]);
+      var draggie = self.addAndBindDraggable($photoBooth[0], 'prepended');
+      draggie.on('dragStart', function() {
+        photoBooth.$video.css('visibility', 'hidden');
+      });
+      draggie.on('dragEnd', function() {
+        photoBooth.$video.css('visibility', '');
+      });
       self.packery.layout();
     },
     /**
