@@ -32,25 +32,29 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
       self.$video.attr('width', '');
     }
 
+    function resize() {
+      self.width = $('.grid-sizer').width();
+      self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
+      self.$video.attr('width', self.width);
+      self.$video.attr('height', self.height);
+      self.$canvas.attr('width', self.width);
+      self.$canvas.attr('height', self.height);
+      self.fire('resize');
+    }
+
     function startVideo(e) {
       e.stopPropagation();
-      self.$video.attr('width', '100%');
-      self.$video.attr('height', self.width/self.height);
-      self.$canvas.attr('width', '100%');
-      self.$canvas.attr('height', self.width/self.height);
+      resize();
       self.$photo.addClass('hidden');
       self.$startbtn.removeClass('edit');
       self.$startbtn.off('click', startVideo);
       self.$startbtn.on('click', takePicture);
-      self.fire('resize');
     }
 
     function takePicture(e) {
       e.stopPropagation();
       var data;
       self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
-      self.$canvas.width(self.width);
-      self.$canvas.height(self.height);
       self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
       data = self.$canvas[0].toDataURL('image/png');
       self.$photo.attr('src', data);
@@ -68,14 +72,9 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
         return;
       }
       if (!self.streaming) {
-        self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
-        self.$video.attr('width', self.width);
-        self.$video.attr('height', self.height);
-        self.$canvas.attr('width', self.width);
-        self.$canvas.attr('height', self.height);
+        resize();
         self.$startbtn.removeClass('hidden');
         self.streaming = true;
-        self.fire('resize');
       }
       self.$video.off('timeupdate', onTimeUpdate);
     }
