@@ -27,3 +27,18 @@ Currently you may have to run `bower install` after `npm install`.
 ## Staging
 
 [http://wm-profile.herokuapp.com/](http://wm-profile.herokuapp.com/)
+
+## Deploy to heroku
+Use the nodejs-grunt buildpack:
+```
+heroku create {yourname-profile} --buildpack https://github.com/mbuchetics/heroku-buildpack-nodejs-grunt
+git push heroku master
+```
+You can always set the buildpack config variable separately:
+```
+heroku config:add BUILDPACK_URL=https://github.com/mbuchetics/heroku-buildpack-nodejs-grunt.git
+```
+If you want to push up a branch other than master
+```
+git push heroku branchname:master
+```
