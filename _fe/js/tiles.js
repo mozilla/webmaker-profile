@@ -191,13 +191,13 @@ define([
       var storedOrder = self.fetchOrder() || [];
       var sortedData = [];
 
-      if (storedOrder.length) {
-        storedOrder.forEach(function (id) {
-          sortedData.push(_.find(data, {id: id}));
-        });
+      // if (storedOrder.length) {
+      //   storedOrder.forEach(function (id) {
+      //     sortedData.push(_.find(data, {id: id}));
+      //   });
 
-        data = sortedData;
-      }
+      //   data = sortedData;
+      // }
 
       // Render HTML for tiles
       data.forEach(function (tile) {
