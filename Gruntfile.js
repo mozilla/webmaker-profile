@@ -86,6 +86,13 @@ module.exports = function (grunt) {
       index: {
         files: ['index.jade'],
         tasks: ['jade:development', 'jade:production']
+      },
+      express: {
+        files: ['app.js'],
+        tasks: ['express:development'],
+        options: {
+          nospawn: true
+        }
       }
     },
     requirejs: {
@@ -98,10 +105,20 @@ module.exports = function (grunt) {
         }
       }
     },
-    connect: {
-      server: {
+    express: {
+      options: {
+        script: 'app.js'
+      },
+      development: {
         options: {
-          port: 8000
+          port: 8000,
+          node_env: 'development'
+        }
+      },
+      produdction: {
+        options: {
+          port: 80,
+          node_env: 'production'
         }
       }
     },
@@ -116,12 +133,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-express-server');
 
   // Recompile Jade and Less as needed for dev
-  grunt.registerTask('default', ['less:development', 'jade:compileJSTemplates', 'jade:development', 'connect', 'watch']);
+  grunt.registerTask('default', ['less:development', 'jade:compileJSTemplates', 'jade:development', 'express:development', 'watch']);
 
   // Compile Jade, Less and JS for production
   grunt.registerTask('build', ['jshint', 'less:production', 'jade:compileJSTemplates', 'jade:production', 'requirejs']);
