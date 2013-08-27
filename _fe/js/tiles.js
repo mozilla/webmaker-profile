@@ -191,7 +191,7 @@ define([
       var storedOrder = self.fetchOrder() || [];
       var sortedData = [];
 
-      if (storedOrder.length) {
+      if (storedOrder && storedOrder.length) {
         storedOrder.forEach(function (id) {
           sortedData.push(_.find(data, {id: id}));
         });
@@ -217,6 +217,7 @@ define([
 
       // Run packery layout after all images have loaded
       imagesLoaded(self.container, function () {
+        $('.loader').hide();
         self.packery.layout();
       });
     },

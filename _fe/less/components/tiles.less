@@ -1,18 +1,18 @@
 .tiles {
   @gutter: 0.5%;
-  margin: @gutter 0;
+  margin: @gutter;
 
   .gutter-sizer {
     width: @gutter;
   }
   .grid-sizer,
   .tile {
-    width: 100% - @gutter;
+    width: 100%;
     @media (min-width: @width-medium) {
-      width:(50% - @gutter);
+      width: ((100% - @gutter) / 2); // 2 cols
     }
     @media (min-width: @width-large) {
-      width: (100% / 4 - @gutter);
+      width: ((100% - (3 * @gutter)) / 4); // 4 cols
     }
   }
 
@@ -21,6 +21,21 @@
     background: @white;
     padding: (@gutter * 3);
     font-weight: 200;
+
+    .loader {
+      position: absolute;
+      display: block;
+      left: 50%;
+      top: 50%;
+      font-size: 40px;
+      height: 40px;
+      width: 40px;
+      line-height: 40px;
+      margin-top: -20px;
+      margin-left: -20px;
+      color: @green;
+
+    }
 
     h3 {
       font-size: 2em;
