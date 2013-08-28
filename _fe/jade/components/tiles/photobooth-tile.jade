@@ -1,7 +1,7 @@
 include ../arrow-container
 
 .tile.photobooth
-  mixin arrowtainer
+  include ../delete-button
   .status
     | Waiting for permission...
   .photobooth-container
@@ -10,3 +10,4 @@ include ../arrow-container
     img.output-img.hidden
   .button-container
     a.button.trigger.hidden
+  mixin arrowtainer

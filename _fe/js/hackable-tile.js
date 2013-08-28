@@ -2,8 +2,8 @@ define([
   'jquery',
   'templates',
   'imagesloaded',
-  'komponent'
-], function ($, templates, imagesLoaded, Komponent) {
+  'js/tile'
+], function ($, templates, imagesLoaded, Tile) {
 
   var HackableTile = function (target, options) {
     var self = this;
@@ -16,7 +16,6 @@ define([
       'YouTube': /^.*v=([a-zA-Z0-9_-]+).*$/,
       'Vimeo': /^.*\/([0-9]+).*/
     };
-
 
     // Options ----------------------------------------------------------------
 
@@ -42,6 +41,7 @@ define([
     // Setup ------------------------------------------------------------------
 
     self.$wrapper.html(self.$tileContent);
+    self.bindCommonUI(self.$wrapper);
 
     // Event Delegation -------------------------------------------------------
 
@@ -54,7 +54,7 @@ define([
     });
   };
 
-  HackableTile.prototype = new Komponent();
+  HackableTile.prototype = new Tile();
 
   HackableTile.prototype.showEditor = function () {
     var self = this;
@@ -69,18 +69,19 @@ define([
   HackableTile.prototype.showMake = function () {
     var self = this;
 
-    self.pullText();
+    self.update(self.$textarea.val());
     self.$hackButton.removeClass('disabled');
     self.$textarea.hide();
     self.$hackButton.show();
     self.$saveButton.hide();
     self.$hackedContent.show();
-    self.fire('resize');
   };
 
-  HackableTile.prototype.pullText = function () {
+  HackableTile.prototype.update = function (html) {
     var self = this;
-    var textContent = self.$textarea.val();
+
+    // This method extends Tile's update method
+    Tile.prototype.update.call(self, html);
 
     function wrapImg(text) {
       return '<img src="' + text + '">';
@@ -88,7 +89,7 @@ define([
 
     function wrapYoutube(url) {
       var id = url.match(self.MEDIAURL_REGEX.YouTube);
-      if(id){
+      if (id) {
         id = id[1]; // second result in array is the ID if there is a match
         var $container = $('<div class="video-container">').append($('<iframe ' +
           'type="text/html" src="http://www.youtube.com/embed/' + id + '">'));
@@ -98,7 +99,7 @@ define([
 
     function wrapVimeo(url) {
       var id = url.match(self.MEDIAURL_REGEX.Vimeo);
-      if(id){
+      if (id) {
         id = id[1]; // second result in array is the ID if there is a match
         var $container = $('<div class="video-container">').append($('<iframe ' +
           'type="text/html" src="http://player.vimeo.com/video/' + id + '" ' +
@@ -107,37 +108,38 @@ define([
       }
     }
 
-    if (textContent.length) {
+    if (html.length) {
       // Fire resize when all inserted images load
       imagesLoaded(self.$hackedContent, function () {
         self.fire('resize');
       });
 
       // Wrap Image URL in IMG tag
-      if (textContent.match(/(.jpg|.png|.gif)$/)) {
-        var imgHTML = wrapImg(textContent);
+      if (html.match(/(.jpg|.png|.gif)$/)) {
+        html = wrapImg(html);
 
-        self.$hackedContent.html(imgHTML);
-        self.$textarea.val(imgHTML);
-      } else if (textContent.match(/youtube/)) {
-        var ytHTML = wrapYoutube(textContent)[0];
-        $(ytHTML).data('aspectRatio', ytHTML.height / ytHTML.width)
+        self.$hackedContent.html(html);
+        self.$textarea.val(html);
+      } else if (html.match(/youtube/)) {
+        html = wrapYoutube(html)[0];
+
+        $(html).data('aspectRatio', html.height / html.width)
           .removeAttr('height')
           .removeAttr('width');
 
-        self.$hackedContent.html(ytHTML);
-        self.$textarea.val(ytHTML);
-      } else if (textContent.match(/vimeo/)) {
-        var vHTML = wrapVimeo(textContent);
-        $(vHTML).data('aspectRatio', vHTML.height / vHTML.width)
+        self.$hackedContent.html(html);
+        self.$textarea.val(html);
+      } else if (html.match(/vimeo/)) {
+        html = wrapVimeo(html);
+
+        $(html).data('aspectRatio', html.height / html.width)
           .removeAttr('height')
           .removeAttr('width');
 
-        self.$hackedContent.html(vHTML);
-        self.$textarea.val(vHTML);
-      
+        self.$hackedContent.html(html);
+        self.$textarea.val(html);
       } else {
-        self.$hackedContent.html(textContent);
+        self.$hackedContent.html(html);
       }
 
       self.$hackedContent.show();
