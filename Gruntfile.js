@@ -139,12 +139,6 @@ module.exports = function (grunt) {
     'requirejs'
   ]);
 
-  // For heroku deployment
-  grunt.registerTask('heroku', [
-    'jshint',
-    'less:production',
-    'jade:compileJSTemplates',
-    'jade:production',
-    'requirejs'
-  ]);
+  grunt.registerTask('heroku', ['build']);
+
 };
