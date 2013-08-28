@@ -1,4 +1,4 @@
-define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) {
+define(['jquery', 'templates', 'js/tile'], function ($, templates, Tile) {
 
   navigator.getMedia = (navigator.getUserMedia ||
     navigator.webkitGetUserMedia ||
@@ -9,16 +9,27 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
     var self = this;
 
     self.callbacks = {};
-    self.streaming = false;
+
+    // Element references -----------------------------------------------------
+
     self.$video = $('video', container);
     self.$photo = $('img', container);
     self.$canvas = $('canvas', container);
     self.$startbtn = $('.trigger', container);
     self.$statusMessage = $('.status', container);
+
+    // Setup ------------------------------------------------------------------
+
+    // Bind common tile UI (parent method)
+    self.bindCommonUI(container);
+
+    // Properties -------------------------------------------------------------
+
+    self.streaming = false;
     self.width = $('.grid-sizer').width();
   };
 
-  Photobooth.prototype = new Komponent();
+  Photobooth.prototype = new Tile();
 
   Photobooth.prototype.init = function () {
     var self = this;
@@ -28,6 +39,7 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
         width: '',
         height: ''
       });
+
       self.$video.attr('height', '');
       self.$video.attr('width', '');
     }
@@ -35,9 +47,9 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
     function startVideo(e) {
       e.stopPropagation();
       self.$video.attr('width', '100%');
-      self.$video.attr('height', self.width/self.height);
+      self.$video.attr('height', self.width / self.height);
       self.$canvas.attr('width', '100%');
-      self.$canvas.attr('height', self.width/self.height);
+      self.$canvas.attr('height', self.width / self.height);
       self.$photo.addClass('hidden');
       self.$startbtn.removeClass('edit');
       self.$startbtn.off('click', startVideo);
@@ -64,7 +76,7 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
     }
 
     function onTimeUpdate() {
-      if(!self.$video[0].videoHeight) {
+      if (!self.$video[0].videoHeight) {
         return;
       }
       if (!self.streaming) {
@@ -92,6 +104,7 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
         self.$statusMessage.empty();
       },
       function (err) {
+        // TODO - Move these strings in to Require-able messages.json
         var message = 'Oops, there was an error accessing your webcam';
 
         if (err.PERMISSION_DENIED) {
@@ -103,6 +116,18 @@ define(['jquery', 'templates', 'komponent'], function ($, templates, Komponent) 
         self.$statusMessage.html(message);
       }
     );
+  };
+
+  Photobooth.prototype.update = function () {
+    var self = this;
+
+    // This method extends Tile's update method
+    // TODO - What data will be passed to update? Probably encoded IMG?
+    Tile.prototype.update.call(self /*, html */ );
+
+    // TODO - Fill in this method.
+    // Probably move over code from init
+    // (also break that code up into smaller methods for an API)
   };
 
   return Photobooth;
