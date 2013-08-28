@@ -3,6 +3,11 @@ define(['jquery', 'komponent'], function ($, Komponent) {
 
   Tile.prototype = new Komponent();
 
+  /**
+   * Set up element references and binding for UI shared by all tiles
+   * @param  {object} target The wrapper element for the tile
+   * @return {undefined}
+   */
   Tile.prototype.bindCommonUI = function (target) {
     var self = this;
 
@@ -33,7 +38,11 @@ define(['jquery', 'komponent'], function ($, Komponent) {
       self.destroy();
     });
   };
-
+  /**
+   * Common code to run when a tile content is updated
+   * @param  {string} content The stringified content of the tile
+   * @return {undefined}
+   */
   Tile.prototype.update = function (content) {
     var self = this;
 
@@ -43,14 +52,20 @@ define(['jquery', 'komponent'], function ($, Komponent) {
 
     self.fire('resize');
   };
-
+  /**
+   * Destroy the tile
+   * @return {undefined}
+   */
   Tile.prototype.destroy = function () {
     var self = this;
 
     self.fire('destroy');
     self.$target.remove();
   };
-
+  /**
+   * Show the reordering buttons
+   * @return {undefined}
+   */
   Tile.prototype.showReorderButtons = function () {
     var self = this;
 
@@ -58,7 +73,10 @@ define(['jquery', 'komponent'], function ($, Komponent) {
     self.areReorderButtonsVisible = true;
     self.fire('resize');
   };
-
+  /**
+   * Hide redordering buttons
+   * @return {undefined}
+   */
   Tile.prototype.hideReorderButtons = function () {
     var self = this;
 
@@ -66,7 +84,10 @@ define(['jquery', 'komponent'], function ($, Komponent) {
     self.areReorderButtonsVisible = false;
     self.fire('resize');
   };
-
+  /**
+   * Show delete button
+   * @return {undefined}
+   */
   Tile.prototype.showDeleteButton = function () {
     var self = this;
 
@@ -74,7 +95,10 @@ define(['jquery', 'komponent'], function ($, Komponent) {
     self.isDeleteButtonVisible = true;
     self.fire('resize');
   };
-
+  /**
+   * Hide delete button
+   * @return {undefined}
+   */
   Tile.prototype.hideDeleteButton = function () {
     var self = this;
 

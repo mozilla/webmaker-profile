@@ -56,6 +56,10 @@ define([
 
   HackableTile.prototype = new Tile();
 
+  /**
+   * Show the tile editor UI
+   * @return {undefined}
+   */
   HackableTile.prototype.showEditor = function () {
     var self = this;
 
@@ -66,6 +70,10 @@ define([
     self.fire('resize');
   };
 
+  /**
+   * Show the rendered HTML from the editor
+   * @return {undefined}
+   */
   HackableTile.prototype.showMake = function () {
     var self = this;
 
@@ -77,6 +85,11 @@ define([
     self.$hackedContent.show();
   };
 
+  /**
+   * Update the rendered HTML inside the tile
+   * @param  {string} html A string of HTML/text to parse and render
+   * @return {undefined}
+   */
   HackableTile.prototype.update = function (html) {
     var self = this;
 

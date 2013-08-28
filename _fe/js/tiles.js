@@ -73,6 +73,8 @@ define([
           items.splice(newIndex, 0, items.splice(originalIndex, 1)[0]);
           self.packery.layout();
         }
+
+        self.storeOrder();
       });
 
       self.$tiles.on('click', '.tile-down', function (e) {
@@ -85,6 +87,8 @@ define([
           items.splice(newIndex, 0, items.splice(originalIndex, 1)[0]);
           self.packery.layout();
         }
+
+        self.storeOrder();
       });
 
       self.$btnPhoto.on('click', function () {
@@ -163,7 +167,7 @@ define([
       });
 
       // Reflow Packery when tile is destroyed
-      hackableTile.on('destroy', function (event) {
+      hackableTile.on('destroy', function () {
         self.packery.layout();
       });
 
@@ -188,7 +192,7 @@ define([
         self.packery.layout();
       });
 
-      photoBooth.on('destroy', function (event) {
+      photoBooth.on('destroy', function () {
         self.packery.layout();
       });
 
