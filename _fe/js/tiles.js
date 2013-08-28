@@ -237,7 +237,7 @@ define([
 
       // Run packery layout after all images have loaded
       imagesLoaded(self.container, function () {
-        //$('.loader').hide();
+        $('.loader').hide();
         self.packery.layout();
       });
     },
