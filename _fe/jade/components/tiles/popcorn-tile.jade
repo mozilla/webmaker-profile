@@ -1,7 +1,9 @@
 include ../arrow-container
+include ../loader
 
 div(class="tile #{type}")
   h3.handle.title #{title}
   img.thumbnail(src="#{thumbnail}")
   p.description #{description}
   mixin arrowtainer
+  mixin loader
