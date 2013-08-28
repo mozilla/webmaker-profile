@@ -101,6 +101,7 @@ module.exports = function (grunt) {
     connect: {
       server: {
         options: {
+          hostname: '*',
           port: 8000
         }
       }
@@ -116,13 +117,34 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
+  grunt.loadNpmTasks('grunt-contrib-connect');
 
   // Recompile Jade and Less as needed for dev
-  grunt.registerTask('default', ['less:development', 'jade:compileJSTemplates', 'jade:development', 'connect', 'watch']);
+  grunt.registerTask('default', [
+    'less:development',
+    'jade:compileJSTemplates',
+    'jade:development',
+    'connect',
+    'watch'
+  ]);
 
   // Compile Jade, Less and JS for production
-  grunt.registerTask('build', ['jshint', 'less:production', 'jade:compileJSTemplates', 'jade:production', 'requirejs']);
+  grunt.registerTask('build', [
+    'jshint',
+    'less:production',
+    'jade:compileJSTemplates',
+    'jade:production',
+    'requirejs'
+  ]);
+
+  // For heroku deployment
+  grunt.registerTask('heroku', [
+    'jshint',
+    'less:production',
+    'jade:compileJSTemplates',
+    'jade:production',
+    'requirejs'
+  ]);
 };
