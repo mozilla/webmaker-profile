@@ -8,7 +8,7 @@ define([
   'js/photobooth-tile',
   'store',
   'lodash',
-  'jqueryui'
+  'js/database'
 ], function (
   $,
   templates,
@@ -18,7 +18,8 @@ define([
   HackableTile,
   PhotoBoothTile,
   store,
-  _
+  _,
+  db
 ) {
   return {
     init: function (options) {
@@ -48,9 +49,13 @@ define([
         itemSelector: '.tile'
       });
 
+      PACK = self.packery;
+
       // Event Delegation -------------------------------------------------------
-      self.packery.on('dragItemPositioned', function() {
+      self.packery.on('dragItemPositioned', function () {
         self.packery.layout();
+        self.storeOrder();
+        debugger;
       });
 
       self.$addTile.on('click', function (event) {
@@ -100,10 +105,6 @@ define([
         self.addHackableTile();
         self.hideSelectorTile();
       });
-
-      self.packery.on('dragItemPositioned', function () {
-        self.storeOrder();
-      });
     },
     /**
      * Show tile type selector UI
@@ -139,14 +140,7 @@ define([
       method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
 
       self.packery[method](element);
-
-      var isMobile = $('.mobile').css('display') !== 'none';
-      var draggie;
-
-      if (isMobile === false) {
-        draggie = new Draggabilly(element);
-        self.packery.bindDraggabillyEvents(draggie);
-      }
+      self.packery.bindDraggabillyEvents(new Draggabilly(element));
 
       return element;
     },
@@ -157,24 +151,45 @@ define([
     addHackableTile: function () {
       var self = this;
 
-      // TODO - eliminate this HTML string; use jade
-      var $hackableTile = $('<div class="tile webmaker hackable"></div>');
-      var hackableTile = new HackableTile($hackableTile);
+      // // TODO - eliminate this HTML string; use jade
+      // var $hackableTile = $('<div class="tile webmaker hackable"></div>');
+      // var hackableTile = new HackableTile($hackableTile);
+      // var UUID = db.generateFakeUUID();
 
-      // Reflow Packery when the hackable tile's layout changes
-      hackableTile.on('resize', function () {
-        self.packery.layout();
-      });
+      // db.storeTileMake({
+      //   id: UUID,
+      //   tool: 'profile',
+      //   type: 'hackable',
+      //   content: null
+      // });
 
-      // Reflow Packery when tile is destroyed
-      hackableTile.on('destroy', function () {
-        self.packery.layout();
-      });
+      // // Reflow Packery when the hackable tile's layout changes
+      // hackableTile.on('resize', function () {
+      //   self.packery.layout();
+      // });
 
-      self.$tiles.prepend($hackableTile);
-      hackableTile.showEditor();
-      self.addAndBindDraggable($hackableTile[0], 'prepended');
-      self.packery.layout();
+      // // Reflow Packery when tile is destroyed
+      // hackableTile.on('destroy', function () {
+      //   self.packery.layout();
+      // });
+
+      // hackableTile.on('update', function () {
+      //   console.log('hack updated');
+
+      //   //db.storeTileMake
+      // });
+
+      // self.$tiles.prepend($hackableTile);
+      // hackableTile.showEditor();
+
+      // // this is breaking dragItemPositioned event
+      // self.addAndBindDraggable($hackableTile[0], 'prepended');
+
+      // // For order tracking later
+      // $hackableTile.data('id', UUID);
+
+      // self.packery.layout();
+
     },
     /**
      * Create a photo tile and append it
@@ -225,9 +240,12 @@ define([
 
       // Render HTML for tiles
       data.forEach(function (tile) {
-        // TODO: Some type checking
-        var tileTemplate = templates[tile.type + 'Tile'] || templates.defaultTile;
-        tileString += tileTemplate(tile);
+        if (tile.type === 'popcorn' || tile.type === 'thimble') {
+          var tileTemplate = templates[tile.type + 'Tile'] || templates.defaultTile;
+          tileString += tileTemplate(tile);
+        } else {
+          console.log(tile.type);
+        }
       });
 
       self.container.innerHTML = tileString;
