@@ -12,14 +12,29 @@ define([
   getUserMedia
 ) {
 
-  var COUNT = 5;
-  var DELAY = 200;
-  var STREAM;
+  // We're caching the stream here so all instances of Photobooth can use it once it is set
+  var stream;
 
-  var Photobooth = function (container) {
+  var Photobooth = function (container, options) {
     var self = this;
 
     self.callbacks = {};
+
+    // Options ----------------------------------------------------------------
+
+    options = options || {};
+
+    var defaults = {
+      maxFrames: 5,
+      delay: 200,
+      speed: 10
+    };
+
+    for (option in options) {
+      defaults[option] = options[option] || defaults[option];
+    }
+
+    self.options = defaults;
 
     // Element references -----------------------------------------------------
 
@@ -63,7 +78,7 @@ define([
       workerPath: '/bower_components/Animated_GIF/src/quantizer.js'
     });
     ag.setSize(self.width, self.height);
-    ag.setDelay(10);
+    ag.setDelay(self.options.speed);
     for (var i = 0; i < self.frames.length; i++) {
       ag.addFrame(self.frames[i]);
     }
@@ -89,8 +104,8 @@ define([
       // Hide the photo button
       self.$startbtn.addClass('off');
       count++;
-      console.log(count, self.frames);
-      if (count >= COUNT) {
+
+      if (count >= self.options.maxFrames) {
         clearInterval(interval);
         self.makeGif(function (gif) {
           var firstFrame = self.frames[0].src;
@@ -118,7 +133,7 @@ define([
       self.$canvas.attr('width', self.width);
       self.$canvas.attr('height', self.height);
 
-      interval = setInterval(snapPicture, DELAY);
+      interval = setInterval(snapPicture, self.options.delay);
 
       self.$video.removeAttr('width');
       self.$video.removeAttr('height');
@@ -127,11 +142,10 @@ define([
     self.$startbtn.on('click', onClick);
   };
 
-  Photobooth.prototype.onStreamLoaded = function (stream) {
+  Photobooth.prototype.onStreamLoaded = function (cameraStream) {
     var self = this;
-    if (stream) {
-      stream = window.URL.createObjectURL(stream);
-      STREAM = stream;
+    if (cameraStream) {
+      stream = window.URL.createObjectURL(cameraStream);
     }
 
     self.width = self.$video.width();
@@ -142,7 +156,7 @@ define([
 
     self.$video.attr('width', self.width);
     self.$video.attr('height', self.height);
-    self.$video[0].src = STREAM;
+    self.$video[0].src = stream;
     self.$video[0].play();
     self.attachClickListener();
   };
@@ -150,21 +164,21 @@ define([
   Photobooth.prototype.init = function () {
     var self = this;
 
-    if (STREAM) {
+    if (stream) {
       self.onStreamLoaded();
     } else {
       getUserMedia({
           video: true,
           audio: false
         },
-        function (err, stream) {
+        function (err, cameraStream) {
           // if the browser doesn't support user media
           // or the user says "no" the error gets passed
           // as the first argument.
           if (err) {
             self.onErr(err);
           } else {
-            self.onStreamLoaded(stream);
+            self.onStreamLoaded(cameraStream);
           }
         });
     }
