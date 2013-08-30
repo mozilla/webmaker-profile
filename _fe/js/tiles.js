@@ -258,7 +258,7 @@ define([
       });
 
       // Run packery layout after all images have loaded
-      var imgLoaded = imagesLoaded(self.container);
+      var imgLoaded = imagesLoaded(self.$container[0]);
 
       imgLoaded.on('always', function () {
         $('.loader').hide();
