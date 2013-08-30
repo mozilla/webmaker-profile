@@ -31,6 +31,7 @@ define([
     self.$canvas = $('canvas', container);
     self.$startbtn = $('.trigger', container);
     self.$editbtn = $('.edit', container);
+    self.$progress = $('.progress', container);
     self.$statusMessage = $('.status', container);
 
     // Setup ------------------------------------------------------------------
@@ -81,6 +82,7 @@ define([
     function snapPicture() {
       var img = document.createElement('img');
       self.$startbtn.off('click', onClick);
+      self.$progress.removeClass('off');
       self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
       img.src = self.$canvas[0].toDataURL('image/gif');
       self.frames.push(img);
@@ -92,10 +94,14 @@ define([
         clearInterval(interval);
         self.makeGif(function (gif) {
           var firstFrame = self.frames[0].src;
-          self.update(gif.src, firstFrame);
+          self.update({
+            gif: gif.src,
+            firstFrame: firstFrame
+          });
           // Allow editing
           self.$editbtn.removeClass('off');;
           self.$video.addClass('hidden');
+          self.$progress.addClass('off');
           self.frames = [];
         });
         count = 0;
@@ -160,24 +166,30 @@ define([
     }
 
     // Set up edit button
-    self.$editbtn.on('click', function() {
+    self.$editbtn.on('click', function () {
       self.$editbtn.addClass('off');;
       self.$startbtn.removeClass('off');;
       self.$video.removeClass('hidden');
     });
 
+    // Set up resize
+    self.$video.on('playing', function () {
+      self.fire('resize');
+    });
+
   };
 
-  Photobooth.prototype.update = function (gif, firstFrame) {
+  Photobooth.prototype.update = function (content) {
     var self = this;
 
-    self.$photo.attr('src', gif).removeClass('hidden');
-    self.$firstFrame.attr('src', firstFrame).removeClass('hidden');
+    if (!content) {
+      return;
+    }
 
-    Tile.prototype.update.call(self, {
-      gif: gif,
-      still: firstFrame
-    });
+    self.$photo.attr('src', content.gif).removeClass('hidden');
+    self.$firstFrame.attr('src', content.firstFrame).removeClass('hidden');
+
+    Tile.prototype.update.call(self, content);
 
   };
 

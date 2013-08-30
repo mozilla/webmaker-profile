@@ -1,4 +1,5 @@
 .tile.photobooth {
+  // Helpers
   .off {
     display: none;
   }
@@ -6,6 +7,7 @@
     opacity: 0;
     visibility: hidden;
   }
+
   .status {
     font-size: 2em;
     color: #777;
@@ -15,31 +17,38 @@
     position: relative;
     margin-top: 10px;
   }
+
+  // Video
   video {
     width: 100%;
     position: relative;
     z-index: 2;
+    transition: all 0.2s linear;
   }
   canvas {
     position: absolute;
     visibility: hidden;
   }
+
+  // Image
   img {
     position: absolute;
     width: 100%;
     top: 0;
     left: 0;
     z-index: 1;
-    transition: all 0.2s linear;
   }
   .gif {
     display: none;
   }
-
   &:hover .gif {
     display: block;
   }
 
+  // Buttons
+  .progress {
+    font-size: 30px;
+  }
   .button-container {
     float: left;
     margin-top: 10px;

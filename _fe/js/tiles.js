@@ -202,13 +202,29 @@ define([
      * Create a photo tile and append it
      * @return {undefined}
      */
-    addPhotoBooth: function () {
+    addPhotoBooth: function (tile) {
       var self = this;
       var $photoBooth = $(templates.photoboothTile());
       var photoBooth = new PhotoBoothTile($photoBooth[0]);
+      var UUID;
+
+      // Tiles are too big right now to store
+      // if (tile) {
+      //   UUID = tile.id;
+      //   photoBooth.update(tile.content)
+      // } else {
+      //   UUID = db.generateFakeUUID();
+      //   db.storeTileMake({
+      //     id: UUID,
+      //     tool: 'profile',
+      //     type: 'photo',
+      //     content: null
+      //   });
+      // }
 
       self.$tiles.prepend($photoBooth);
       self.addAndBindDraggable($photoBooth[0], true);
+      self.storeOrder();
       photoBooth.init();
       self.packery.layout();
 
@@ -220,6 +236,14 @@ define([
         self.packery.layout();
       });
 
+      photoBooth.on('update', function (event) {
+        // Need to upload to S3 or something before we can do this
+
+        // db.storeTileMake({
+        //   id: UUID,
+        //   content: event.content.firstFrame
+        // });
+      });
 
     },
     /**
