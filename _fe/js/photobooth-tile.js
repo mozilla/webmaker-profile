@@ -69,35 +69,37 @@ define([
     ag.getBase64GIF(function (image) {
       var animatedImage = document.createElement('img');
       animatedImage.src = image;
-      callback(animatedImage, self.frames);
+      callback(animatedImage);
     });
   };
 
-  Photobooth.prototype.clickListener = function (onOff) {
+  Photobooth.prototype.attachClickListener = function () {
     var self = this;
     var interval;
     var count = 0;
 
     function snapPicture() {
       var img = document.createElement('img');
-      self.clickListener('off');
+      self.$startbtn.off('click', onClick);
       self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
       img.src = self.$canvas[0].toDataURL('image/gif');
       self.frames.push(img);
       // Hide the photo button
       self.$startbtn.addClass('off');
       count++;
-      console.log(count);
+      console.log(count, self.frames);
       if (count >= COUNT) {
         clearInterval(interval);
-        count = 0;
-        self.makeGif(function (gif, frames) {
-          self.update(gif.src, frames[0].src);
+        self.makeGif(function (gif) {
+          var firstFrame = self.frames[0].src;
+          self.update(gif.src, firstFrame);
           // Allow editing
           self.$editbtn.removeClass('off');;
           self.$video.addClass('hidden');
+          self.frames = [];
         });
-        self.clickListener('on');
+        count = 0;
+        self.$startbtn.on('click', onClick);
       }
     }
 
@@ -116,7 +118,7 @@ define([
       self.$video.removeAttr('height');
     }
 
-    self.$startbtn[onOff]('click', onClick);
+    self.$startbtn.on('click', onClick);
   };
 
   Photobooth.prototype.onStreamLoaded = function (stream) {
@@ -136,7 +138,7 @@ define([
     self.$video.attr('height', self.height);
     self.$video[0].src = STREAM;
     self.$video[0].play();
-    self.clickListener('on');
+    self.attachClickListener();
   };
 
   Photobooth.prototype.init = function () {
