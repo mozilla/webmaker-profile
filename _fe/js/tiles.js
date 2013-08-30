@@ -188,6 +188,10 @@ define([
 
       // Reflow Packery when tile is destroyed
       hackableTile.on('destroy', function () {
+        self.packery.remove($hackableTile[0]);
+        $hackableTile.remove();
+        self.storeOrder();
+        db.destroyTileMake(UUID);
         self.packery.layout();
       });
 
