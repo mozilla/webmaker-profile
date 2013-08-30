@@ -11,6 +11,7 @@ requirejs.config({
     lodash: 'lodash/lodash',
     main: '../_fe/js/main',
     store: 'store.js/store',
+    uuid: 'node-uuid/uuid',
     templates: '../_fe/compiled/jade-templates',
     text: 'text/text'
   }
@@ -20,23 +21,19 @@ require([
   'jquery',
   'templates',
   'js/tiles',
-  'text!json/fake.json'
-], function ($, templates, tiles, fakeData) {
-  var data = JSON.parse(fakeData);
+  'js/database'
+], function ($, templates, tiles, db) {
   var $body = $('body');
   var $tileContainer = $(templates.tileContainer());
 
   $body.append(templates.header({
-    avatarSrc: data.avatarSrc,
-    name: data.realName,
-    username: data.username
+    avatarSrc: db.get('avatarSrc'),
+    name: db.get('realName'),
+    username: db.get('username')
   }));
 
   $body.append($tileContainer);
 
-  tiles.init({
-    container: $tileContainer[0]
-  });
-
-  tiles.render(data.makes);
+  tiles.init($tileContainer);
+  tiles.render(db.get('makes'));
 });
