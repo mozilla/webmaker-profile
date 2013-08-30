@@ -15,7 +15,9 @@
     "requirejs": "2.1.8",
     "store.js": "1.3.9",
     "lodash": "1.3.1",
-    "node-uuid": "1.4.1"
+    "node-uuid": "1.4.1",
+    "getUserMedia": "https://github.com/HenrikJoreteg/getUserMedia.git",
+    "Animated_GIF": "https://github.com/k88hudson/Animated_GIF.git"
   },
   "resolutions": {
     "jquery": "2.0.3"

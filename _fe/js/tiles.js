@@ -210,9 +210,27 @@ define([
       var self = this;
       var $photoBooth = $(templates.photoboothTile());
       var photoBooth = new PhotoBoothTile($photoBooth[0]);
+      // var UUID;
+
+      // Tiles are too big right now to store
+      // if (tile) {
+      //   UUID = tile.id;
+      //   photoBooth.update(tile.content)
+      // } else {
+      //   UUID = db.generateFakeUUID();
+      //   db.storeTileMake({
+      //     id: UUID,
+      //     tool: 'profile',
+      //     type: 'photo',
+      //     content: null
+      //   });
+      // }
 
       self.$tiles.prepend($photoBooth);
+      self.addAndBindDraggable($photoBooth[0], true);
+      self.storeOrder();
       photoBooth.init();
+      self.packery.layout();
 
       photoBooth.on('resize', function () {
         self.packery.layout();
@@ -222,8 +240,15 @@ define([
         self.packery.layout();
       });
 
-      self.packery.prepended($photoBooth[0]);
-      self.packery.layout();
+      photoBooth.on('update', function () {
+        // Need to upload to S3 or something before we can do this
+
+        // db.storeTileMake({
+        //   id: UUID,
+        //   content: event.content.firstFrame
+        // });
+      });
+
     },
     /**
      * Render HTML for tiles and create masonry layout
@@ -262,7 +287,7 @@ define([
       });
 
       // Run packery layout after all images have loaded
-      var imgLoaded = imagesLoaded(self.container);
+      var imgLoaded = imagesLoaded(self.$container[0]);
 
       imgLoaded.on('always', function () {
         $('.loader').hide();
