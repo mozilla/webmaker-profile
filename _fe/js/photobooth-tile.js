@@ -8,7 +8,7 @@ define([
   $,
   templates,
   Tile,
-  AnimedGif,
+  AnimatedGif,
   getUserMedia
 ) {
 
@@ -30,7 +30,7 @@ define([
       speed: 10
     };
 
-    for (option in options) {
+    for (var option in options) {
       defaults[option] = options[option] || defaults[option];
     }
 
@@ -74,7 +74,7 @@ define([
 
   Photobooth.prototype.makeGif = function (callback) {
     var self = this;
-    var ag = new Animated_GIF({
+    var ag = new AnimatedGif({
       workerPath: '/bower_components/Animated_GIF/src/quantizer.js'
     });
     ag.setSize(self.width, self.height);
@@ -114,7 +114,7 @@ define([
             firstFrame: firstFrame
           });
           // Allow editing
-          self.$editbtn.removeClass('off');;
+          self.$editbtn.removeClass('off');
           self.$video.addClass('hidden');
           self.$progress.addClass('off');
           self.frames = [];
@@ -185,8 +185,8 @@ define([
 
     // Set up edit button
     self.$editbtn.on('click', function () {
-      self.$editbtn.addClass('off');;
-      self.$startbtn.removeClass('off');;
+      self.$editbtn.addClass('off');
+      self.$startbtn.removeClass('off');
       self.$video.removeClass('hidden');
     });
 

@@ -202,11 +202,11 @@ define([
      * Create a photo tile and append it
      * @return {undefined}
      */
-    addPhotoBooth: function (tile) {
+    addPhotoBooth: function () {
       var self = this;
       var $photoBooth = $(templates.photoboothTile());
       var photoBooth = new PhotoBoothTile($photoBooth[0]);
-      var UUID;
+      // var UUID;
 
       // Tiles are too big right now to store
       // if (tile) {
@@ -236,7 +236,7 @@ define([
         self.packery.layout();
       });
 
-      photoBooth.on('update', function (event) {
+      photoBooth.on('update', function () {
         // Need to upload to S3 or something before we can do this
 
         // db.storeTileMake({
