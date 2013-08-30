@@ -3,8 +3,7 @@
     "module": true,
     "define": true,
     "requirejs": true,
-    "require": true,
-    "console": true
+    "require": true
   },
   "browser": true,
   "curly": true,
