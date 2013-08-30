@@ -153,16 +153,20 @@ define([
     if (STREAM) {
       self.onStreamLoaded();
     } else {
-      getUserMedia(function (err, stream) {
-        // if the browser doesn't support user media
-        // or the user says "no" the error gets passed
-        // as the first argument.
-        if (err) {
-          self.onErr(err);
-        } else {
-          self.onStreamLoaded(stream);
-        }
-      });
+      getUserMedia({
+          video: true,
+          audio: false
+        },
+        function (err, stream) {
+          // if the browser doesn't support user media
+          // or the user says "no" the error gets passed
+          // as the first argument.
+          if (err) {
+            self.onErr(err);
+          } else {
+            self.onStreamLoaded(stream);
+          }
+        });
     }
 
     // Set up edit button
