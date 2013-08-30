@@ -34,11 +34,6 @@ require([
 
   $body.append($tileContainer);
 
-  tiles.init({
-    container: $tileContainer[0]
-  });
-
+  tiles.init($tileContainer);
   tiles.render(db.get('makes'));
-
-  DB = db; // TEMP
 });

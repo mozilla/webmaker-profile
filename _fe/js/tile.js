@@ -26,12 +26,13 @@ define(['jquery', 'komponent'], function ($, Komponent) {
 
     // Event Delegation -------------------------------------------------------
 
+    // TODO : Move up/down button code from tiles.js here (as much as possible)
     self.$btnUp.on('click', function () {
-      console.log('up');
+      // TODO
     });
 
     self.$btnDown.on('click', function () {
-      console.log('down');
+      // TODO
     });
 
     self.$btnDelete.on('click', function () {

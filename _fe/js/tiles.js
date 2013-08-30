@@ -6,7 +6,6 @@ define([
   'draggabilly/draggabilly',
   'js/hackable-tile',
   'js/photobooth-tile',
-  'store',
   'lodash',
   'js/database'
 ], function (
@@ -17,18 +16,16 @@ define([
   Draggabilly,
   HackableTile,
   PhotoBoothTile,
-  store,
   _,
   db
 ) {
   return {
-    init: function (options) {
-      options = options || {};
+    init: function (target) {
       var self = this;
 
       // Element references -----------------------------------------------------
 
-      self.container = options.container;
+      self.$container = $(target);
       self.$tiles = $('.tiles');
       self.$addTile = $('#add-tile');
 
@@ -43,19 +40,16 @@ define([
 
       // Setup ------------------------------------------------------------------
 
-      self.packery = new Packery(options.container, {
+      self.packery = new Packery(self.$container[0], {
         columnWidth: '.grid-sizer',
         gutter: '.gutter-sizer',
         itemSelector: '.tile'
       });
 
-      PACK = self.packery;
-
       // Event Delegation -------------------------------------------------------
       self.packery.on('dragItemPositioned', function () {
         self.packery.layout();
         self.storeOrder();
-        debugger;
       });
 
       self.$addTile.on('click', function (event) {
@@ -114,7 +108,7 @@ define([
       var self = this;
 
       self.$tiles.prepend(self.$tileSelector);
-      self.addAndBindDraggable(self.$tileSelector[0], 'prepended');
+      self.addAndBindDraggable(self.$tileSelector[0], true);
       self.packery.layout();
       self.isSelectorVisible = true;
     },
@@ -127,17 +121,17 @@ define([
 
       self.$tileSelector.detach();
       self.isSelectorVisible = false;
+      self.packery.remove(self.$tileSelector[0]);
     },
     /**
      * Make an element draggable
      * @param  {object} element Native tile element reference
-     * @param  {string} method  'prepended' or 'appended'
+     * @param  {boolean} isPrepended If true, prepend the element
      * @return {object} element parameter
      */
-    addAndBindDraggable: function (element, method) {
+    addAndBindDraggable: function (element, isPrepended) {
       var self = this;
-      // Prepended or appended?
-      method = ['prepended', 'appended'].indexOf(method) > -1 ? method : 'appended';
+      var method = isPrepended ? 'prepended' : 'appended';
 
       self.packery[method](element);
       self.packery.bindDraggabillyEvents(new Draggabilly(element));
@@ -148,48 +142,61 @@ define([
      * Create a hackable tile and append it
      * @return {undefined}
      */
-    addHackableTile: function () {
+    addHackableTile: function (tile) {
       var self = this;
 
-      // // TODO - eliminate this HTML string; use jade
-      // var $hackableTile = $('<div class="tile webmaker hackable"></div>');
-      // var hackableTile = new HackableTile($hackableTile);
-      // var UUID = db.generateFakeUUID();
+      // TODO - eliminate this HTML string; use jade
+      var $hackableTile = $('<div class="tile hackable"></div>');
+      var hackableTile = new HackableTile($hackableTile);
 
-      // db.storeTileMake({
-      //   id: UUID,
-      //   tool: 'profile',
-      //   type: 'hackable',
-      //   content: null
-      // });
+      var UUID = (typeof tile !== 'undefined' ? tile.id : db.generateFakeUUID());
 
-      // // Reflow Packery when the hackable tile's layout changes
-      // hackableTile.on('resize', function () {
-      //   self.packery.layout();
-      // });
+      if (typeof tile === 'undefined') {
+        db.storeTileMake({
+          id: UUID,
+          tool: 'profile',
+          type: 'hackable',
+          content: null
+        });
+      }
 
-      // // Reflow Packery when tile is destroyed
-      // hackableTile.on('destroy', function () {
-      //   self.packery.layout();
-      // });
+      self.$container.append($hackableTile);
 
-      // hackableTile.on('update', function () {
-      //   console.log('hack updated');
+      if (typeof tile === 'undefined') {
+        hackableTile.showEditor();
+        self.addAndBindDraggable($hackableTile[0], true);
+      } else {
+        hackableTile.update(tile.content);
+        self.addAndBindDraggable($hackableTile[0]);
+      }
 
-      //   //db.storeTileMake
-      // });
+      // For order tracking purposes
+      $hackableTile.data('id', UUID);
 
-      // self.$tiles.prepend($hackableTile);
-      // hackableTile.showEditor();
+      self.packery.layout();
 
-      // // this is breaking dragItemPositioned event
-      // self.addAndBindDraggable($hackableTile[0], 'prepended');
+      if (typeof tile === 'undefined') {
+        self.storeOrder();
+      }
 
-      // // For order tracking later
-      // $hackableTile.data('id', UUID);
+      // Event Delegation -------------------------------------------------------
 
-      // self.packery.layout();
+      // Reflow Packery when the hackable tile's layout changes
+      hackableTile.on('resize', function () {
+        self.packery.layout();
+      });
 
+      // Reflow Packery when tile is destroyed
+      hackableTile.on('destroy', function () {
+        self.packery.layout();
+      });
+
+      hackableTile.on('update', function (event) {
+        db.storeTileMake({
+          id: UUID,
+          content: event.content
+        });
+      });
     },
     /**
      * Create a photo tile and append it
@@ -221,8 +228,6 @@ define([
      */
     render: function (data) {
       var self = this;
-      var tileString = self.container.innerHTML;
-      var tiles;
 
       // Sort data if a different order has been stored
       var storedOrder = self.fetchOrder() || [];
@@ -242,23 +247,18 @@ define([
       data.forEach(function (tile) {
         if (tile.type === 'popcorn' || tile.type === 'thimble') {
           var tileTemplate = templates[tile.type + 'Tile'] || templates.defaultTile;
-          tileString += tileTemplate(tile);
-        } else {
-          console.log(tile.type);
+          var $tile = $(tileTemplate(tile));
+
+          $tile.data('id', tile.id);
+          self.$container.append($tile);
+          self.addAndBindDraggable($tile[0]);
+        } else if (tile.type === 'hackable') {
+          self.addHackableTile(tile);
         }
       });
 
-      self.container.innerHTML = tileString;
-      tiles = self.container.querySelectorAll('.tile');
-
-      for (var i = 0, ii = tiles.length; i < ii; i++) {
-        self.addAndBindDraggable(tiles[i]);
-        // Store id on element to use for persisting sort order
-        $(tiles[i]).data('id', data[i].id);
-      }
-
       // Run packery layout after all images have loaded
-      imagesLoaded(self.container, function () {
+      imagesLoaded(self.$container, function () {
         self.packery.layout();
       });
     },
@@ -272,7 +272,9 @@ define([
       var tiles = self.packery.getItemElements();
 
       tiles.forEach(function (tile) {
-        order.push($(tile).data('id'));
+        if ($(tile).data('id')) {
+          order.push($(tile).data('id'));
+        }
       });
 
       return order;
@@ -284,14 +286,14 @@ define([
     storeOrder: function () {
       var self = this;
 
-      store.set('tileOrder', self.calculateOrder());
+      db.set('tileOrder', self.calculateOrder());
     },
     /**
      * Fetch order of tiles from local storage (and eventually server side)
      * @return {Array} Array of make IDs in display order
      */
     fetchOrder: function () {
-      return store.get('tileOrder');
+      return db.get('tileOrder');
     }
   };
 });
