@@ -61,7 +61,6 @@ define(['jquery', 'komponent'], function ($, Komponent) {
     var self = this;
 
     self.fire('destroy');
-    self.$target.remove();
   };
   /**
    * Show the reordering buttons

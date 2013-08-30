@@ -58,6 +58,16 @@ define([
       store.set('makes', makes);
     },
     /**
+     * Destroy a make in the database
+     * @param  {string} id Make UUID
+     * @return {undefined}
+     */
+    destroyTileMake: function (id) {
+      store.set('makes', _.reject(store.get('makes'), {
+        id: id
+      }));
+    },
+    /**
      * Fetch a specific make record
      * @param  {string} id UUID of make
      * @return {object} Make object
