@@ -1,4 +1,7 @@
 .tile.photobooth {
+  .off {
+    display: none;
+  }
   .hidden {
     opacity: 0;
     visibility: hidden;
@@ -10,35 +13,42 @@
   }
   .photobooth-container {
     position: relative;
+    margin-top: 10px;
   }
   video {
     width: 100%;
+    position: relative;
+    z-index: 2;
   }
   canvas {
     position: absolute;
     visibility: hidden;
   }
-  .output-img {
+  img {
     position: absolute;
     width: 100%;
     top: 0;
     left: 0;
     z-index: 1;
     transition: all 0.2s linear;
-    &.hidden {
-      opacity: 0;
-      visibility: hidden;
-    }
-
   }
+  .gif {
+    display: none;
+  }
+
+  &:hover .gif {
+    display: block;
+  }
+
   .button-container {
-    padding-top: 1em;
+    float: left;
+    margin-top: 10px;
     text-align: center;
   }
-  .button.trigger {
-    padding: 14px 20px;
-    display: inline-block;
-    font-size: 2em;
+  .button-container .button {
+    float: left;
+  }
+  .trigger {
     &:after {
       .icon(@camera);
     }

@@ -1,11 +1,12 @@
 .button {
-  border: 1px solid;
+  border: 1px solid darken(@blue, 10%);
   background: @blue;
   padding: 8px 16px;
   color: @white;
   transition: background 100ms linear;
   font-size: 1.4em; // 14px
   margin-right: 10px;
+  cursor: pointer;
 
   &:hover {
     background: darken(@blue, 10%);
@@ -20,5 +21,14 @@
     background: @grey;
     pointer-events: none;
     opacity: 0.2;
+  }
+
+  &.button-grey {
+    background: @lightgrey;
+    border-color: darken(@lightgrey, 20%);
+    color: darken(@lightgrey, 50%);
+    &:hover {
+      background: darken(@lightgrey, 5%);
+    }
   }
 }

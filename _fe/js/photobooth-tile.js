@@ -25,9 +25,12 @@ define([
 
     self.$container = $(container);
     self.$video = $('video', container);
-    self.$photo = $('img', container);
+    self.$photo = $('.gif', container);
+    self.$firstFrame = $('.first-frame', container);
+    self.$photoContainer = $('.photo-container', container);
     self.$canvas = $('canvas', container);
     self.$startbtn = $('.trigger', container);
+    self.$editbtn = $('.edit', container);
     self.$statusMessage = $('.status', container);
 
     // Setup ------------------------------------------------------------------
@@ -44,12 +47,12 @@ define([
 
   Photobooth.prototype = new Tile();
 
-  Photobooth.prototype.onErr = function(err) {
+  Photobooth.prototype.onErr = function (err) {
     var self = this;
     if (err.PERMISSION_DENIED) {
-      console.err('Looks like you denied us permission to use your camera :(');
+      self.$statusMessage.html('Looks like you denied us permission to use your camera :(');
     } else if (err.NOT_SUPPORTED) {
-      // It's fine, just show the videoInput
+      self.$statusMessage.html('Looks like your browser sucks');
     }
   };
 
@@ -58,7 +61,7 @@ define([
     var ag = new Animated_GIF({
       workerPath: '/bower_components/Animated_GIF/src/quantizer.js'
     });
-    ag.setSize(320, 240);
+    ag.setSize(self.width, self.height);
     ag.setDelay(10);
     for (var i = 0; i < self.frames.length; i++) {
       ag.addFrame(self.frames[i]);
@@ -66,12 +69,11 @@ define([
     ag.getBase64GIF(function (image) {
       var animatedImage = document.createElement('img');
       animatedImage.src = image;
-      callback(animatedImage);
+      callback(animatedImage, self.frames);
     });
   };
 
-
-  Photobooth.prototype.clickListener = function(onOff) {
+  Photobooth.prototype.clickListener = function (onOff) {
     var self = this;
     var interval;
     var count = 0;
@@ -82,14 +84,19 @@ define([
       self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
       img.src = self.$canvas[0].toDataURL('image/gif');
       self.frames.push(img);
+      // Hide the photo button
+      self.$startbtn.addClass('off');
       count++;
-      if (count === COUNT) {
+      console.log(count);
+      if (count >= COUNT) {
         clearInterval(interval);
-        self.makeGif(function(gif) {
-          gif.classList.add('output-img');
-          self.$container.append(gif);
-        });
         count = 0;
+        self.makeGif(function (gif, frames) {
+          self.update(gif.src, frames[0].src);
+          // Allow editing
+          self.$editbtn.removeClass('off');;
+          self.$video.addClass('hidden');
+        });
         self.clickListener('on');
       }
     }
@@ -109,12 +116,12 @@ define([
       self.$video.removeAttr('height');
     }
 
-    self.$video[onOff]('click', onClick);
-  }
+    self.$startbtn[onOff]('click', onClick);
+  };
 
   Photobooth.prototype.onStreamLoaded = function (stream) {
     var self = this;
-    if ( stream ) {
+    if (stream) {
       stream = window.URL.createObjectURL(stream);
       STREAM = stream;
     }
@@ -122,42 +129,54 @@ define([
     self.width = self.$video.width();
     self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
 
+    self.$statusMessage.empty();
+    self.$startbtn.removeClass('off');
+
     self.$video.attr('width', self.width);
     self.$video.attr('height', self.height);
     self.$video[0].src = STREAM;
     self.$video[0].play();
     self.clickListener('on');
-  }
+  };
 
   Photobooth.prototype.init = function () {
     var self = this;
 
-    if ( STREAM ) {
+    if (STREAM) {
       self.onStreamLoaded();
     } else {
       getUserMedia(function (err, stream) {
-          // if the browser doesn't support user media
-          // or the user says "no" the error gets passed
-          // as the first argument.
-          if (err) {
-            self.onErr(err);
-          } else {
-            self.onStreamLoaded(stream);
-          }
+        // if the browser doesn't support user media
+        // or the user says "no" the error gets passed
+        // as the first argument.
+        if (err) {
+          self.onErr(err);
+        } else {
+          self.onStreamLoaded(stream);
+        }
       });
     }
+
+    // Set up edit button
+    self.$editbtn.on('click', function() {
+      self.$editbtn.addClass('off');;
+      self.$startbtn.removeClass('off');;
+      self.$video.removeClass('hidden');
+    });
+
   };
 
-  Photobooth.prototype.update = function () {
+  Photobooth.prototype.update = function (gif, firstFrame) {
     var self = this;
 
-    // This method extends Tile's update method
-    // TODO - What data will be passed to update? Probably encoded IMG?
-    Tile.prototype.update.call(self /*, html */ );
+    self.$photo.attr('src', gif).removeClass('hidden');
+    self.$firstFrame.attr('src', firstFrame).removeClass('hidden');
 
-    // TODO - Fill in this method.
-    // Probably move over code from init
-    // (also break that code up into smaller methods for an API)
+    Tile.prototype.update.call(self, {
+      gif: gif,
+      still: firstFrame
+    });
+
   };
 
   return Photobooth;

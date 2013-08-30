@@ -208,7 +208,9 @@ define([
       var photoBooth = new PhotoBoothTile($photoBooth[0]);
 
       self.$tiles.prepend($photoBooth);
+      self.addAndBindDraggable($photoBooth[0], true);
       photoBooth.init();
+      self.packery.layout();
 
       photoBooth.on('resize', function () {
         self.packery.layout();
@@ -218,8 +220,7 @@ define([
         self.packery.layout();
       });
 
-      self.packery.prepended($photoBooth[0]);
-      self.packery.layout();
+
     },
     /**
      * Render HTML for tiles and create masonry layout
