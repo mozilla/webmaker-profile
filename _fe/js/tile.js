@@ -1,7 +1,11 @@
-define(['jquery', 'komponent'], function ($, Komponent) {
+define(['jquery', 'komponent', 'js/device'], function ($, Komponent, device) {
   var Tile = function () {};
 
   Tile.prototype = new Komponent();
+
+  Tile.prototype.init = function () {
+    this.callbacks = {};
+  };
 
   /**
    * Set up element references and binding for UI shared by all tiles
@@ -24,6 +28,14 @@ define(['jquery', 'komponent'], function ($, Komponent) {
     self.areReorderButtonsVisible = false;
     self.isDeleteButtonVisible = false;
 
+    // Setup ------------------------------------------------------------------
+
+    if (device.getProperties().isSmallScreen) {
+      self.showReorderButtons();
+    } else {
+      self.hideReorderButtons();
+    }
+
     // Event Delegation -------------------------------------------------------
 
     // TODO : Move up/down button code from tiles.js here (as much as possible)
@@ -37,6 +49,14 @@ define(['jquery', 'komponent'], function ($, Komponent) {
 
     self.$btnDelete.on('click', function () {
       self.destroy();
+    });
+
+    device.on('resize', function (event) {
+      if (event.isSmallScreen) {
+        self.showReorderButtons();
+      } else {
+        self.hideReorderButtons();
+      }
     });
   };
   /**
