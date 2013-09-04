@@ -4,6 +4,7 @@ define([
   'packery/js/packery',
   'imagesloaded',
   'draggabilly/draggabilly',
+  'js/tile',
   'js/hackable-tile',
   'js/photobooth-tile',
   'lodash',
@@ -14,6 +15,7 @@ define([
   Packery,
   imagesLoaded,
   Draggabilly,
+  Tile,
   HackableTile,
   PhotoBoothTile,
   _,
@@ -281,6 +283,10 @@ define([
           $tile.data('id', tile.id);
           self.$container.append($tile);
           self.addAndBindDraggable($tile[0]);
+
+          var genericTile = new Tile();
+          genericTile.init();
+          genericTile.bindCommonUI($tile);
         } else if (tile.type === 'hackable') {
           self.addHackableTile(tile);
         }

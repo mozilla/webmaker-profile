@@ -22,13 +22,17 @@ requirejs.config({
 });
 
 require([
+  'js/device',
   'jquery',
   'templates',
   'js/tiles',
   'js/database'
-], function ($, templates, tiles, db) {
+], function (device, $, templates, tiles, db) {
   var $body = $('body');
   var $tileContainer = $(templates.tileContainer());
+
+  // Set up device characteristics and feature detection
+  device.init();
 
   $body.append(templates.header({
     avatarSrc: db.get('avatarSrc'),
