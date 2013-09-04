@@ -277,7 +277,7 @@ define([
       // Render HTML for tiles
       data.forEach(function (tile) {
         if (tile.type === 'popcorn' || tile.type === 'thimble') {
-          var tileTemplate = templates[tile.type + 'Tile'] || templates.defaultTile;
+          var tileTemplate = templates[tile.type + 'Tile'];
           var $tile = $(tileTemplate(tile));
 
           $tile.data('id', tile.id);
