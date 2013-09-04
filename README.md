@@ -1,3 +1,5 @@
+[![Dependency Status](https://gemnasium.com/gvn/webmaker-profile.png)](https://gemnasium.com/gvn/webmaker-profile)
+
 # Webmaker Profile
 
 Prototype of *USERNAME.makes.org* profile.
