@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "./node_modules/.bin/bower install"
   },
-  "dependencies": {
+  "devDependencies": {
     "bower": "1.2.6",
     "grunt": "0.4.1",
     "grunt-cli": "0.1.9",
