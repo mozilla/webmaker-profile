@@ -29,7 +29,7 @@ define([
 
       self.$container = $(target);
       self.$tiles = $('.tiles');
-      self.$editButton = $('header .edit');
+      self.$editButton = $('.edit-mode');
 
       // Tile Selector
       self.$tileSelector = $(templates.selectorTile());
@@ -61,13 +61,9 @@ define([
         event.preventDefault();
 
         if (self.isEditMode) {
-          self.$tileSelector.hide();
-          self.isEditMode = false;
-          self.$editButton.text('Edit');
+          self.exitEditMode();
         } else {
-          self.$tileSelector.show();
-          self.isEditMode = true;
-          self.$editButton.text('Save');
+          self.enterEditMode();
         }
       });
 
@@ -108,6 +104,28 @@ define([
       self.$btnHackable.on('click', function () {
         self.addHackableTile();
       });
+    },
+    /**
+     * Show editing UI
+     * @return {undefined}
+     */
+    enterEditMode: function () {
+      var self = this;
+
+      self.$tileSelector.show();
+      self.isEditMode = true;
+      self.$editButton.text('Save');
+    },
+    /**
+     * Hide editing UI
+     * @return {undefined}
+     */
+    exitEditMode: function () {
+      var self = this;
+
+      self.$tileSelector.hide();
+      self.isEditMode = false;
+      self.$editButton.text('Edit');
     },
     /**
      * Make an element draggable
