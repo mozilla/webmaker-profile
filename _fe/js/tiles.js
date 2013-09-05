@@ -120,10 +120,9 @@ define([
      */
     hideSelectorTile: function () {
       var self = this;
-
-      self.$tileSelector.detach();
-      self.isSelectorVisible = false;
       self.packery.remove(self.$tileSelector[0]);
+      self.isSelectorVisible = false;
+      self.packery.layout();
     },
     /**
      * Make an element draggable
