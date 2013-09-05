@@ -29,7 +29,7 @@ define([
 
       self.$container = $(target);
       self.$tiles = $('.tiles');
-      self.$addTile = $('#add-tile');
+      self.$editButton = $('.edit-mode');
 
       // Tile Selector
       self.$tileSelector = $(templates.selectorTile());
@@ -38,7 +38,7 @@ define([
 
       // Properties -------------------------------------------------------------
 
-      self.isSelectorVisible = false;
+      self.isEditMode = false;
 
       // Setup ------------------------------------------------------------------
 
@@ -48,17 +48,22 @@ define([
         itemSelector: '.tile'
       });
 
+      // Attach the tile selector before the tile list
+      self.$container.before(self.$tileSelector);
+
       // Event Delegation -------------------------------------------------------
       self.packery.on('dragItemPositioned', function () {
         self.packery.layout();
         self.storeOrder();
       });
 
-      self.$addTile.on('click', function (event) {
+      self.$editButton.on('click', function (event) {
         event.preventDefault();
 
-        if (!self.isSelectorVisible) {
-          self.showSelectorTile();
+        if (self.isEditMode) {
+          self.exitEditMode();
+        } else {
+          self.enterEditMode();
         }
       });
 
@@ -94,36 +99,33 @@ define([
 
       self.$btnPhoto.on('click', function () {
         self.addPhotoBooth();
-        self.hideSelectorTile();
       });
 
       self.$btnHackable.on('click', function () {
         self.addHackableTile();
-        self.hideSelectorTile();
       });
     },
     /**
-     * Show tile type selector UI
+     * Show editing UI
      * @return {undefined}
      */
-    showSelectorTile: function () {
+    enterEditMode: function () {
       var self = this;
 
-      self.$tiles.prepend(self.$tileSelector);
-      self.addAndBindDraggable(self.$tileSelector[0], true);
-      self.packery.layout();
-      self.isSelectorVisible = true;
+      self.$tileSelector.show();
+      self.isEditMode = true;
+      self.$editButton.text('Save');
     },
     /**
-     * Hide tile type selector UI
+     * Hide editing UI
      * @return {undefined}
      */
-    hideSelectorTile: function () {
+    exitEditMode: function () {
       var self = this;
 
-      self.$tileSelector.detach();
-      self.isSelectorVisible = false;
-      self.packery.remove(self.$tileSelector[0]);
+      self.$tileSelector.hide();
+      self.isEditMode = false;
+      self.$editButton.text('Edit');
     },
     /**
      * Make an element draggable
