@@ -24,24 +24,36 @@ requirejs.config({
 require([
   'js/device',
   'jquery',
-  'templates',
   'js/tiles',
-  'js/database'
-], function (device, $, templates, tiles, db) {
-  var $body = $('body');
-  var $tileContainer = $(templates.tileContainer());
+  'js/database',
+  'js/localstrings',
+  'js/render'
+], function (device, $, tiles, db, localStrings, render) {
+
+  function initUI() {
+    var $body = $('body');
+    var $tileContainer = $(render('tile-container'));
+
+    $body.append(render('header', {
+      avatarSrc: db.get('avatarSrc'),
+      name: db.get('realName'),
+      username: db.get('username')
+    }));
+
+    $body.append($tileContainer);
+
+    tiles.init($tileContainer);
+    tiles.render(db.get('makes'));
+  }
 
   // Set up device characteristics and feature detection
   device.init();
 
-  $body.append(templates.header({
-    avatarSrc: db.get('avatarSrc'),
-    name: db.get('realName'),
-    username: db.get('username')
-  }));
+  // Initialize UI after localization strings load
+  localStrings.on('load', function () {
+    initUI();
+  });
 
-  $body.append($tileContainer);
-
-  tiles.init($tileContainer);
-  tiles.render(db.get('makes'));
+  // TODO - Sniff locale instead of hard coding
+  localStrings.init('en-us');
 });
