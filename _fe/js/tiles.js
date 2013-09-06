@@ -1,6 +1,6 @@
 define([
   'jquery',
-  'templates',
+  'js/render',
   'packery/js/packery',
   'imagesloaded',
   'draggabilly/draggabilly',
@@ -13,7 +13,7 @@ define([
   'komponent'
 ], function (
   $,
-  templates,
+  render,
   Packery,
   imagesLoaded,
   Draggabilly,
@@ -40,7 +40,7 @@ define([
     self.$editButton = $('.edit-mode');
 
     // Tile Selector
-    self.$tileSelector = $(templates.selectorTile());
+    self.$tileSelector = $(render('selector-tile'));
     self.$btnPhoto = self.$tileSelector.find('.photo');
     self.$btnHackable = self.$tileSelector.find('.hackable');
 
@@ -237,7 +237,7 @@ define([
    */
   tiles.addPhotoBooth = function () {
     var self = this;
-    var $photoBooth = $(templates.photoboothTile());
+    var $photoBooth = $(render('photobooth-tile'));
     var photoBooth = new PhotoBoothTile($photoBooth[0]);
     // var UUID;
 
@@ -304,8 +304,7 @@ define([
     // Render HTML for tiles
     data.forEach(function (tile) {
       if (tile.type === 'popcorn' || tile.type === 'thimble') {
-        var tileTemplate = templates[tile.type + 'Tile'];
-        var $tile = $(tileTemplate(tile));
+        var $tile = $(render(tile.type + '-tile', tile));
 
         $tile.data('id', tile.id);
         self.$container.append($tile);

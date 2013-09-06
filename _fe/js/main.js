@@ -32,7 +32,7 @@ require([
 
   function initUI() {
     var $body = $('body');
-    var $tileContainer = $(render('tileContainer'));
+    var $tileContainer = $(render('tile-container'));
 
     $body.append(render('header', {
       avatarSrc: db.get('avatarSrc'),

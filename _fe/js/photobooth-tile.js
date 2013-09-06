@@ -1,13 +1,11 @@
 define([
   'jquery',
-  'templates',
   'js/tile',
   'animatedGif',
   'getUserMedia',
   'js/localstrings'
 ], function (
   $,
-  templates,
   Tile,
   AnimatedGif,
   getUserMedia,

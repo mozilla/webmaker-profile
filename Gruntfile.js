@@ -40,12 +40,9 @@ module.exports = function (grunt) {
           amd: true,
           client: true,
           compileDebug: false,
-          // Convert hyphen-case to camelCase
+          // Use only file name sans suffix: foo.jade -> foo
           processName: function (filename) {
-            filename = filename.match(/\/[a-zA-Z\-\.0-9]*(?=\.jade)/)[0].slice(1).toLowerCase();
-            return filename.replace(/[\-\.]([a-z])/g, function (g) {
-              return g[1].toUpperCase();
-            });
+            return filename.match(/\/([a-zA-Z0-9\-]*).jade$/)[1];
           }
         },
         files: {
