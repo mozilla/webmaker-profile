@@ -28,6 +28,10 @@ There are two index HTML files that are generated from `index.jade`. For develop
 
 The other index, `index.html`, is used for the production version of the app. It includes concatenated and minified versions of the app's JS and CSS.
 
+## Localization
+
+[https://github.com/gvn/webmaker-profile/wiki/Localization](https://github.com/gvn/webmaker-profile/wiki/Localization)
+
 ## Deploy to Heroku
 
 Use the nodejs-grunt buildpack:
