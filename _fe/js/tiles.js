@@ -8,7 +8,8 @@ define([
   'js/hackable-tile',
   'js/photobooth-tile',
   'lodash',
-  'js/database'
+  'js/database',
+  'komponent'
 ], function (
   $,
   templates,
@@ -19,134 +20,141 @@ define([
   HackableTile,
   PhotoBoothTile,
   _,
-  db
+  db,
+  Komponent
 ) {
-  return {
-    init: function (target) {
-      var self = this;
 
-      // Element references -----------------------------------------------------
+  var tiles = new Komponent();
 
-      self.$container = $(target);
-      self.$tiles = $('.tiles');
-      self.$editButton = $('.edit-mode');
+  tiles.init = function (target) {
+    var self = this;
 
-      // Tile Selector
-      self.$tileSelector = $(templates.selectorTile());
-      self.$btnPhoto = self.$tileSelector.find('.photo');
-      self.$btnHackable = self.$tileSelector.find('.hackable');
+    self.callbacks = {};
 
-      // Properties -------------------------------------------------------------
+    // Element references -----------------------------------------------------
 
-      self.isEditMode = false;
+    self.$container = $(target);
+    self.$tiles = $('.tiles');
+    self.$editButton = $('.edit-mode');
 
-      // Setup ------------------------------------------------------------------
+    // Tile Selector
+    self.$tileSelector = $(templates.selectorTile());
+    self.$btnPhoto = self.$tileSelector.find('.photo');
+    self.$btnHackable = self.$tileSelector.find('.hackable');
 
-      self.packery = new Packery(self.$container[0], {
-        columnWidth: '.grid-sizer',
-        gutter: '.gutter-sizer',
-        itemSelector: '.tile'
-      });
+    // Properties -------------------------------------------------------------
 
-      // Attach the tile selector before the tile list
-      self.$container.before(self.$tileSelector);
+    self.isEditMode = false;
 
-      // Event Delegation -------------------------------------------------------
-      self.packery.on('dragItemPositioned', function () {
-        self.packery.layout();
-        self.storeOrder();
-      });
+    // Setup ------------------------------------------------------------------
 
-      self.$editButton.on('click', function (event) {
-        event.preventDefault();
+    self.packery = new Packery(self.$container[0], {
+      columnWidth: '.grid-sizer',
+      gutter: '.gutter-sizer',
+      itemSelector: '.tile'
+    });
 
-        if (self.isEditMode) {
-          self.exitEditMode();
-        } else {
-          self.enterEditMode();
-        }
-      });
+    self.draggies = [];
 
-      // TODO - use Tile's bindCommonUI to handle DOM events for Tile UI (?)
+    // Attach the tile selector before the tile list
+    self.$container.before(self.$tileSelector);
 
-      self.$tiles.on('click', '.tile-up', function (e) {
-        var currentTile = $(e.target).parents('.tile')[0];
-        var items = self.packery.items;
-        var originalIndex = $.inArray(self.packery.getItem(currentTile), items);
-        var newIndex = originalIndex - 1;
+    // Event Delegation -------------------------------------------------------
+    self.packery.on('dragItemPositioned', function () {
+      self.packery.layout();
+      self.storeOrder();
+    });
 
-        if (newIndex !== -1) {
-          items.splice(newIndex, 0, items.splice(originalIndex, 1)[0]);
-          self.packery.layout();
-        }
+    self.$editButton.on('click', function (event) {
+      event.preventDefault();
 
-        self.storeOrder();
-      });
+      if (self.isEditMode) {
+        self.fire('editing-off');
+      } else {
+        self.fire('editing-on');
+      }
+    });
 
-      self.$tiles.on('click', '.tile-down', function (e) {
-        var currentTile = $(e.target).parents('.tile')[0];
-        var items = self.packery.items;
-        var originalIndex = $.inArray(self.packery.getItem(currentTile), items);
-        var newIndex = originalIndex + 1;
-
-        if (newIndex !== items.length) {
-          items.splice(newIndex, 0, items.splice(originalIndex, 1)[0]);
-          self.packery.layout();
-        }
-
-        self.storeOrder();
-      });
-
-      self.$btnPhoto.on('click', function () {
-        self.addPhotoBooth();
-      });
-
-      self.$btnHackable.on('click', function () {
-        self.addHackableTile();
-      });
-    },
-    /**
-     * Show editing UI
-     * @return {undefined}
-     */
-    enterEditMode: function () {
-      var self = this;
-
+    self.on('editing-on', function(event) {
       self.$tileSelector.show();
       self.isEditMode = true;
       self.$editButton.text('Save');
-    },
-    /**
-     * Hide editing UI
-     * @return {undefined}
-     */
-    exitEditMode: function () {
-      var self = this;
+    });
 
+    self.on('editing-off', function(event) {
       self.$tileSelector.hide();
       self.isEditMode = false;
       self.$editButton.text('Edit');
-    },
+    });
+
+    // TODO - use Tile's bindCommonUI to handle DOM events for Tile UI (?)
+
+    self.$tiles.on('click', '.tile-up', function (e) {
+      var currentTile = $(e.target).parents('.tile')[0];
+      var items = self.packery.items;
+      var originalIndex = $.inArray(self.packery.getItem(currentTile), items);
+      var newIndex = originalIndex - 1;
+
+      if (newIndex !== -1) {
+        items.splice(newIndex, 0, items.splice(originalIndex, 1)[0]);
+        self.packery.layout();
+      }
+
+      self.storeOrder();
+    });
+
+    self.$tiles.on('click', '.tile-down', function (e) {
+      var currentTile = $(e.target).parents('.tile')[0];
+      var items = self.packery.items;
+      var originalIndex = $.inArray(self.packery.getItem(currentTile), items);
+      var newIndex = originalIndex + 1;
+
+      if (newIndex !== items.length) {
+        items.splice(newIndex, 0, items.splice(originalIndex, 1)[0]);
+        self.packery.layout();
+      }
+
+      self.storeOrder();
+    });
+
+    self.$btnPhoto.on('click', function () {
+      self.addPhotoBooth();
+    });
+
+    self.$btnHackable.on('click', function () {
+      self.addHackableTile();
+    });
+  };
+
     /**
      * Make an element draggable
      * @param  {object} element Native tile element reference
      * @param  {boolean} isPrepended If true, prepend the element
      * @return {object} element parameter
      */
-    addAndBindDraggable: function (element, isPrepended) {
+    tiles.addAndBindDraggable = function (element, isPrepended) {
       var self = this;
       var method = isPrepended ? 'prepended' : 'appended';
+      var draggie = new Draggabilly(element);
 
       self.packery[method](element);
-      self.packery.bindDraggabillyEvents(new Draggabilly(element));
+      self.packery.bindDraggabillyEvents(draggie);
+
+      self.on('editing-on', function() {
+        draggie.enable();
+      });
+
+      self.on('editing-off', function() {
+        draggie.disable();
+      });
 
       return element;
-    },
+    };
     /**
      * Create a hackable tile and append it
      * @return {undefined}
      */
-    addHackableTile: function (tile) {
+    tiles.addHackableTile = function (tile) {
       var self = this;
 
       // TODO - eliminate this HTML string; use jade
@@ -205,12 +213,12 @@ define([
           content: event.content
         });
       });
-    },
+    };
     /**
      * Create a photo tile and append it
      * @return {undefined}
      */
-    addPhotoBooth: function () {
+    tiles.addPhotoBooth = function () {
       var self = this;
       var $photoBooth = $(templates.photoboothTile());
       var photoBooth = new PhotoBoothTile($photoBooth[0]);
@@ -253,13 +261,13 @@ define([
         // });
       });
 
-    },
+    };
     /**
      * Render HTML for tiles and create masonry layout
      * @param  {array} data Array of makes (see fake.json for schema)
      * @return {undefined}
      */
-    render: function (data) {
+    tiles.render = function (data) {
       var self = this;
 
       // Sort data if a different order has been stored
@@ -301,12 +309,12 @@ define([
         $('.loader').hide();
         self.packery.layout();
       });
-    },
+    };
     /**
      * Extract specified order of make tiles from DOM
      * @return {Array} Array of make IDs in display order
      */
-    calculateOrder: function () {
+    tiles.calculateOrder = function () {
       var self = this;
       var order = [];
       var tiles = self.packery.getItemElements();
@@ -318,22 +326,22 @@ define([
       });
 
       return order;
-    },
+    };
     /**
      * Store order of tiles in local storage (and eventually server side)
      * @return {undefined}
      */
-    storeOrder: function () {
+    tiles.storeOrder = function () {
       var self = this;
 
       db.set('tileOrder', self.calculateOrder());
-    },
+    };
     /**
      * Fetch order of tiles from local storage (and eventually server side)
      * @return {Array} Array of make IDs in display order
      */
-    fetchOrder: function () {
+    tiles.fetchOrder = function () {
       return db.get('tileOrder');
-    }
-  };
+    };
+  return tiles;
 });
