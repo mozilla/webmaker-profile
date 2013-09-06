@@ -54,8 +54,6 @@ define([
       itemSelector: '.tile'
     });
 
-    self.draggies = [];
-
     // Attach the tile selector before the tile list
     self.$container.before(self.$tileSelector);
 
@@ -139,6 +137,10 @@ define([
 
     self.packery[method](element);
     self.packery.bindDraggabillyEvents(draggie);
+
+    if (!self.isEditMode) {
+      draggie.disable();
+    }
 
     self.on('editing-on', function () {
       draggie.enable();
