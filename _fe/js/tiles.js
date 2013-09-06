@@ -67,23 +67,12 @@ define([
       event.preventDefault();
 
       if (self.isEditMode) {
-        self.fire('editing-off');
+        self.exitEditMode();
       } else {
-        self.fire('editing-on');
+        self.enterEditMode();
       }
     });
 
-    self.on('editing-on', function (event) {
-      self.$tileSelector.show();
-      self.isEditMode = true;
-      self.$editButton.text('Save');
-    });
-
-    self.on('editing-off', function (event) {
-      self.$tileSelector.hide();
-      self.isEditMode = false;
-      self.$editButton.text('Edit');
-    });
 
     // TODO - use Tile's bindCommonUI to handle DOM events for Tile UI (?)
 
@@ -122,6 +111,30 @@ define([
     self.$btnHackable.on('click', function () {
       self.addHackableTile();
     });
+  };
+  /**
+   * Show editing UI
+   * @return {undefined}
+   */
+  tiles.enterEditMode = function () {
+    var self = this;
+
+    self.$tileSelector.show();
+    self.isEditMode = true;
+    self.$editButton.text('Save');
+    self.fire('editing-on');
+  };
+  /**
+   * Hide editing UI
+   * @return {undefined}
+   */
+  tiles.exitEditMode = function () {
+    var self = this;
+
+    self.$tileSelector.hide();
+    self.isEditMode = false;
+    self.$editButton.text('Edit');
+    self.fire('editing-off');
   };
 
   /**
