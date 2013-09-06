@@ -8,7 +8,8 @@ define([
   'js/hackable-tile',
   'js/photobooth-tile',
   'lodash',
-  'js/database'
+  'js/database',
+  'js/localstrings'
 ], function (
   $,
   templates,
@@ -19,7 +20,8 @@ define([
   HackableTile,
   PhotoBoothTile,
   _,
-  db
+  db,
+  strings
 ) {
   return {
     init: function (target) {
@@ -114,7 +116,7 @@ define([
 
       self.$tileSelector.show();
       self.isEditMode = true;
-      self.$editButton.text('Save');
+      self.$editButton.text(strings.get('save'));
     },
     /**
      * Hide editing UI
@@ -125,7 +127,7 @@ define([
 
       self.$tileSelector.hide();
       self.isEditMode = false;
-      self.$editButton.text('Edit');
+      self.$editButton.text(strings.get('edit'));
     },
     /**
      * Make an element draggable
