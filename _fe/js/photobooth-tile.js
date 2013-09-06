@@ -1,15 +1,15 @@
 define([
   'jquery',
-  'templates',
   'js/tile',
   'animatedGif',
-  'getUserMedia'
+  'getUserMedia',
+  'js/localstrings'
 ], function (
   $,
-  templates,
   Tile,
   AnimatedGif,
-  getUserMedia
+  getUserMedia,
+  strings
 ) {
 
   // We're caching the stream here so all instances of Photobooth can use it once it is set
@@ -66,9 +66,9 @@ define([
   Photobooth.prototype.onErr = function (err) {
     var self = this;
     if (err.PERMISSION_DENIED) {
-      self.$statusMessage.html('Looks like you denied us permission to use your camera :(');
+      self.$statusMessage.html(strings.get('denied'));
     } else if (err.NOT_SUPPORTED) {
-      self.$statusMessage.html('Looks like your browser sucks');
+      self.$statusMessage.html(strings.get('sucky-browser'));
     }
   };
 

@@ -1,9 +1,9 @@
 define([
   'jquery',
-  'templates',
+  'js/render',
   'imagesloaded',
   'js/tile'
-], function ($, templates, imagesLoaded, Tile) {
+], function ($, render, imagesLoaded, Tile) {
 
   var HackableTile = function (target, options) {
     var self = this;
@@ -30,7 +30,7 @@ define([
     // Element references -----------------------------------------------------
 
     self.$wrapper = $(target);
-    self.$tileContent = $(templates.hackableTile());
+    self.$tileContent = $(render('hackable-tile'));
     self.$textarea = self.$tileContent.filter('textarea');
     self.$hackedContent = self.$tileContent.filter('.hacked-content');
     self.$hackButton = self.$tileContent.filter('.hack');
