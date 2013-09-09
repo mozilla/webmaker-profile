@@ -7,24 +7,28 @@ body > header {
   border-bottom: 1px solid fade(darken(@backgroundcolor, 20%), 90%);
   box-shadow: 0 2px 5px -3px fade(@black, 10%);
   font-size: 0.5em;
+  display: -webkit-box;
   .flex-display;
+  -webkit-box-align: center;
   .justify-content(center);
+  -webkit-box-pack: center;
   .align-items(center);
 
   .avatar {
     .flex(2);
+    width: 0; // safari 6 flexbox workaround
     margin-right: 3%;
+    border: 3px solid darken(@green, 15%);
+    background: @green;
+    border-radius: 50%;
+    box-shadow: 0 3px 5px -3px fade(@black, 30%);
+    overflow: hidden;
 
     @media (min-width: @width-large) {
       .flex(1);
     }
 
     img {
-      border-radius: 50%;
-      box-shadow: 0 3px 5px -3px fade(@black, 30%);
-      padding: 3px;
-      background: @green;
-      border: 1px solid darken(@green, 15%);
       max-width: 100%;
       height: auto;
     }
