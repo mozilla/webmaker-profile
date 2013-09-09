@@ -1,22 +1,43 @@
 define([
+  'jquery',
   'store',
   'lodash',
   'uuid',
-  'text!json/fake.json'
-], function (store, _, uuid, fakeData) {
-
-  // Eventually this will be pulled from a service
-  //  or inlined on index in a JSON script block
-  var blob = JSON.parse(fakeData);
-
-  for (var key in blob) {
-    // Only populate missing keys (eventually stale keys should be replaced)
-    if (!store.get(key)) {
-      store.set(key, blob[key]);
-    }
-  }
+  'komponent',
+], function (
+  $,
+  store,
+  _,
+  uuid,
+  Komponent
+) {
 
   var db = {
+    /**
+     * Initialize database by fetching JSON from service
+     * @return {undefined}
+     */
+    init: function (username) {
+      var blob;
+
+      $.ajax({
+        url: 'http://localhost:8080/user-data/' + username,
+        type: 'GET',
+        dataType: 'json'
+      })
+        .done(function (data) {
+          blob = data;
+
+          for (var key in blob) {
+            // Only populate missing keys (eventually stale keys should be replaced)
+            if (!store.get(key)) {
+              store.set(key, blob[key]);
+            }
+          }
+
+          db.fire('load');
+        });
+    },
     /**
      * Get the value of a key from local storage
      * @param  {string} key
@@ -110,6 +131,8 @@ define([
       return UUID;
     }
   };
+
+  Komponent.mix(db);
 
   return db;
 });
