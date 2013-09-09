@@ -17,10 +17,11 @@
 // - applies to: flex items
 // <positive-number>, initial, auto, or none
 .flex(@columns: initial) {
-  -webkit-flex: @columns;
-     -moz-flex: @columns;
-      -ms-flex: @columns;
-          flex: @columns;
+  -webkit-box-flex: @columns;
+      -webkit-flex: @columns;
+         -moz-flex: @columns;
+          -ms-flex: @columns;
+              flex: @columns;
 }
 
 // Flex Flow Direction
