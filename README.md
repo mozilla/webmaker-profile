@@ -12,10 +12,20 @@ Prototype of *USERNAME.makes.org* profile.
 
 ## Setup
 
+### Application Setup
+
 ```bash
 git clone https://github.com/gvn/webmaker-profile.git
-npm install
+cd webmaker-profile && npm install
 ```
+
+### Service Setup
+
+*NOTE: If you don't want to write service code, you can ignore this step.*
+
+Profile consumes a stand-alone web service, [webmaker-profile-service](https://github.com/gvn/webmaker-profile-service). Eventually, this will run separate from the Profile app, but for development we are using `npm link` to use it as a node_module for ease of developing in tandem.
+
+To set this up, first clone **webmaker-profile-service** into a new location (most likely parallel to **webmaker-profile**). Then `cd` into its directory and run `npm link`. Finally, `cd` into **webmaker-profile** and run `npm link webmaker-profile-service`.
 
 ## Grunt Tasks
 
@@ -24,7 +34,7 @@ npm install
 
 ## Indexes
 
-There are two index HTML files that are generated from `index.jade`. For development you'll use `index.dev.html`, which has uncompiled JS for easier debugging. It also uses a version of the compiled LESS that has inline source annotations for debugging purposes.
+There are two index HTML files that are generated from `index.jade`. For development you'll generally run `index.dev.html`, which has uncompiled JS for easier debugging. It also uses a version of the compiled LESS that has inline source annotations for debugging purposes.
 
 The other index, `index.html`, is used for the production version of the app. It includes concatenated and minified versions of the app's JS and CSS.
 

@@ -108,6 +108,14 @@ module.exports = function (grunt) {
       options: {
         jshintrc: '.jshintrc'
       }
+    },
+    nodemon: {
+      development: {
+        options: {
+          file: 'node_modules/webmaker-profile-service/app.js',
+          cwd: 'node_modules/webmaker-profile-service/'
+        }
+      }
     }
   });
 
@@ -117,6 +125,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-nodemon');
 
   // Recompile Jade and Less as needed for dev
   grunt.registerTask('default', [
@@ -124,6 +133,7 @@ module.exports = function (grunt) {
     'jade:compileJSTemplates',
     'jade:development',
     'connect',
+    'nodemon',
     'watch'
   ]);
 
