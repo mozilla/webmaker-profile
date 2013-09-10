@@ -21,6 +21,8 @@ cd webmaker-profile && npm install
 
 ### Service Setup
 
+*NOTE: If you don't want to write service code, you can ignore this step.*
+
 Profile consumes a stand-alone web service, [webmaker-profile-service](https://github.com/gvn/webmaker-profile-service). Eventually, this will run separate from the Profile app, but for development we are using `npm link` to use it as a node_module for ease of developing in tandem.
 
 To set this up, first clone **webmaker-profile-service** into a new location (most likely parallel to **webmaker-profile**). Then `cd` into its directory and run `npm link`. Finally, `cd` into **webmaker-profile** and run `npm link webmaker-profile-service`.
