@@ -17,7 +17,8 @@ requirejs.config({
     store: 'store.js/store',
     uuid: 'node-uuid/uuid',
     templates: '../_fe/compiled/jade-templates',
-    text: 'text/text'
+    text: 'text/text',
+    config: '../_fe/js/config'
   }
 });
 
