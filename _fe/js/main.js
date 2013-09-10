@@ -29,21 +29,25 @@ require([
   'js/localstrings',
   'js/render'
 ], function (device, $, tiles, db, localStrings, render) {
+  var servicesToLoad = 2;
+  var servicesLoaded = 0;
 
   function initUI() {
-    var $body = $('body');
-    var $tileContainer = $(render('tile-container'));
+    if (servicesLoaded === servicesToLoad) {
+      var $body = $('body');
+      var $tileContainer = $(render('tile-container'));
 
-    $body.append(render('header', {
-      avatarSrc: db.get('avatarSrc'),
-      name: db.get('realName'),
-      username: db.get('username')
-    }));
+      $body.append(render('header', {
+        avatarSrc: db.get('avatarSrc'),
+        name: db.get('realName'),
+        username: db.get('username')
+      }));
 
-    $body.append($tileContainer);
+      $body.append($tileContainer);
 
-    tiles.init($tileContainer);
-    tiles.render(db.get('makes'));
+      tiles.init($tileContainer);
+      tiles.render(db.get('makes'));
+    }
   }
 
   // Set up device characteristics and feature detection
@@ -51,9 +55,19 @@ require([
 
   // Initialize UI after localization strings load
   localStrings.on('load', function () {
+    servicesLoaded++;
     initUI();
   });
 
   // TODO - Sniff locale instead of hard coding
   localStrings.init('en-us');
+
+  // Initialize database
+  db.on('load', function () {
+    servicesLoaded++;
+    initUI();
+  });
+
+  // TODO - Sniff username from subdomain instead of hardcoding
+  db.init('reanimator');
 });
