@@ -4,14 +4,15 @@ define([
   'lodash',
   'uuid',
   'komponent',
+  'config'
 ], function (
   $,
   store,
   _,
   uuid,
-  Komponent
+  Komponent,
+  config
 ) {
-
   var db = {
     /**
      * Initialize database by fetching JSON from service
@@ -21,7 +22,7 @@ define([
       var blob;
 
       $.ajax({
-        url: 'http://localhost:8080/user-data/' + username,
+        url: config.serviceURL + '/user-data/' + username,
         type: 'GET',
         dataType: 'json'
       })
