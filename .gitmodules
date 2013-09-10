@@ -1,3 +1,0 @@
-[submodule "service"]
-	path = service
-	url = https://github.com/gvn/webmaker-profile-service
