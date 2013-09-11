@@ -1,0 +1,21 @@
+.tile.user-info
+  h3 #{__aboutMe} /
+  p.description-output.description(data-view-only) Brett Gaylor makes stuff for the web as the director of Webmaker.org at Mozilla.
+  textarea.description(data-editor-only, name="description")
+    | Brett Gaylor makes stuff for the web as the director of Webmaker.org at Mozilla.
+  .info
+    .col.stats
+      ul
+        li
+          span.number 14
+          span.word #{__totalMakes}
+        li
+          span.number 2
+          span.word #{__totalLikes}
+    .col.links
+      ul.link-list
+      textarea(name="link-url", data-editor-only)
+      button.button.add(data-editor-only): span #{__add}
+  .editing-buttons
+    button.button.button-grey.edit #{__edit}
+    button(data-editor-only).button.save: span #{__save}
