@@ -113,7 +113,10 @@ module.exports = function (grunt) {
       development: {
         options: {
           file: 'node_modules/webmaker-profile-service/app.js',
-          cwd: 'node_modules/webmaker-profile-service/'
+          cwd: 'node_modules/webmaker-profile-service/',
+          env: {
+            PORT: 8080
+          }
         }
       }
     }
