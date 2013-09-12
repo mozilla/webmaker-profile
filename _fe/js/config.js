@@ -1,3 +1,3 @@
 define({
-  'serviceURL': 'http://wmp-service.herokuapp.com'
+  'serviceURL': 'http://localhost:8080'
 });
