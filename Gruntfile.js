@@ -127,13 +127,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-nodemon');
 
-  // Recompile Jade and Less as needed for dev
+  // Recompile Jade and Less on filechange for dev
   grunt.registerTask('default', [
     'less:development',
     'jade:compileJSTemplates',
     'jade:development',
     'connect',
-    'nodemon',
     'watch'
   ]);
 

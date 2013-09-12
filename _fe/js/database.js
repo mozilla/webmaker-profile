@@ -1,41 +1,32 @@
 define([
   'jquery',
-  'store',
   'lodash',
   'uuid',
   'komponent',
   'config'
 ], function (
   $,
-  store,
   _,
   uuid,
   Komponent,
   config
 ) {
+
+  var storage = {}; // Session-only storage
+
   var db = {
     /**
      * Initialize database by fetching JSON from service
      * @return {undefined}
      */
     init: function (username) {
-      var blob;
-
       $.ajax({
         url: config.serviceURL + '/user-data/' + username,
         type: 'GET',
         dataType: 'json'
       })
         .done(function (data) {
-          blob = data;
-
-          for (var key in blob) {
-            // Only populate missing keys (eventually stale keys should be replaced)
-            if (!store.get(key)) {
-              store.set(key, blob[key]);
-            }
-          }
-
+          storage = data;
           db.fire('load');
         });
     },
@@ -45,16 +36,39 @@ define([
      * @return {*}
      */
     get: function (key) {
-      return store.get(key);
+      return storage[key];
     },
     /**
-     * Set the value of a key in local storage
+     * Set the value of a key in local storage & server
      * @param  {string} key
      * @param  {*} value
      * @return {undefined}
      */
     set: function (key, value) {
-      store.set(key, value);
+      var data = {};
+      data[key] = value;
+
+      // Persist to local storage
+      storage[key] = value;
+
+      // Persist to server
+      $.ajax({
+        // TODO - dynamic username
+        url: config.serviceURL + '/user-data/reanimator',
+        type: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(data)
+      })
+        .done(function () {
+          db.fire('setSuccess');
+        })
+        .fail(function () {
+          db.fire('setError');
+        })
+        .always(function () {
+          db.fire('setComplete');
+        });
     },
     /**
      * Store a new tile or update an existing tile record
@@ -66,7 +80,7 @@ define([
         throw ('Tile must have ID property for storage.');
       }
 
-      var makes = store.get('makes');
+      var makes = storage.makes;
       var existingMake = _.find(makes, {
         id: tile.id
       });
@@ -77,7 +91,7 @@ define([
         makes.push(tile);
       }
 
-      store.set('makes', makes);
+      db.set('makes', makes);
     },
     /**
      * Destroy a make in the database
@@ -85,7 +99,7 @@ define([
      * @return {undefined}
      */
     destroyTileMake: function (id) {
-      store.set('makes', _.reject(store.get('makes'), {
+      db.set('makes', _.reject(storage.makes, {
         id: id
       }));
     },
@@ -95,7 +109,7 @@ define([
      * @return {object} Make object
      */
     getMakeById: function (id) {
-      return _.find(store.get('makes'), {
+      return _.find(storage.makes, {
         id: id
       });
     },
@@ -112,7 +126,7 @@ define([
       var UUID;
       var idExists;
 
-      store.get('makes').forEach(function (make) {
+      storage.makes.forEach(function (make) {
         existingIDs.push(make.id);
       });
 

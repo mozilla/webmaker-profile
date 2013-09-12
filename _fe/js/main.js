@@ -14,7 +14,6 @@ requirejs.config({
     main: '../_fe/js/main',
     neuquant: 'Animated_GIF/src/NeuQuant',
     omggif: 'Animated_GIF/src/omggif',
-    store: 'store.js/store',
     uuid: 'node-uuid/uuid',
     templates: '../_fe/compiled/jade-templates',
     text: 'text/text',
