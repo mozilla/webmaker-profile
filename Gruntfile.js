@@ -137,6 +137,15 @@ module.exports = function (grunt) {
     'watch'
   ]);
 
+  // Run sans-inline-service
+  grunt.registerTask('noservice', [
+    'less:development',
+    'jade:compileJSTemplates',
+    'jade:development',
+    'connect',
+    'watch'
+  ]);
+
   // Compile Jade, Less and JS for production
   grunt.registerTask('build', [
     'jshint',

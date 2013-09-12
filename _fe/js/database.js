@@ -21,6 +21,10 @@ define([
     init: function (username) {
       var blob;
 
+      // TEMP - Flag for dev/debug via hash
+      // *Always* overwrite local storage w. service data
+      var alwaysFresh = (window.location.hash === '#/always-fresh/true' ? true : false);
+
       $.ajax({
         url: config.serviceURL + '/user-data/' + username,
         type: 'GET',
@@ -31,7 +35,7 @@ define([
 
           for (var key in blob) {
             // Only populate missing keys (eventually stale keys should be replaced)
-            if (!store.get(key)) {
+            if (alwaysFresh || !store.get(key)) {
               store.set(key, blob[key]);
             }
           }
@@ -48,13 +52,36 @@ define([
       return store.get(key);
     },
     /**
-     * Set the value of a key in local storage
+     * Set the value of a key in local storage & server
      * @param  {string} key
      * @param  {*} value
      * @return {undefined}
      */
     set: function (key, value) {
+      var data = {};
+      data[key] = value;
+
+      // Persist to local storage
       store.set(key, value);
+
+      // Persist to server
+      $.ajax({
+        // TODO - dynamic username
+        url: config.serviceURL + '/user-data/reanimator',
+        type: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify(data)
+      })
+        .done(function () {
+          db.fire('setSuccess');
+        })
+        .fail(function () {
+          db.fire('setError');
+        })
+        .always(function () {
+          db.fire('setComplete');
+        });
     },
     /**
      * Store a new tile or update an existing tile record
@@ -77,7 +104,7 @@ define([
         makes.push(tile);
       }
 
-      store.set('makes', makes);
+      db.set('makes', makes);
     },
     /**
      * Destroy a make in the database
@@ -85,7 +112,7 @@ define([
      * @return {undefined}
      */
     destroyTileMake: function (id) {
-      store.set('makes', _.reject(store.get('makes'), {
+      db.set('makes', _.reject(store.get('makes'), {
         id: id
       }));
     },
