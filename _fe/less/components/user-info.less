@@ -1,12 +1,12 @@
 .tile.user-info {
   font-size: 15px;
-  &[data-editing="true"] {
-    [data-view-only] {
+  &:not(.editing) {
+    [data-editor-only] {
       display: none;
     }
   }
-  &[data-editing="false"] {
-    [data-editor-only] {
+  &.editing {
+    [data-view-only] {
       display: none;
     }
   }

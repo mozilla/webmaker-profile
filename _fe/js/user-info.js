@@ -16,8 +16,7 @@ define([
 
     defaults = {};
 
-    for (option in options) {
-      defaults[option] = options[option] || defaults[option];
+    for (option in options) {faefaults[option];
     }
 
     self.options = defaults;
@@ -38,8 +37,6 @@ define([
     self.linkUrls = [];
 
     // Setup ------------------------------------------------------------------
-
-    self.$wrapper.attr('data-editing', false);
 
     self.$editButton.on('click', function () {
       self.showEditor();
@@ -62,7 +59,7 @@ define([
     var self = this;
 
     self.$editButton.addClass('disabled');
-    self.$wrapper.attr('data-editing', true);
+    self.$wrapper.addClass('editing');
     self.fire('resize');
   };
 
@@ -128,7 +125,7 @@ define([
     data.linkUrls = self.linkUrls;
     self.update(data, true);
     self.$editButton.removeClass('disabled');
-    self.$wrapper.attr('data-editing', false);
+    self.$wrapper.removeClass('editing');
   }
 
   UserInfo.prototype.update = function (data, saveData) {
