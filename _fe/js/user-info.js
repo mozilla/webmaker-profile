@@ -1,8 +1,9 @@
 define([
   'jquery',
   'js/tile',
-  'js/render'
-], function ($, Tile, render) {
+  'js/render',
+  'lodash'
+], function ($, Tile, render, _) {
 
   var UserInfo = function (target, options) {
     var self = this;
@@ -34,7 +35,7 @@ define([
 
     // Properties -------------------------------------------------------------
 
-    self.linkUrls = {};
+    self.linkUrls = [];
 
     // Setup ------------------------------------------------------------------
 
@@ -45,7 +46,7 @@ define([
     });
 
     self.$saveButton.on('click', function () {
-      self.onSave();
+      self.save();
     });
 
     self.$addLinkButton.on('click', function () {
@@ -85,39 +86,41 @@ define([
       return;
     }
     var linkData = self.checkUrl(url);
-    self.linkUrls[linkData.url] = linkData;
+    self.linkUrls.push(linkData);
     self.update();
   };
 
-  UserInfo.prototype.removeLink = function (key) {
+  UserInfo.prototype.removeLink = function (obj) {
     var self = this;
-    delete self.linkUrls[key];
+    var position = self.linkUrls.indexOf(obj);
+    if (position > -1) {
+      self.linkUrls.splice(position, 1);
+    }
     self.update();
   };
 
   UserInfo.prototype.renderLinks = function () {
     var self = this;
-    var $el;
+    var $newLinkElement;
 
     self.$linkList.empty();
-    for (key in self.linkUrls) {
+    self.linkUrls.forEach(function (linkUrl) {
 
-      $el = $(render('link-item', {
-        link: self.linkUrls[key]
+      $newLinkElement = $(render('link-item', {
+        link: linkUrl
       }));
 
-      $el.find('.remove').on('click', function (e) {
+      $newLinkElement.find('.remove').on('click', function (e) {
         e.stopPropagation();
         e.preventDefault();
-
-        self.removeLink(key);
+        self.removeLink(linkUrl);
       });
 
-      self.$linkList.append($el);
-    }
+      self.$linkList.append($newLinkElement);
+    });
   };
 
-  UserInfo.prototype.onSave = function () {
+  UserInfo.prototype.save = function () {
     var self = this;
     var data = {};
 

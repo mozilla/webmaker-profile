@@ -108,7 +108,6 @@ define([
         id: id
       }));
     },
-
     /**
      * Fetch a specific make record
      * @param  {string} id UUID of make
