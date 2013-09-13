@@ -76,6 +76,11 @@ define([
      * @return {undefined}
      */
     storeTileMake: function (tile) {
+      // Don't store null value in tiles
+      if (tile.content === null) {
+        tile.content = '';
+      }
+
       if (typeof tile.id === 'undefined') {
         throw ('Tile must have ID property for storage.');
       }
