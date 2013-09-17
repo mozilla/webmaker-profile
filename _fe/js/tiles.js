@@ -130,6 +130,7 @@ define([
     self.$editButton.text(strings.get('save'));
     self.fire('editing-on');
     $('.tile a').addClass('disabled');
+    $('.tile .button').show();
   };
   /**
    * Hide editing UI
@@ -143,6 +144,7 @@ define([
     self.$editButton.text(strings.get('edit'));
     self.fire('editing-off');
     $('.tile a').removeClass('disabled');
+    $('.tile .button').hide();
   };
 
   /**
