@@ -20,6 +20,17 @@
     background: @white;
     font-weight: 200;
 
+    a {
+      -webkit-transition: color .25s linear .1s;
+      transition: color .25s linear .1s;
+      &.disabled {
+        cursor: default;
+        color: #CCC;
+        -webkit-transition: color .25s linear;
+        transition: color .25s linear;
+      }
+    }
+
     h3 {
       font-size: 2em;
       line-height: 1.2;

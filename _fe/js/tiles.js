@@ -75,6 +75,11 @@ define([
       }
     });
 
+    $('body').on('click', '.disabled', function (e) {
+      e.preventDefault();
+      return false;
+    });
+
     // TODO - use Tile's bindCommonUI to handle DOM events for Tile UI (?)
 
     self.$tiles.on('click', '.tile-up', function (e) {
@@ -124,6 +129,7 @@ define([
     self.isEditMode = true;
     self.$editButton.text(strings.get('save'));
     self.fire('editing-on');
+    $('.tile a').addClass('disabled');
   };
   /**
    * Hide editing UI
@@ -136,6 +142,7 @@ define([
     self.isEditMode = false;
     self.$editButton.text(strings.get('edit'));
     self.fire('editing-off');
+    $('.tile a').removeClass('disabled');
   };
 
   /**
