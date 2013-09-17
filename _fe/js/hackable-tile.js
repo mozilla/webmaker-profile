@@ -12,7 +12,7 @@ define([
 
     self.callbacks = {};
 
-    self.MEDIAURL_REGEX = {
+    self.mediaURLRegEx = {
       'YouTube': /^.*v=([a-zA-Z0-9_-]+).*$/,
       'Vimeo': /^.*\/([0-9]+).*/
     };
@@ -101,7 +101,7 @@ define([
     }
 
     function wrapYoutube(url) {
-      var id = url.match(self.MEDIAURL_REGEX.YouTube);
+      var id = url.match(self.mediaURLRegEx.YouTube);
       if (id) {
         id = id[1]; // second result in array is the ID if there is a match
         var $container = $('<div class="video-container">').append($('<iframe ' +
@@ -111,7 +111,7 @@ define([
     }
 
     function wrapVimeo(url) {
-      var id = url.match(self.MEDIAURL_REGEX.Vimeo);
+      var id = url.match(self.mediaURLRegEx.Vimeo);
       if (id) {
         id = id[1]; // second result in array is the ID if there is a match
         var $container = $('<div class="video-container">').append($('<iframe ' +
@@ -130,31 +130,22 @@ define([
       // Wrap Image URL in IMG tag
       if (html.match(/(.jpg|.png|.gif)$/)) {
         html = wrapImg(html);
-
-        self.$hackedContent.html(html);
-        self.$textarea.val(html);
       } else if (html.match(/youtube/)) {
         html = wrapYoutube(html)[0];
 
         $(html).data('aspectRatio', html.height / html.width)
           .removeAttr('height')
           .removeAttr('width');
-
-        self.$hackedContent.html(html);
-        self.$textarea.val(html);
       } else if (html.match(/vimeo/)) {
         html = wrapVimeo(html);
 
         $(html).data('aspectRatio', html.height / html.width)
           .removeAttr('height')
           .removeAttr('width');
-
-        self.$hackedContent.html(html);
-        self.$textarea.val(html);
-      } else {
-        self.$hackedContent.html(html);
       }
 
+      self.$hackedContent.html(html);
+      self.$textarea.val(html);
       self.$hackedContent.show();
     } else {
       self.$hackedContent.hide();
@@ -162,5 +153,4 @@ define([
   };
 
   return HackableTile;
-
 });
