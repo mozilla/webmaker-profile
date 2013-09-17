@@ -125,12 +125,13 @@ define([
   tiles.enterEditMode = function () {
     var self = this;
 
+    $('.tile .button').show();
+    $('.tile a').addClass('disabled');
     self.$tileSelector.show();
     self.isEditMode = true;
     self.$editButton.text(strings.get('save'));
     self.fire('editing-on');
-    $('.tile a').addClass('disabled');
-    $('.tile .button').show();
+    self.packery.layout();
   };
   /**
    * Hide editing UI
@@ -139,12 +140,13 @@ define([
   tiles.exitEditMode = function () {
     var self = this;
 
+    $('.tile .button').hide();
+    $('.tile a').removeClass('disabled');
     self.$tileSelector.hide();
     self.isEditMode = false;
     self.$editButton.text(strings.get('edit'));
     self.fire('editing-off');
-    $('.tile a').removeClass('disabled');
-    $('.tile .button').hide();
+    self.packery.layout();
   };
 
   /**
@@ -333,6 +335,8 @@ define([
       $('.loader').hide();
       self.packery.layout();
     });
+
+    $('.tile .button').hide();
   };
   /**
    * Extract specified order of make tiles from DOM
