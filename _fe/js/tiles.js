@@ -259,17 +259,14 @@ define([
     });
 
     photoBooth.on('destroy', function () {
-      //console.log('photo:destroy');
       self.packery.layout();
     });
 
     photoBooth.on('update', function () {
-      //console.log('photo:update');
+
     });
 
     photoBooth.on('imageStored', function (event) {
-      //console.log('photo:imageStored ', event.href);
-
       db.storeTileMake({
         id: UUID,
         content: '<img src="' + event.href + '">'
