@@ -75,7 +75,6 @@ define([
       }
     });
 
-
     // TODO - use Tile's bindCommonUI to handle DOM events for Tile UI (?)
 
     self.$tiles.on('click', '.tile-up', function (e) {
@@ -239,24 +238,18 @@ define([
     var self = this;
     var $photoBooth = $(render('photobooth-tile'));
     var photoBooth = new PhotoBoothTile($photoBooth[0]);
-    // var UUID;
+    var UUID = db.generateFakeUUID();
 
-    // Tiles are too big right now to store
-    // if (tile) {
-    //   UUID = tile.id;
-    //   photoBooth.update(tile.content)
-    // } else {
-    //   UUID = db.generateFakeUUID();
-    //   db.storeTileMake({
-    //     id: UUID,
-    //     tool: 'profile',
-    //     type: 'photo',
-    //     content: null
-    //   });
-    // }
+    db.storeTileMake({
+      id: UUID,
+      tool: 'profile',
+      type: 'hackable', // Photo tiles become hackable tiles in next session (bad?)
+      content: null
+    });
 
     self.$tiles.prepend($photoBooth);
     self.addAndBindDraggable($photoBooth[0], true);
+    $photoBooth.data('id', UUID); // For order tracking purposes
     self.storeOrder();
     photoBooth.init();
     self.packery.layout();
@@ -266,18 +259,22 @@ define([
     });
 
     photoBooth.on('destroy', function () {
+      console.log('photo:destroy');
       self.packery.layout();
     });
 
     photoBooth.on('update', function () {
-      // Need to upload to S3 or something before we can do this
-
-      // db.storeTileMake({
-      //   id: UUID,
-      //   content: event.content.firstFrame
-      // });
+      console.log('photo:update');
     });
 
+    photoBooth.on('imageStored', function (event) {
+      console.log('photo:imageStored ', event.href);
+
+      db.storeTileMake({
+        id: UUID,
+        content: '<img src="' + event.href + '">'
+      });
+    });
   };
   /**
    * Render HTML for tiles and create masonry layout
