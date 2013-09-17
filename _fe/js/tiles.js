@@ -290,6 +290,7 @@ define([
     });
 
     photoBooth.on('update', function () {
+
     });
 
     photoBooth.on('imageStored', function (event) {
