@@ -1,9 +1,13 @@
 {
+  "aboutMe": "about me",
+  "add": "Add",
   "denied": "Looks like you denied us permission to use your camera :(",
   "edit": "Edit",
   "hackable": "Hackable",
   "permission": "Waiting for permission...",
   "photo": "Photo",
   "save": "Save",
-  "sucky-browser": "Looks like your browser sucks"
+  "sucky-browser": "Looks like your browser sucks",
+  "totalLikes": "Total Likes",
+  "totalMakes": "Total Makes"
 }

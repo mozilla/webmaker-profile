@@ -5,6 +5,7 @@ define([
   'imagesloaded',
   'draggabilly/draggabilly',
   'js/tile',
+  'js/user-info',
   'js/hackable-tile',
   'js/photobooth-tile',
   'lodash',
@@ -18,6 +19,7 @@ define([
   imagesLoaded,
   Draggabilly,
   Tile,
+  UserInfo,
   HackableTile,
   PhotoBoothTile,
   _,
@@ -285,6 +287,28 @@ define([
     });
 
   };
+
+  tiles.addUserInfo = function() {
+    var self = this;
+
+    var $userInfo = $(render('user-info'));
+    var userInfo = new UserInfo($userInfo[0]);
+    var userInfoData = db.get('userInfo');
+
+    self.$container.append($userInfo);
+    self.packery.stamp($userInfo[0]);
+    userInfo.update(userInfoData);
+
+    userInfo.on('resize', function () {
+      self.packery.layout();
+    });
+
+    userInfo.on('update', function (event) {
+      self.packery.layout();
+      db.set('userInfo', event.content);
+    });
+  };
+
   /**
    * Render HTML for tiles and create masonry layout
    * @param  {array} data Array of makes (see fake.json for schema)
@@ -306,6 +330,9 @@ define([
 
       data = sortedData;
     }
+
+    // Add user info tile first
+    self.addUserInfo();
 
     // Render HTML for tiles
     data.forEach(function (tile) {
