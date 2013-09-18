@@ -1,5 +1,5 @@
 .tile.user-info
-  h3 #{__aboutMe} /
+  h3 #{__aboutMe}
   p.description-output.description(data-view-only)
   textarea.description(data-editor-only, name="description")
   .info
@@ -7,13 +7,13 @@
       ul
         li
           span.number 14
-          span.word #{__totalMakes}
+          span.word #{__Makes}
         li
           span.number 2
-          span.word #{__totalLikes}
+          span.word #{__Likes}
     .col.links
       ul.link-list
-      textarea(name="link-url", data-editor-only)
+      input(name="link-url", data-editor-only)
       button.button.add(data-editor-only): span #{__add}
   .editing-buttons
     button.button.button-grey.edit #{__edit}
