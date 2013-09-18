@@ -2,8 +2,8 @@ include ../arrow-container
 
 .tile.photobooth
   include ../delete-button
-  .status
-    | #{__permission}
+  .status #{__permission}
+    span #{__permissionHelp}
   .photobooth-container
     canvas
     video.input-video

@@ -6,6 +6,14 @@
   margin: 0;
 }
 
+*::selection {
+  .no-highlight;
+}
+
+*::-moz-selection {
+  .no-highlight;
+}
+
 // Display in IE6-9 and FF3
 article,
 aside,
@@ -49,6 +57,7 @@ h2 {
 
 h3 {
   font-size: 3.5em;
+  padding-bottom: 0.33em;
 }
 
 h4 {
@@ -94,6 +103,7 @@ a:active {
   text-decoration: none;
   outline: 0;
   color: darken(@blue, 10%);
+  cursor: pointer;
 }
 
 img {
@@ -161,7 +171,14 @@ input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none; // Inner-padding issues in Chrome OSX, Safari 5
 }
 
+input,
+textarea {
+  padding: 10px;
+  border: 1px solid @midgrey;
+}
+
 textarea {
   overflow: auto; // Remove vertical scrollbar in IE6-9
   vertical-align: top; // Readability and alignment cross-browser
+  resize: none;
 }
