@@ -139,6 +139,7 @@ define([
     for(var key in self.tiles) {
       self.tiles[key].enterEditMode();
     }
+    self.packery.layout();
   };
   /**
    * Hide editing UI
@@ -261,25 +262,20 @@ define([
     var self = this;
     var $photoBooth = $(render('photobooth-tile'));
     var photoBooth = new PhotoBoothTile($photoBooth[0]);
-    var UUID = 0; UUID++; // temporary until we land UUIDs for photo
+    var UUID = db.generateFakeUUID();
+
     self.tiles[UUID] = photoBooth;
 
-    // Tiles are too big right now to store
-    // if (tile) {
-    //   UUID = tile.id;
-    //   photoBooth.update(tile.content)
-    // } else {
-    //   UUID = db.generateFakeUUID();
-    //   db.storeTileMake({
-    //     id: UUID,
-    //     tool: 'profile',
-    //     type: 'photo',
-    //     content: null
-    //   });
-    // }
+    db.storeTileMake({
+      id: UUID,
+      tool: 'profile',
+      type: 'hackable', // Photo tiles become hackable tiles in next session (bad?)
+      content: null
+    });
 
     self.$tiles.prepend($photoBooth);
     self.addAndBindDraggable($photoBooth[0], true);
+    $photoBooth.data('id', UUID); // For order tracking purposes
     self.storeOrder();
     photoBooth.init();
     self.packery.layout();
@@ -294,14 +290,15 @@ define([
     });
 
     photoBooth.on('update', function () {
-      // Need to upload to S3 or something before we can do this
 
-      // db.storeTileMake({
-      //   id: UUID,
-      //   content: event.content.firstFrame
-      // });
     });
 
+    photoBooth.on('imageStored', function (event) {
+      db.storeTileMake({
+        id: UUID,
+        content: '<img src="' + event.href + '">'
+      });
+    });
   };
 
   tiles.addUserInfo = function() {

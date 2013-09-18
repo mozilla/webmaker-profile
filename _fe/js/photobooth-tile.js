@@ -3,13 +3,15 @@ define([
   'js/tile',
   'animatedGif',
   'getUserMedia',
-  'js/localstrings'
+  'js/localstrings',
+  'config'
 ], function (
   $,
   Tile,
   AnimatedGif,
   getUserMedia,
-  strings
+  strings,
+  config
 ) {
 
   // We're caching the stream here so all instances of Photobooth can use it once it is set
@@ -100,6 +102,25 @@ define([
     ag.getBase64GIF(function (image) {
       var animatedImage = document.createElement('img');
       animatedImage.src = image;
+
+      // Persist animated GIF to server
+      $.ajax({
+        url: config.serviceURL + '/store-img',
+        type: 'POST',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: JSON.stringify({
+          image: image
+        })
+      })
+        .done(function (data) {
+          self.fire('imageStored', {
+            href: data.imageURL
+          });
+        })
+        .fail(function () {})
+        .always(function () {});
+
       callback(animatedImage);
     });
   };
