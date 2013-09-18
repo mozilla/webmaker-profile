@@ -2,15 +2,15 @@ include ../arrow-container
 
 .tile.photobooth
   include ../delete-button
-  .status
-    | #{__permission}
+  .status #{__permission}
+    span #{__permissionHelp}
   .photobooth-container
     canvas
     video.input-video
     img.first-frame
     img.gif
   .button-container
-    a.button.button-grey.edit.off #{__edit}
-    a.button.trigger.off
+    button.button.button-grey.edit.off #{__edit}
+    button.button.trigger.off
     span.progress.icon-spin.icon-spinner.off
   mixin arrowtainer
