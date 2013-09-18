@@ -57,6 +57,42 @@ define([
   HackableTile.prototype = new Tile();
 
   /**
+   * Enter edit mode
+   * @return {undefined}
+   */
+  HackableTile.prototype.enterEditMode = function () {
+    var self = this;
+
+    self.showDeleteButton();
+    self.$hackButton.show();
+  };
+
+  /**
+   * Exit edit mode
+   * @return {undefined}
+   */
+  HackableTile.prototype.exitEditMode = function () {
+    var self = this;
+
+    self.showMake();
+    self.hideDeleteButton();
+    self.$hackButton.hide();
+  };
+
+  /**
+   * Show the tile editor UI
+   * @return {undefined}
+   */
+  HackableTile.prototype.showEditor = function () {
+    var self = this;
+
+    self.$hackButton.addClass('disabled');
+    self.$textarea.show();
+    self.$saveButton.show();
+    self.$textarea.focus();
+    self.fire('resize');
+  };
+  /**
    * Show the tile editor UI
    * @return {undefined}
    */
