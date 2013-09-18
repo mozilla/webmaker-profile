@@ -32,6 +32,7 @@ define([
     var self = this;
 
     self.callbacks = {};
+    self.tiles = {};
 
     // Element references -----------------------------------------------------
 
@@ -130,6 +131,9 @@ define([
     self.$editButton.text(strings.get('save'));
     self.fire('editing-on');
     $('.tile a').addClass('disabled');
+    for(var key in self.tiles) {
+      self.tiles[key].enterEditMode();
+    }
   };
   /**
    * Hide editing UI
@@ -143,6 +147,9 @@ define([
     self.$editButton.text(strings.get('edit'));
     self.fire('editing-off');
     $('.tile a').removeClass('disabled');
+    for(var key in self.tiles) {
+      self.tiles[key].exitEditMode();
+    }
   };
 
   /**
@@ -185,6 +192,7 @@ define([
     var hackableTile = new HackableTile($hackableTile);
 
     var UUID = (typeof tile !== 'undefined' ? tile.id : db.generateFakeUUID());
+    self.tiles[UUID] = hackableTile;
 
     if (typeof tile === 'undefined') {
       db.storeTileMake({
@@ -203,6 +211,7 @@ define([
     } else {
       hackableTile.update(tile.content);
       self.addAndBindDraggable($hackableTile[0]);
+      self.exitEditMode();
     }
 
     // For order tracking purposes
@@ -227,6 +236,7 @@ define([
       $hackableTile.remove();
       self.storeOrder();
       db.destroyTileMake(UUID);
+      delete self.tiles[UUID];
       self.packery.layout();
     });
 
@@ -245,7 +255,8 @@ define([
     var self = this;
     var $photoBooth = $(render('photobooth-tile'));
     var photoBooth = new PhotoBoothTile($photoBooth[0]);
-    // var UUID;
+    var UUID = 0; UUID++; // temporary until we land UUIDs for photo
+    self.tiles[UUID] = photoBooth;
 
     // Tiles are too big right now to store
     // if (tile) {
@@ -273,6 +284,7 @@ define([
 
     photoBooth.on('destroy', function () {
       self.packery.layout();
+      delete self.tiles[UUID];
     });
 
     photoBooth.on('update', function () {
