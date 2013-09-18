@@ -63,6 +63,21 @@ define([
 
   Photobooth.prototype = new Tile();
 
+  Photobooth.prototype.enterEditMode = function () {
+    var self = this;
+
+    self.$editbtn.show();
+    self.enableEditing();
+    self.showDeleteButton();
+  };
+
+  Photobooth.prototype.exitEditMode = function () {
+    var self = this;
+
+    self.$editbtn.hide();
+    self.hideDeleteButton();
+  };
+
   Photobooth.prototype.onErr = function (err) {
     var self = this;
     if (err.PERMISSION_DENIED) {
@@ -114,10 +129,7 @@ define([
             firstFrame: firstFrame
           });
           // Allow editing
-          self.$editbtn.removeClass('off');
-          self.$video.addClass('hidden');
-          self.$progress.addClass('off');
-          self.frames = [];
+          self.enableEditing();
         });
         count = 0;
         self.$startbtn.on('click', onClick);
@@ -140,6 +152,15 @@ define([
     }
 
     self.$startbtn.on('click', onClick);
+  };
+
+  Photobooth.prototype.enableEditing = function () {
+    var self = this;
+
+    self.$editbtn.removeClass('off');
+    self.$video.addClass('hidden');
+    self.$progress.addClass('off');
+    self.frames = [];
   };
 
   Photobooth.prototype.onStreamLoaded = function (cameraStream) {
