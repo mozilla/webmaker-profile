@@ -78,9 +78,11 @@ define([
       }
     });
 
-    $('body').on('click', '.disabled', function (e) {
-      e.preventDefault();
-      return false;
+    // Prevent clicks on tile links in edit mode
+    $('body').on('click', '.tile a', function (e) {
+      if (self.isEditMode) {
+        e.preventDefault();
+      }
     });
 
     // TODO - use Tile's bindCommonUI to handle DOM events for Tile UI (?)
@@ -131,6 +133,7 @@ define([
     self.$tileSelector.show();
     self.isEditMode = true;
     self.$editButton.text(strings.get('save'));
+    $('body').addClass('edit-mode');
     self.fire('editing-on');
     $('.tile a').addClass('disabled');
     for(var key in self.tiles) {
@@ -147,6 +150,7 @@ define([
     self.$tileSelector.hide();
     self.isEditMode = false;
     self.$editButton.text(strings.get('edit'));
+    $('body').removeClass('edit-mode');
     self.fire('editing-off');
     $('.tile a').removeClass('disabled');
     for(var key in self.tiles) {

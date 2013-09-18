@@ -19,10 +19,17 @@
     background: @white;
     font-weight: 200;
 
+    @media (min-width: @width-small) {
+      body.edit-mode & {
+        border: 1px solid @lightgrey;
+        padding: 10px;
+      }
+    }
+
     a {
       -webkit-transition: color .25s linear .1s;
       transition: color .25s linear .1s;
-      &.disabled {
+      body.edit-mode & {
         cursor: default;
         color: #CCC;
         -webkit-transition: color .25s linear;
@@ -31,10 +38,13 @@
     }
 
     h3 {
-      font-size: 2em;
+      font-size: 1.8em;
       line-height: 1.2;
       font-weight: inherit;
       margin: 0 0 0.5em 0;
+      a {
+        font-size: 1.1em;
+      }
     }
   }
 }
