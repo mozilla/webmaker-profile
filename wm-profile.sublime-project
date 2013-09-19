@@ -1,0 +1,17 @@
+{
+  "folders": [{
+    "follow_symlinks": true,
+    "path": "./_fe",
+    "folder_exclude_patterns": ["compiled"]
+  }, {
+    "follow_symlinks": true,
+    "path": "./",
+    "file_exclude_patterns": ["index.html", "index.dev.html"]
+  }, {
+    "follow_symlinks": true,
+    "path": "./node_modules/webmaker-profile-service"
+  }],
+  "settings": {
+    "tab_size": 2
+  }
+}

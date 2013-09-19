@@ -136,7 +136,7 @@ define([
     $('body').addClass('edit-mode');
     self.fire('editing-on');
     $('.tile a').addClass('disabled');
-    for(var key in self.tiles) {
+    for (var key in self.tiles) {
       self.tiles[key].enterEditMode();
     }
     self.packery.layout();
@@ -154,7 +154,7 @@ define([
     $('body').removeClass('edit-mode');
     self.fire('editing-off');
     $('.tile a').removeClass('disabled');
-    for(var key in self.tiles) {
+    for (var key in self.tiles) {
       self.tiles[key].exitEditMode();
     }
   };
@@ -301,7 +301,7 @@ define([
     });
   };
 
-  tiles.addUserInfo = function() {
+  tiles.addUserInfo = function () {
     var self = this;
 
     var $userInfo = $(render('user-info'));

@@ -1,9 +1,8 @@
 define([
   'jquery',
   'js/tile',
-  'js/render',
-  'lodash'
-], function ($, Tile, render, _) {
+  'js/render'
+], function ($, Tile, render) {
 
   var UserInfo = function (target, options) {
     var self = this;
@@ -30,7 +29,7 @@ define([
     self.$descriptionOutput = self.$wrapper.find('.description-output');
     self.$saveButton = self.$wrapper.find('.save');
     self.$linkList = self.$wrapper.find('.link-list');
-    self.$linkInput = self.$wrapper.find('[name="link-url"]')
+    self.$linkInput = self.$wrapper.find('[name="link-url"]');
     self.$addLinkButton = self.$wrapper.find('.add');
 
     // Properties -------------------------------------------------------------
@@ -66,15 +65,15 @@ define([
 
   UserInfo.prototype.checkUrl = function (url) {
     // TODO: Check url, choose icon/title based on type
-    var REGEX_MAP = {
-      twitter: 'twitter\.com/[\d[a-zA-Z0-9_]+',
-      tumblr: 'tumblr\.com'
-    };
+    // var REGEX_MAP = {
+    //   twitter: 'twitter\.com/[\d[a-zA-Z0-9_]+',
+    //   tumblr: 'tumblr\.com'
+    // };
     return {
       icon: 'icon-link',
       url: url,
       title: url
-    }
+    };
   };
 
   UserInfo.prototype.addLink = function () {
@@ -127,7 +126,7 @@ define([
     self.update(data, true);
     self.$editButton.removeClass('disabled');
     self.$wrapper.removeClass('editing');
-  }
+  };
 
   UserInfo.prototype.update = function (data, saveData) {
     var self = this;
