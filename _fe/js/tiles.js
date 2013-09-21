@@ -53,6 +53,15 @@ define([
 
     // Setup ------------------------------------------------------------------
 
+    // Hide the add photo button if it isn't supported
+    if (!(navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia)) {
+      self.$btnPhoto.hide();
+    }
+
+    // Create Packery instance
     self.packery = new Packery(self.$container[0], {
       columnWidth: '.grid-sizer',
       gutter: '.gutter-sizer',
@@ -63,6 +72,7 @@ define([
     self.$container.before(self.$tileSelector);
 
     // Event Delegation -------------------------------------------------------
+
     self.packery.on('dragItemPositioned', function () {
       self.packery.layout();
       self.storeOrder();
@@ -136,7 +146,7 @@ define([
     $('body').addClass('edit-mode');
     self.fire('editing-on');
     $('.tile a').addClass('disabled');
-    for(var key in self.tiles) {
+    for (var key in self.tiles) {
       self.tiles[key].enterEditMode();
     }
     self.packery.layout();
@@ -154,7 +164,7 @@ define([
     $('body').removeClass('edit-mode');
     self.fire('editing-off');
     $('.tile a').removeClass('disabled');
-    for(var key in self.tiles) {
+    for (var key in self.tiles) {
       self.tiles[key].exitEditMode();
     }
   };
@@ -301,7 +311,7 @@ define([
     });
   };
 
-  tiles.addUserInfo = function() {
+  tiles.addUserInfo = function () {
     var self = this;
 
     var $userInfo = $(render('user-info'));
