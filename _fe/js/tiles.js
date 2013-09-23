@@ -30,6 +30,12 @@ define([
 
   var tiles = new Komponent();
 
+  /**
+   * Set up the Tiles component
+   * @param  {jQuery || Element} Wrapper element for tiles
+   * @return {undefined}
+   */
+
   tiles.init = function (target) {
     var self = this;
 
@@ -58,6 +64,8 @@ define([
       gutter: '.gutter-sizer',
       itemSelector: '.tile'
     });
+
+    self.hideTileSelector();
 
     // Attach the tile selector before the tile list
     self.$container.before(self.$tileSelector);
@@ -123,40 +131,81 @@ define([
       self.addHackableTile();
     });
   };
+
   /**
    * Show editing UI
    * @return {undefined}
    */
+
   tiles.enterEditMode = function () {
     var self = this;
 
-    self.$tileSelector.show();
-    self.isEditMode = true;
+    self.showTileSelector();
     self.$editButton.text(strings.get('save'));
     $('body').addClass('edit-mode');
     self.fire('editing-on');
     $('.tile a').addClass('disabled');
+
     for (var key in self.tiles) {
       self.tiles[key].enterEditMode();
     }
+
     self.packery.layout();
+    self.isEditMode = true;
   };
+
   /**
    * Hide editing UI
    * @return {undefined}
    */
+
+  // TODO - This is getting called for every hackable tile on page load and shouldn't be.
+
   tiles.exitEditMode = function () {
     var self = this;
 
-    self.$tileSelector.hide();
-    self.isEditMode = false;
+    self.hideTileSelector();
     self.$editButton.text(strings.get('edit'));
     $('body').removeClass('edit-mode');
     self.fire('editing-off');
     $('.tile a').removeClass('disabled');
+
     for (var key in self.tiles) {
       self.tiles[key].exitEditMode();
     }
+
+    self.isEditMode = false;
+  };
+
+  /**
+   * Show tile selector UI
+   * @return {undefined}
+   */
+
+  tiles.showTileSelector = function () {
+    var self = this;
+
+    self.$tileSelector.css('top', '0');
+  };
+
+  /**
+   * Hide tile selector UI
+   * @return {undefined}
+   */
+
+  tiles.hideTileSelector = function () {
+    var self = this;
+
+    // Must check for element to have height
+    // See https://gist.github.com/gvn/6d09cf0470928064fbb2
+    var offsetReady = setInterval(function () {
+      if (self.$tileSelector.height()) {
+        clearTimeout(offsetReady);
+        var offset = -1 * (self.$tileSelector.height() + parseInt(self.$tileSelector.css('padding-top'), 10));
+        offset -= 10; // Move a little bit higher so UI doesn't peek through
+        self.$tileSelector.css('top', offset + 'px');
+      }
+    }, 1);
   };
 
   /**
@@ -165,6 +214,7 @@ define([
    * @param  {boolean} isPrepended If true, prepend the element
    * @return {object} element parameter
    */
+
   tiles.addAndBindDraggable = function (element, isPrepended) {
     var self = this;
     var method = isPrepended ? 'prepended' : 'appended';
@@ -187,10 +237,12 @@ define([
 
     return element;
   };
+
   /**
    * Create a hackable tile and append it
    * @return {undefined}
    */
+
   tiles.addHackableTile = function (tile) {
     var self = this;
 
@@ -254,10 +306,12 @@ define([
       });
     });
   };
+
   /**
    * Create a photo tile and append it
    * @return {undefined}
    */
+
   tiles.addPhotoBooth = function () {
     var self = this;
     var $photoBooth = $(render('photobooth-tile'));
@@ -301,6 +355,11 @@ define([
     });
   };
 
+  /**
+   * Create user info tile
+   * @return {undefined}
+   */
+
   tiles.addUserInfo = function () {
     var self = this;
 
@@ -327,6 +386,7 @@ define([
    * @param  {array} data Array of makes (see fake.json for schema)
    * @return {undefined}
    */
+
   tiles.render = function (data) {
     var self = this;
 
@@ -372,10 +432,12 @@ define([
       self.packery.layout();
     });
   };
+
   /**
    * Extract specified order of make tiles from DOM
    * @return {Array} Array of make IDs in display order
    */
+
   tiles.calculateOrder = function () {
     var self = this;
     var order = [];
@@ -389,21 +451,26 @@ define([
 
     return order;
   };
+
   /**
    * Store order of tiles in local storage (and eventually server side)
    * @return {undefined}
    */
+
   tiles.storeOrder = function () {
     var self = this;
 
     db.set('tileOrder', self.calculateOrder());
   };
+
   /**
    * Fetch order of tiles from local storage (and eventually server side)
    * @return {Array} Array of make IDs in display order
    */
+
   tiles.fetchOrder = function () {
     return db.get('tileOrder');
   };
+
   return tiles;
 });
