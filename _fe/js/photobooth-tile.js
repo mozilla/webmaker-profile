@@ -143,6 +143,9 @@ define([
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
+      xhrFields: {
+        withCredentials: true
+      },
       data: JSON.stringify({
         image: base64
       })

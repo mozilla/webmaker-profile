@@ -12,6 +12,7 @@ requirejs.config({
     komponent: 'komponent/komponent',
     lodash: 'lodash/lodash',
     main: '../_fe/js/main',
+    persona: '../_fe/js/persona',
     templates: '../_fe/compiled/jade-templates',
     text: 'text/text',
     uuid: 'node-uuid/uuid'
@@ -29,8 +30,9 @@ require([
   'js/tiles',
   'js/database',
   'js/localstrings',
-  'js/render'
-], function (device, $, tiles, db, localStrings, render) {
+  'js/render',
+  'persona'
+], function (device, $, tiles, db, localStrings, render, initPersona) {
   var servicesToLoad = 2;
   var servicesLoaded = 0;
 
@@ -44,6 +46,8 @@ require([
         name: db.get('realName'),
         username: db.get('username')
       }));
+
+      initPersona();
 
       $body.append($tileContainer);
 

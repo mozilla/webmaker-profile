@@ -12,5 +12,9 @@
   "persistFail": "Failed to persist image to server.",
   "photo": "GIF",
   "save": "Save",
-  "sucky-browser": "Sorry, but your browser doesn't currently support getUserMedia!<br/><br/><h1>:{</h1>"
+  "sucky-browser": "Sorry, but your browser doesn't currently support getUserMedia!<br/><br/><h1>:{</h1>",
+  "Likes": "Likes",
+  "Makes": "Makes",
+  "login": "Login",
+  "logout": "Logout"
 }
