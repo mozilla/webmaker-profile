@@ -494,12 +494,19 @@ define([
   tiles.doLayout = function () {
     var self = this;
 
-    // console.log('doLayout');
+    // Prevent calls to layout when a layout is already in progress
     if (!self.isLayingOut) {
       self.isLayingOut = true;
       self.packery.layout();
     } else {
-      // console.log('already laying out');
+
+      // TODO: This is gross. Need to reduce calls to doLayout significantly!
+
+      // Try to do layout again later
+      // This will repeat until it is successful
+      setTimeout(function () {
+        self.doLayout();
+      }, 10);
     }
   };
 
