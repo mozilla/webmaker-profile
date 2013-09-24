@@ -82,10 +82,13 @@ define([
 
   Photobooth.prototype.onErr = function (err) {
     var self = this;
-    if (err.PERMISSION_DENIED) {
+
+    if (err.name === 'PERMISSION_DENIED') {
       self.$statusMessage.html(strings.get('denied'));
-    } else if (err.NOT_SUPPORTED) {
+    } else if (err.name === 'NOT_SUPPORTED_ERROR') {
       self.$statusMessage.html(strings.get('sucky-browser'));
+    } else {
+      self.$statusMessage.html(strings.get('mystery-error'));
     }
   };
 

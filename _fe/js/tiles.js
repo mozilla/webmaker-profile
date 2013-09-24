@@ -53,6 +53,15 @@ define([
 
     // Setup ------------------------------------------------------------------
 
+    // Hide the add photo button if it isn't supported
+    if (!(navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia ||
+      navigator.msGetUserMedia)) {
+      self.$btnPhoto.hide();
+    }
+
+    // Create Packery instance
     self.packery = new Packery(self.$container[0], {
       columnWidth: '.grid-sizer',
       gutter: '.gutter-sizer',
@@ -63,6 +72,7 @@ define([
     self.$container.before(self.$tileSelector);
 
     // Event Delegation -------------------------------------------------------
+
     self.packery.on('dragItemPositioned', function () {
       self.packery.layout();
       self.storeOrder();
