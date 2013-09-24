@@ -1,11 +1,12 @@
-var connect = require('./node_modules/grunt-contrib-connect/node_modules/connect/lib/connect'),
+var express = require('express'),
     path = require('path');
 
-var app = connect();
+var app = express();
 
-app.use(connect.static(path.resolve(__dirname)));
+app.use(express.static(path.resolve(__dirname)));
 
 var port = process.env.PORT || 5050;
 
-app.listen(port);
-console.log("Now listening on port " + port);
+app.listen(port, function(){
+  console.log("Now listening on port " + port);
+});
