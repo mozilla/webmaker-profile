@@ -57,9 +57,11 @@ define([
     self.bindCommonUI(container);
 
     // Properties -------------------------------------------------------------
+
     self.width = 0;
     self.height = 0;
     self.frames = [];
+    self.isCapturing = false;
 
   };
 
@@ -185,22 +187,27 @@ define([
         });
         count = 0;
         self.$startbtn.on('click', onClick);
+        self.isCapturing = false;
       }
     }
 
     function onClick() {
-      self.width = self.$video.width();
-      self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
+      if (!self.isCapturing) {
+        self.isCapturing = true;
 
-      self.$video.attr('width', self.width);
-      self.$video.attr('height', self.height);
-      self.$canvas.attr('width', self.width);
-      self.$canvas.attr('height', self.height);
+        self.width = self.$video.width();
+        self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
 
-      interval = setInterval(snapPicture, self.options.delay);
+        self.$video.attr('width', self.width);
+        self.$video.attr('height', self.height);
+        self.$canvas.attr('width', self.width);
+        self.$canvas.attr('height', self.height);
 
-      self.$video.removeAttr('width');
-      self.$video.removeAttr('height');
+        interval = setInterval(snapPicture, self.options.delay);
+
+        self.$video.removeAttr('width');
+        self.$video.removeAttr('height');
+      }
     }
 
     self.$startbtn.on('click', onClick);
