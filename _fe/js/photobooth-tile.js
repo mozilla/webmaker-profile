@@ -196,7 +196,7 @@ define([
     self.width = self.$video.width();
     self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
 
-    self.$statusMessage.empty();
+    self.$statusMessage.remove();
     self.$startbtn.removeClass('off');
 
     self.$video.attr('width', self.width);
