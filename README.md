@@ -2,7 +2,7 @@
 
 # Webmaker Profile
 
-Prototype of *USERNAME.makes.org* profile.
+*USERNAME.makes.org*
 
 ## Build Dependencies
 
