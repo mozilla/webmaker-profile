@@ -494,9 +494,12 @@ define([
   tiles.doLayout = function () {
     var self = this;
 
+    // console.log('doLayout');
     if (!self.isLayingOut) {
       self.isLayingOut = true;
       self.packery.layout();
+    } else {
+      // console.log('already laying out');
     }
   };
 
