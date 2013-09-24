@@ -12,11 +12,10 @@ html
     - else
       link(href='_fe/compiled/app.min.css', rel='stylesheet', type='text/css', media='all')
   body
+
 //- Load individual JS files for dev and one concat file for prod
 - if (typeof dev !== 'undefined' && dev === true)
-  script(src='bower_components/gif-js/dist/gif.js')
   script(data-main='_fe/js/main', src='bower_components/requirejs/require.js')
 - else
-  script(src='bower_components/gif-js/dist/gif.js')
   script(src='bower_components/requirejs/require.js')
   script(src='_fe/compiled/app.min.js')
