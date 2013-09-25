@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/gvn/webmaker-profile.png)](https://travis-ci.org/gvn/webmaker-profile)
 [![Dependency Status](https://gemnasium.com/gvn/webmaker-profile.png)](https://gemnasium.com/gvn/webmaker-profile)
 
 # Webmaker Profile
