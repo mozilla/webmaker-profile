@@ -9,6 +9,7 @@
   "mystery-error": "Something went horribly wrong...",
   "permission": "Please allow us to access your webcam",
   "permissionHelp": "Your browser will now ask you for permission to use your camera. This will usually be at the top of your window.",
+  "persistFail": "Failed to persist image to server.",
   "photo": "GIF",
   "save": "Save",
   "sucky-browser": "Sorry, but your browser doesn't currently support getUserMedia!<br/><br/><h1>:{</h1>"

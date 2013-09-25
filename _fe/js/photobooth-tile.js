@@ -153,9 +153,11 @@ define([
         });
       })
       .fail(function () {
-        throw ('Failed to persist image to server.');
-      })
-      .always(function () {});
+        self.fire('error', {
+          id: 'persistFail',
+          message: strings.get('persistFail')
+        });
+      });
   };
 
   Photobooth.prototype.attachClickListener = function () {
