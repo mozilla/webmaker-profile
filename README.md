@@ -1,4 +1,5 @@
-[![Dependency Status](https://gemnasium.com/gvn/webmaker-profile.png)](https://gemnasium.com/gvn/webmaker-profile)
+[![Build Status](https://travis-ci.org/mozilla/webmaker-profile.png)](https://travis-ci.org/mozilla/webmaker-profile)
+[![Dependency Status](https://gemnasium.com/mozilla/webmaker-profile.png)](https://gemnasium.com/mozilla/webmaker-profile)
 
 # Webmaker Profile
 
@@ -21,16 +22,19 @@ cd webmaker-profile && npm install
 
 ### Service Setup
 
-*NOTE: If you don't want to write service code, you can ignore this step.*
+Profile uses a web service for its backend. 
 
-Profile consumes a stand-alone web service, [webmaker-profile-service](https://github.com/mozilla/webmaker-profile-service). Eventually, this will run separate from the Profile app, but for development we are using `npm link` to use it as a node_module for ease of developing in tandem.
+To run the service locally:
 
-To set this up, first clone **webmaker-profile-service** into a new location (most likely parallel to **webmaker-profile**). Then `cd` into its directory and run `npm link`. Finally, `cd` into **webmaker-profile** and run `npm link webmaker-profile-service`.
+1. Clone [webmaker-profile-service](https://github.com/mozilla/webmaker-profile-service) into a new location (most likely parallel to **webmaker-profile**)
+2. `cd` into the `webmaker-profile-service` directory
+3. Run `node app.js`
 
 ## Grunt Tasks
 
-- **grunt** - Recompile Jade and Less as needed for dev. Run a server at [localhost:8000](http://localhost:8000).
-- **grunt build** - Compile Jade, Less and JS for production and run JSHint.
+- **grunt** - Recompiles Jade and Less as needed for dev. Runs a server at [localhost:8000](http://localhost:8000).
+- **grunt build** - Compiles Jade, Less and JS for production and run JSHint.
+- **grunt clean** - Runs JSHint and beautifies JS to comply with our [contribution guidelines](https://github.com/mozilla/webmaker-profile/blob/master/CONTRIBUTING.md).
 
 ## Indexes
 

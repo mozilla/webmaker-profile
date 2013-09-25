@@ -109,6 +109,21 @@ module.exports = function (grunt) {
         jshintrc: '.jshintrc'
       }
     },
+    jsbeautifier: {
+      modify: {
+        src: ['Gruntfile.js', '_fe/js/**/*.js'],
+        options: {
+          config: '.jsbeautifyrc'
+        }
+      },
+      verify: {
+        src: ['Gruntfile.js', '_fe/js/**/*.js'],
+        options: {
+          mode: 'VERIFY_ONLY',
+          config: '.jsbeautifyrc'
+        }
+      }
+    },
     nodemon: {
       development: {
         options: {
@@ -119,6 +134,7 @@ module.exports = function (grunt) {
     }
   });
 
+  grunt.loadNpmTasks('grunt-jsbeautifier');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
@@ -145,6 +161,19 @@ module.exports = function (grunt) {
     'requirejs'
   ]);
 
+  // Verify code before a commit
+  grunt.registerTask('clean', [
+    'jsbeautifier:modify',
+    'jshint'
+  ]);
+
+  // Build test for Travis
+  grunt.registerTask('travis', [
+    'jsbeautifier:verify',
+    'jshint'
+  ]);
+
+  // Alias for automated build on Heroku
   grunt.registerTask('heroku', ['build']);
 
 };
