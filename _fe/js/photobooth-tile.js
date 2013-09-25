@@ -1,14 +1,14 @@
 define([
   'jquery',
   'js/tile',
-  'animatedGif',
+  'gifJS',
   'getUserMedia',
   'js/localstrings',
   'config'
 ], function (
   $,
   Tile,
-  AnimatedGif,
+  Gif,
   getUserMedia,
   strings,
   config
@@ -57,9 +57,11 @@ define([
     self.bindCommonUI(container);
 
     // Properties -------------------------------------------------------------
+
     self.width = 0;
     self.height = 0;
     self.frames = [];
+    self.isCapturing = false;
 
   };
 
@@ -94,38 +96,68 @@ define([
 
   Photobooth.prototype.makeGif = function (callback) {
     var self = this;
-    var ag = new AnimatedGif({
-      workerPath: '/bower_components/Animated_GIF/src/quantizer.js'
-    });
-    ag.setSize(self.width, self.height);
-    ag.setDelay(self.options.speed);
-    for (var i = 0; i < self.frames.length; i++) {
-      ag.addFrame(self.frames[i]);
+
+    function blobToBase64(blob, cb) {
+      var reader = new FileReader();
+
+      reader.onload = function () {
+        var dataUrl = reader.result;
+        var base64 = dataUrl.split(',')[1];
+        cb(base64);
+      };
+
+      reader.readAsDataURL(blob);
     }
-    ag.getBase64GIF(function (image) {
-      var animatedImage = document.createElement('img');
-      animatedImage.src = image;
 
-      // Persist animated GIF to server
-      $.ajax({
-        url: config.serviceURL + '/store-img',
-        type: 'POST',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: JSON.stringify({
-          image: image
-        })
-      })
-        .done(function (data) {
-          self.fire('imageStored', {
-            href: data.imageURL
-          });
-        })
-        .fail(function () {})
-        .always(function () {});
-
-      callback(animatedImage);
+    var animatedGIF = new Gif({
+      workers: 2,
+      workerScript: '/bower_components/gif-js/dist/gif.worker.js',
+      quality: 10,
+      width: self.width,
+      height: self.height
     });
+
+    for (var i = 0; i < self.frames.length; i++) {
+      animatedGIF.addFrame(self.frames[i], {
+        delay: self.options.speed
+      });
+    }
+
+    animatedGIF.on('finished', function (blob) {
+      blobToBase64(blob, function (base64EncodedImage) {
+        var animatedImage = document.createElement('img');
+        animatedImage.src = 'data:image/gif;base64,' + base64EncodedImage;
+        self.persistToServer(base64EncodedImage);
+        callback(animatedImage);
+      });
+    });
+
+    animatedGIF.render();
+  };
+
+  Photobooth.prototype.persistToServer = function (base64) {
+    var self = this;
+
+    $.ajax({
+      url: config.serviceURL + '/store-img',
+      type: 'POST',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        image: base64
+      })
+    })
+      .done(function (data) {
+        self.fire('imageStored', {
+          href: data.imageURL
+        });
+      })
+      .fail(function () {
+        self.fire('error', {
+          id: 'persistFail',
+          message: strings.get('persistFail')
+        });
+      });
   };
 
   Photobooth.prototype.attachClickListener = function () {
@@ -157,22 +189,27 @@ define([
         });
         count = 0;
         self.$startbtn.on('click', onClick);
+        self.isCapturing = false;
       }
     }
 
     function onClick() {
-      self.width = self.$video.width();
-      self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
+      if (!self.isCapturing) {
+        self.isCapturing = true;
 
-      self.$video.attr('width', self.width);
-      self.$video.attr('height', self.height);
-      self.$canvas.attr('width', self.width);
-      self.$canvas.attr('height', self.height);
+        self.width = self.$video.width();
+        self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
 
-      interval = setInterval(snapPicture, self.options.delay);
+        self.$video.attr('width', self.width);
+        self.$video.attr('height', self.height);
+        self.$canvas.attr('width', self.width);
+        self.$canvas.attr('height', self.height);
 
-      self.$video.removeAttr('width');
-      self.$video.removeAttr('height');
+        interval = setInterval(snapPicture, self.options.delay);
+
+        self.$video.removeAttr('width');
+        self.$video.removeAttr('height');
+      }
     }
 
     self.$startbtn.on('click', onClick);
@@ -196,7 +233,7 @@ define([
     self.width = self.$video.width();
     self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
 
-    self.$statusMessage.empty();
+    self.$statusMessage.remove();
     self.$startbtn.removeClass('off');
 
     self.$video.attr('width', self.width);
