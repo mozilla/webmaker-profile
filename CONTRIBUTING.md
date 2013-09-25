@@ -13,9 +13,11 @@ Refer to the [README](https://github.com/mozilla/webmaker-profile/blob/master/RE
 
 ### JavaScript
 
-JS files must pass JSHint using the provided [.jshintrc](https://raw.github.com/mozilla/webmaker-profile/master/.jshintrc) settings. Before submitting a patch, run `grunt jshint` to test.
+JS files must pass JSHint using the provided [.jshintrc](https://raw.github.com/mozilla/webmaker-profile/master/.jshintrc) settings.
 
 Additionally, JS files need to be run through [JSBeautify](https://github.com/einars/js-beautify) with the provided [.jsbeautifyrc](https://raw.github.com/mozilla/webmaker-profile/master/.jsbeautifyrc).
+
+TL;DR – Just run `grunt clean` before pushing a commit. It will validate and beautify your JS.
 
 #### Variable Naming
 
