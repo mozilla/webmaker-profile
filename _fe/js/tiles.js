@@ -56,6 +56,7 @@ define([
     // Properties -------------------------------------------------------------
 
     self.isEditMode = false;
+    self.isLayingOut = false;
 
     // Setup ------------------------------------------------------------------
 
@@ -82,8 +83,12 @@ define([
     // Event Delegation -------------------------------------------------------
 
     self.packery.on('dragItemPositioned', function () {
-      self.packery.layout();
+      self.doLayout();
       self.storeOrder();
+    });
+
+    self.packery.on('layoutComplete', function () {
+      self.isLayingOut = false;
     });
 
     self.$editButton.on('click', function (event) {
@@ -113,7 +118,7 @@ define([
 
       if (newIndex !== -1) {
         items.splice(newIndex, 0, items.splice(originalIndex, 1)[0]);
-        self.packery.layout();
+        self.doLayout();
       }
 
       self.storeOrder();
@@ -127,7 +132,7 @@ define([
 
       if (newIndex !== items.length) {
         items.splice(newIndex, 0, items.splice(originalIndex, 1)[0]);
-        self.packery.layout();
+        self.doLayout();
       }
 
       self.storeOrder();
@@ -160,7 +165,7 @@ define([
       self.tiles[key].enterEditMode();
     }
 
-    self.packery.layout();
+    self.doLayout();
     self.isEditMode = true;
   };
 
@@ -286,7 +291,7 @@ define([
     // For order tracking purposes
     $hackableTile.data('id', UUID);
 
-    self.packery.layout();
+    self.doLayout();
 
     if (typeof tile === 'undefined') {
       self.storeOrder();
@@ -296,7 +301,7 @@ define([
 
     // Reflow Packery when the hackable tile's layout changes
     hackableTile.on('resize', function () {
-      self.packery.layout();
+      self.doLayout();
     });
 
     // Reflow Packery when tile is destroyed
@@ -306,7 +311,7 @@ define([
       self.storeOrder();
       db.destroyTileMake(UUID);
       delete self.tiles[UUID];
-      self.packery.layout();
+      self.doLayout();
     });
 
     hackableTile.on('update', function (event) {
@@ -342,14 +347,14 @@ define([
     $photoBooth.data('id', UUID); // For order tracking purposes
     self.storeOrder();
     photoBooth.init();
-    self.packery.layout();
+    self.doLayout();
 
     photoBooth.on('resize', function () {
-      self.packery.layout();
+      self.doLayout();
     });
 
     photoBooth.on('destroy', function () {
-      self.packery.layout();
+      self.doLayout();
       delete self.tiles[UUID];
     });
 
@@ -382,11 +387,11 @@ define([
     userInfo.update(userInfoData);
 
     userInfo.on('resize', function () {
-      self.packery.layout();
+      self.doLayout();
     });
 
     userInfo.on('update', function (event) {
-      self.packery.layout();
+      self.doLayout();
       db.set('userInfo', event.content);
     });
   };
@@ -439,7 +444,7 @@ define([
 
     imgLoaded.on('always', function () {
       $('.loader').hide();
-      self.packery.layout();
+      self.doLayout();
     });
   };
 
@@ -480,6 +485,29 @@ define([
 
   tiles.fetchOrder = function () {
     return db.get('tileOrder');
+  };
+
+  /**
+   * Sort tiles to avoid overlap
+   * @return {undefined}
+   */
+  tiles.doLayout = function () {
+    var self = this;
+
+    // Prevent calls to layout when a layout is already in progress
+    if (!self.isLayingOut) {
+      self.isLayingOut = true;
+      self.packery.layout();
+    } else {
+
+      // TODO: This is gross. Need to reduce calls to doLayout significantly!
+
+      // Try to do layout again later
+      // This will repeat until it is successful
+      setTimeout(function () {
+        self.doLayout();
+      }, 10);
+    }
   };
 
   return tiles;
