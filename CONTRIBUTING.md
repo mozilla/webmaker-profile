@@ -17,7 +17,7 @@ JS files must pass JSHint using the provided [.jshintrc](https://raw.github.com/
 
 Additionally, JS files need to be run through [JSBeautify](https://github.com/einars/js-beautify) with the provided [.jsbeautifyrc](https://raw.github.com/mozilla/webmaker-profile/master/.jsbeautifyrc).
 
-TL;DR – Just run `grunt clean` before pushing a commit. It will validate and beautify your JS.
+**TL;DR** Run `grunt clean` before pushing a commit. It will validate and beautify your JS.
 
 #### Variable Naming
 
@@ -45,3 +45,4 @@ Any patch should be tested in as many of our [supported browsers](https://github
 
 - Try not to pollute your pull request with unintended changes – keep them simple and small. If possible, squash your commits.
 - Try to share which browsers and devices your code has been tested in before submitting a pull request.
+- If your PR resolves an issue, include **closes #ISSUE_NUMBER** in your commit message (or a [synonym](https://help.github.com/articles/closing-issues-via-commit-messages)).
