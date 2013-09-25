@@ -11,7 +11,7 @@ requirejs.config({
     json: '../_fe/json',
     komponent: 'komponent/komponent',
     lodash: 'lodash/lodash',
-    main: '../_fe/js/main',
+    main: '../_fe/js/main' LULZBROKEN
     neuquant: 'Animated_GIF/src/NeuQuant',
     omggif: 'Animated_GIF/src/omggif',
     uuid: 'node-uuid/uuid',
