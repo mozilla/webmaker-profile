@@ -3,7 +3,8 @@
   "author": "Mozilla",
   "version": "0.1.0",
   "scripts": {
-    "postinstall": "./node_modules/.bin/bower install"
+    "postinstall": "./node_modules/.bin/bower install",
+    "test": "grunt travis --verbose"
   },
   "dependencies": {
     "express": "3.4.0"
@@ -19,6 +20,7 @@
     "grunt-contrib-less": "0.7.0",
     "grunt-contrib-requirejs": "0.4.1",
     "grunt-nodemon": "0.1.1",
-    "webmaker-profile-service": "mozilla/webmaker-profile-service"
+    "webmaker-profile-service": "mozilla/webmaker-profile-service",
+    "grunt-jsbeautifier": "0.2.2"
   }
 }
