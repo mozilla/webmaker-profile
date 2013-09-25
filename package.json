@@ -20,7 +20,6 @@
     "grunt-contrib-less": "0.7.0",
     "grunt-contrib-requirejs": "0.4.1",
     "grunt-nodemon": "0.1.1",
-    "webmaker-profile-service": "mozilla/webmaker-profile-service",
     "grunt-jsbeautifier": "0.2.2"
   }
 }
