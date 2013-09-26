@@ -21,9 +21,13 @@ define([
      */
     init: function (username) {
       $.ajax({
+        xhrFields: {
+          withCredentials: true
+        },
         url: config.serviceURL + '/user-data/' + username,
         type: 'GET',
-        dataType: 'json'
+        dataType: 'json',
+        crossDomain: true
       })
         .done(function (data) {
           storage = data;
@@ -53,11 +57,15 @@ define([
 
       // Persist to server
       $.ajax({
+        xhrFields: {
+          withCredentials: true
+        },
         // TODO - dynamic username
         url: config.serviceURL + '/user-data/reanimator',
         type: 'POST',
         dataType: 'json',
         contentType: 'application/json',
+        crossDomain: true,
         data: JSON.stringify(data)
       })
         .done(function () {
