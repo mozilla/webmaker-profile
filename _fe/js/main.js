@@ -71,18 +71,9 @@ require([
   });
 
   // Grab username from QueryString, if it exists
-  var username = 'reanimator';
-  var qs = window.location.search;
-  if (qs) {
-    qs = qs.replace('?', ''); // get rid of '?'
-    var qsArray = qs.split('&');
-    for (var i = 0, l = qsArray.length; i < l; i++) {
-      var v = qsArray[i].split('=');
-      if (v[0] === 'user') {
-        username = v[1];
-      }
-    }
-  }
+  var username = (window.location.search &&
+    window.location.search.match(/username=([a-zA-Z0-9]+)/)[1]) ||
+    'reanimator';
 
   db.init(username);
 });
