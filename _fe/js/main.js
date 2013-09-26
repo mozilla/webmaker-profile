@@ -74,6 +74,10 @@ require([
     initUI();
   });
 
-  // TODO - Sniff username from subdomain instead of hardcoding
-  db.init('reanimator');
+  // Grab username from QueryString, if it exists
+  var username = (window.location.search &&
+    window.location.search.match(/username=([a-zA-Z0-9]+)/)[1]) ||
+    'reanimator';
+
+  db.init(username);
 });
