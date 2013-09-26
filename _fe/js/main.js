@@ -78,7 +78,7 @@ require([
     var qsArray = qs.split('&');
     for (var i = 0, l = qsArray.length; i < l; i++) {
       var v = qsArray[i].split('=');
-      if (v[0] === 'u') {
+      if (v[0] === 'user') {
         username = v[1];
       }
     }
