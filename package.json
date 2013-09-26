@@ -1,7 +1,7 @@
 {
   "name": "webmaker-profile",
   "author": "Mozilla",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "postinstall": "./node_modules/.bin/bower install",
     "test": "grunt travis --verbose"
