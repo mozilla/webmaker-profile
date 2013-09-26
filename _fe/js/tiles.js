@@ -255,6 +255,9 @@ define([
 
   /**
    * Create a hackable tile and append it
+   *  (or recreate stored tile)
+   *
+   * @param {object} tile Tile record from DB
    * @return {undefined}
    */
 
@@ -304,14 +307,8 @@ define([
       self.doLayout();
     });
 
-    // Reflow Packery when tile is destroyed
     hackableTile.on('destroy', function () {
-      self.packery.remove($hackableTile[0]);
-      $hackableTile.remove();
-      self.storeOrder();
-      db.destroyTileMake(UUID);
-      delete self.tiles[UUID];
-      self.doLayout();
+      self.destroyTile($hackableTile);
     });
 
     hackableTile.on('update', function (event) {
@@ -354,8 +351,7 @@ define([
     });
 
     photoBooth.on('destroy', function () {
-      self.doLayout();
-      delete self.tiles[UUID];
+      self.destroyTile($photoBooth);
     });
 
     photoBooth.on('update', function () {
@@ -368,6 +364,30 @@ define([
         content: '<img src="' + event.href + '">'
       });
     });
+  };
+
+  /**
+   * Remove a tile from DOM and DB
+   * @param  {jQuery Element} $tile
+   * @return {undefined}
+   */
+
+  tiles.destroyTile = function ($tile) {
+    var self = this;
+
+    var UUID = $tile.data('id');
+
+    // Remove from DOM
+    self.packery.remove($tile[0]);
+
+    // Remove from DB
+    db.destroyTileMake(UUID);
+
+    // Remove local reference
+    delete self.tiles[UUID];
+
+    self.storeOrder();
+    self.doLayout();
   };
 
   /**
