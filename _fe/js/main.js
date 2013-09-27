@@ -7,6 +7,7 @@ requirejs.config({
     imagesloaded: 'imagesloaded/imagesloaded',
     jade: 'jade/runtime',
     jquery: 'jquery/jquery',
+    'jquery-debounce': 'jquery-throttle-debounce/jquery.ba-throttle-debounce.min',
     js: '../_fe/js',
     json: '../_fe/json',
     komponent: 'komponent/komponent',
@@ -20,6 +21,9 @@ requirejs.config({
   shim: {
     'gifJS': {
       exports: 'GIF'
+    },
+    'jquery-debounce': {
+      deps: ['jquery']
     }
   }
 });
