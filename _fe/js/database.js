@@ -38,7 +38,7 @@ define([
         });
     },
     /**
-     * Get the value of a key from local storage
+     * Get the value of a key from session-only storage
      * @param  {string} key
      * @return {*}
      */

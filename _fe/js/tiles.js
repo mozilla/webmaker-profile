@@ -40,7 +40,7 @@ define([
     var self = this;
 
     self.callbacks = {};
-    self.tiles = {};
+    self.dynamicTiles = {};
 
     // Element references -----------------------------------------------------
 
@@ -57,6 +57,7 @@ define([
 
     self.isEditMode = false;
     self.isLayingOut = false;
+    self.tileOrder = [];
 
     // Setup ------------------------------------------------------------------
 
@@ -84,11 +85,22 @@ define([
 
     self.packery.on('dragItemPositioned', function () {
       self.doLayout();
-      self.storeOrder();
+
+      var newOrder = self.calculateOrder();
+
+      if (!_.isEqual(self.tileOrder, newOrder)) {
+        self.fire('tileOrderChange', {});
+      }
+
+      self.tileOrder = newOrder;
     });
 
     self.packery.on('layoutComplete', function () {
       self.isLayingOut = false;
+    });
+
+    self.on('tileOrderChange', function () {
+      self.storeOrder();
     });
 
     self.$editButton.on('click', function (event) {
@@ -161,8 +173,8 @@ define([
     self.fire('editing-on');
     $('.tile a').addClass('disabled');
 
-    for (var key in self.tiles) {
-      self.tiles[key].enterEditMode();
+    for (var key in self.dynamicTiles) {
+      self.dynamicTiles[key].enterEditMode();
     }
 
     self.doLayout();
@@ -185,8 +197,8 @@ define([
     self.fire('editing-off');
     $('.tile a').removeClass('disabled');
 
-    for (var key in self.tiles) {
-      self.tiles[key].exitEditMode();
+    for (var key in self.dynamicTiles) {
+      self.dynamicTiles[key].exitEditMode();
     }
 
     self.isEditMode = false;
@@ -269,17 +281,7 @@ define([
     var hackableTile = new HackableTile($hackableTile);
 
     var UUID = (typeof tile !== 'undefined' ? tile.id : db.generateFakeUUID());
-    self.tiles[UUID] = hackableTile;
-
-    if (typeof tile === 'undefined') {
-      db.storeTileMake({
-        id: UUID,
-        tool: 'profile',
-        type: 'hackable',
-        content: null
-      });
-    }
-
+    self.dynamicTiles[UUID] = hackableTile;
     self.$container.append($hackableTile);
 
     if (typeof tile === 'undefined') {
@@ -296,10 +298,6 @@ define([
 
     self.doLayout();
 
-    if (typeof tile === 'undefined') {
-      self.storeOrder();
-    }
-
     // Event Delegation -------------------------------------------------------
 
     // Reflow Packery when the hackable tile's layout changes
@@ -312,10 +310,19 @@ define([
     });
 
     hackableTile.on('update', function (event) {
-      db.storeTileMake({
-        id: UUID,
-        content: event.content
-      });
+      // Don't persist empty tiles
+      if (event.content.length) {
+        db.storeTileMake({
+          id: UUID,
+          content: event.content,
+          tool: 'profile',
+          type: 'hackable'
+        });
+      } else {
+        db.destroyTileMake(UUID);
+      }
+
+      self.storeOrder();
     });
   };
 
@@ -330,7 +337,7 @@ define([
     var photoBooth = new PhotoBoothTile($photoBooth[0]);
     var UUID = db.generateFakeUUID();
 
-    self.tiles[UUID] = photoBooth;
+    self.dynamicTiles[UUID] = photoBooth;
 
     db.storeTileMake({
       id: UUID,
@@ -384,7 +391,7 @@ define([
     db.destroyTileMake(UUID);
 
     // Remove local reference
-    delete self.tiles[UUID];
+    delete self.dynamicTiles[UUID];
 
     self.storeOrder();
     self.doLayout();
@@ -470,8 +477,8 @@ define([
   };
 
   /**
-   * Extract specified order of make tiles from DOM
-   * @return {Array} Array of make IDs in display order
+   * Extract specified order of non-empty make tiles from DOM
+   * @return {Array} Array of non-empty make IDs in display order
    */
 
   tiles.calculateOrder = function () {
@@ -480,8 +487,11 @@ define([
     var tiles = self.packery.getItemElements();
 
     tiles.forEach(function (tile) {
-      if ($(tile).data('id')) {
-        order.push($(tile).data('id'));
+      var UUID = $(tile).data('id');
+
+      // Track order of only non-dynamic tiles or a dynamic tile with content
+      if (!self.dynamicTiles[UUID] || self.dynamicTiles[UUID].getContent()) {
+        order.push(UUID);
       }
     });
 
@@ -489,7 +499,7 @@ define([
   };
 
   /**
-   * Store order of tiles in local storage (and eventually server side)
+   * Store order of tiles on server
    * @return {undefined}
    */
 
@@ -500,7 +510,7 @@ define([
   };
 
   /**
-   * Fetch order of tiles from local storage (and eventually server side)
+   * Fetch order of tiles
    * @return {Array} Array of make IDs in display order
    */
 
@@ -512,6 +522,7 @@ define([
    * Sort tiles to avoid overlap
    * @return {undefined}
    */
+
   tiles.doLayout = function () {
     var self = this;
 
