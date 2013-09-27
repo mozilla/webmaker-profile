@@ -400,7 +400,8 @@ define([
 
     var $userInfo = $(render('user-info'));
     var userInfo = new UserInfo($userInfo[0]);
-    var userInfoData = db.get('userInfo');
+    var userInfoData = db.get('userInfo') || {};
+    userInfoData.makes = db.get('makes') || {};
 
     self.$container.append($userInfo);
     self.packery.stamp($userInfo[0]);

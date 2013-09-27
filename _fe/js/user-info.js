@@ -31,6 +31,8 @@ define([
     self.$linkList = self.$wrapper.find('.link-list');
     self.$linkInput = self.$wrapper.find('[name="link-url"]');
     self.$addLinkButton = self.$wrapper.find('.add');
+    self.$makesNum = self.$wrapper.find('.makes-number');
+    self.$likesNum = self.$wrapper.find('.likes-number');
 
     // Properties -------------------------------------------------------------
 
@@ -138,6 +140,8 @@ define([
       self.$descriptionOutput.html(data.description);
     }
 
+    self.updateMetaData(data);
+
     if (data.linkUrls) {
       self.linkUrls = data.linkUrls;
     }
@@ -151,6 +155,18 @@ define([
       self.fire('resize');
     }
 
+  };
+
+  UserInfo.prototype.updateMetaData = function (data) {
+    var makes = data.makes;
+    var numOfMakes = makes.length;
+    var likes = 0;
+    likes = makes.reduce(function (prev, current) {
+      return prev + (current.likes ? current.likes.length : 0);
+    }, 0);
+
+    this.$makesNum.html(numOfMakes);
+    this.$likesNum.html(likes);
   };
 
   return UserInfo;
