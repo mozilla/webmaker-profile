@@ -20,11 +20,13 @@ define([
      * @return {undefined}
      */
     init: function (username) {
+      this.username = username;
+
       $.ajax({
         xhrFields: {
           withCredentials: true
         },
-        url: config.serviceURL + '/user-data/' + username,
+        url: config.serviceURL + '/user-data/' + this.username,
         type: 'GET',
         dataType: 'json',
         crossDomain: true
@@ -60,8 +62,7 @@ define([
         xhrFields: {
           withCredentials: true
         },
-        // TODO - dynamic username
-        url: config.serviceURL + '/user-data/reanimator',
+        url: config.serviceURL + '/user-data/' + this.username,
         type: 'POST',
         dataType: 'json',
         contentType: 'application/json',
