@@ -32,7 +32,7 @@ define([
         crossDomain: true
       })
         .done(function (data) {
-          storage = JSON.parse(data);
+          storage = data;
           db.fire('load');
         });
     },
