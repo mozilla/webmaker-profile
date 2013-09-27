@@ -121,6 +121,12 @@ define([
     self.$hackedContent.show();
   };
 
+  HackableTile.prototype.getContent = function () {
+    var self = this;
+
+    return self.$hackedContent.html().length ? self.$hackedContent.html() : null;
+  };
+
   /**
    * Update the rendered HTML inside the tile
    * @param  {string} html A string of HTML/text to parse and render
@@ -128,9 +134,6 @@ define([
    */
   HackableTile.prototype.update = function (html) {
     var self = this;
-
-    // This method extends Tile's update method
-    Tile.prototype.update.call(self, html);
 
     function wrapImg(text) {
       return '<img src="' + text + '">';
@@ -180,12 +183,18 @@ define([
           .removeAttr('width');
       }
 
-      self.$hackedContent.html(html);
-      self.$textarea.val(html);
       self.$hackedContent.show();
     } else {
       self.$hackedContent.hide();
     }
+
+    self.$hackedContent.html(html);
+    self.$textarea.val(html);
+
+    // This method extends Tile's update method
+    // Calling here so that events fire after updates have actually occurred
+    Tile.prototype.update.call(self, html);
+
   };
 
   return HackableTile;

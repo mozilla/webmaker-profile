@@ -292,8 +292,14 @@ define([
     self.$photo.attr('src', content.gif).removeClass('hidden');
     self.$firstFrame.attr('src', content.firstFrame).removeClass('hidden');
 
+    // Fire events
     Tile.prototype.update.call(self, content);
+  };
 
+  Photobooth.prototype.getContent = function () {
+    var self = this;
+
+    return self.$photo.attr('src') ? self.$photo.attr('src') : null;
   };
 
   return Photobooth;
