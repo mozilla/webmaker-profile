@@ -24,10 +24,8 @@ define([
     // Element references -----------------------------------------------------
 
     self.$wrapper = $(target);
-    self.$editButton = self.$wrapper.find('.edit');
     self.$descriptionInput = self.$wrapper.find('[name="description"]');
     self.$descriptionOutput = self.$wrapper.find('.description-output');
-    self.$saveButton = self.$wrapper.find('.save');
     self.$linkList = self.$wrapper.find('.link-list');
     self.$linkInput = self.$wrapper.find('[name="link-url"]');
     self.$addLinkButton = self.$wrapper.find('.add');
@@ -39,14 +37,6 @@ define([
     self.linkUrls = [];
 
     // Setup ------------------------------------------------------------------
-
-    self.$editButton.on('click', function () {
-      self.showEditor();
-    });
-
-    self.$saveButton.on('click', function () {
-      self.save();
-    });
 
     self.$addLinkButton.on('click', function () {
       self.addLink();
@@ -60,7 +50,6 @@ define([
   UserInfo.prototype.showEditor = function () {
     var self = this;
 
-    self.$editButton.addClass('disabled');
     self.$wrapper.addClass('editing');
     self.fire('resize');
   };
@@ -126,7 +115,6 @@ define([
     data.description = self.$descriptionInput.val();
     data.linkUrls = self.linkUrls;
     self.update(data, true);
-    self.$editButton.removeClass('disabled');
     self.$wrapper.removeClass('editing');
   };
 
@@ -158,12 +146,14 @@ define([
   };
 
   UserInfo.prototype.updateMetaData = function (data) {
-    var makes = data.makes;
-    var numOfMakes = makes.length;
+    var makes = data.makes || {};
+    var numOfMakes = makes.length || 0;
     var likes = 0;
-    likes = makes.reduce(function (prev, current) {
-      return prev + (current.likes ? current.likes.length : 0);
-    }, 0);
+    if (numOfMakes) {
+      likes = makes.reduce(function (prev, current) {
+        return prev + (current.likes ? current.likes.length : 0);
+      }, 0);
+    }
 
     this.$makesNum.html(numOfMakes);
     this.$likesNum.html(likes);
