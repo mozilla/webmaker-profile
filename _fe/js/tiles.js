@@ -41,6 +41,8 @@ define([
 
     self.callbacks = {};
     self.dynamicTiles = {};
+    self.tiles = {};
+    self.userInfo = {};
 
     // Element references -----------------------------------------------------
 
@@ -172,6 +174,7 @@ define([
     $('body').addClass('edit-mode');
     self.fire('editing-on');
     $('.tile a').addClass('disabled');
+    self.userInfo.showEditor();
 
     for (var key in self.dynamicTiles) {
       self.dynamicTiles[key].enterEditMode();
@@ -196,6 +199,7 @@ define([
     $('body').removeClass('edit-mode');
     self.fire('editing-off');
     $('.tile a').removeClass('disabled');
+    self.userInfo.save();
 
     for (var key in self.dynamicTiles) {
       self.dynamicTiles[key].exitEditMode();
@@ -403,6 +407,7 @@ define([
     var $userInfo = $(render('user-info'));
     var userInfo = new UserInfo($userInfo[0]);
     var userInfoData = db.get('userInfo') || {};
+    self.userInfo = userInfo;
     userInfoData.makes = db.get('makes') || {};
 
     self.$container.append($userInfo);
