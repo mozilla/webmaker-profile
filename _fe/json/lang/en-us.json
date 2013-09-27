@@ -1,7 +1,7 @@
 {
   "aboutMe": "About Me",
   "add": "Add",
-  "denied": "Looks like you denied us permission to use your camera :(",
+  "denied": "Looks like you denied us permission to use your camera!<br/><br/><h1>:{</h1>",
   "edit": "Edit",
   "hackable": "Hackable",
   "Likes": "Likes",
