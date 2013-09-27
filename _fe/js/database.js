@@ -3,7 +3,8 @@ define([
   'lodash',
   'uuid',
   'komponent',
-  'config'
+  'config',
+  'jquery-debounce'
 ], function (
   $,
   _,
@@ -45,19 +46,10 @@ define([
       return storage[key];
     },
     /**
-     * Set the value of a key in local storage & server
-     * @param  {string} key
-     * @param  {*} value
+     * Internal save function, set to batch data every 5 seconds
      * @return {undefined}
      */
-    set: function (key, value) {
-      var data = {};
-      data[key] = value;
-
-      // Persist to local storage
-      storage[key] = value;
-
-      // Persist to server
+    _save: $.debounce(5000, function () {
       $.ajax({
         xhrFields: {
           withCredentials: true
@@ -67,7 +59,7 @@ define([
         dataType: 'json',
         contentType: 'application/json',
         crossDomain: true,
-        data: JSON.stringify(data)
+        data: JSON.stringify(storage)
       })
         .done(function () {
           db.fire('setSuccess');
@@ -78,6 +70,19 @@ define([
         .always(function () {
           db.fire('setComplete');
         });
+    }),
+    /**
+     * Set the value of a key in local storage & server
+     * @param  {string} key
+     * @param  {*} value
+     * @return {undefined}
+     */
+    set: function (key, value) {
+      // Persist to local storage
+      storage[key] = value;
+
+      // Queue batched save
+      this._save();
     },
     /**
      * Store a new tile or update an existing tile record
