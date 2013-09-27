@@ -337,19 +337,14 @@ define([
     var photoBooth = new PhotoBoothTile($photoBooth[0]);
     var UUID = db.generateFakeUUID();
 
+    // Track a reference for API usage later
     self.dynamicTiles[UUID] = photoBooth;
 
-    db.storeTileMake({
-      id: UUID,
-      tool: 'profile',
-      type: 'hackable', // Photo tiles become hackable tiles in next session (bad?)
-      content: null
-    });
-
+    // Set up in DOM
     self.$tiles.prepend($photoBooth);
     self.addAndBindDraggable($photoBooth[0], true);
     $photoBooth.data('id', UUID); // For order tracking purposes
-    self.storeOrder();
+
     photoBooth.init();
     self.doLayout();
 
@@ -361,15 +356,15 @@ define([
       self.destroyTile($photoBooth);
     });
 
-    photoBooth.on('update', function () {
-
-    });
-
     photoBooth.on('imageStored', function (event) {
       db.storeTileMake({
         id: UUID,
-        content: '<img src="' + event.href + '">'
+        content: '<img src="' + event.href + '">',
+        tool: 'profile',
+        type: 'hackable' // Photo tiles become hackable tiles in next session (bad?)
       });
+
+      self.storeOrder();
     });
   };
 
