@@ -17,6 +17,7 @@
     "node-uuid": "1.4.1",
     "getUserMedia": "https://github.com/HenrikJoreteg/getUserMedia.git",
     "gif-js": "https://github.com/jnordberg/gif.js.git",
-    "jquery-throttle-debounce": "cowboy/jquery-throttle-debounce"
+    "jquery-throttle-debounce": "cowboy/jquery-throttle-debounce",
+    "bleach": "https://github.com/mozilla-b2g/bleach.js.git"
   }
 }
