@@ -2,8 +2,9 @@ define([
   'jquery',
   'js/render',
   'imagesloaded',
-  'js/tile'
-], function ($, render, imagesLoaded, Tile) {
+  'js/tile',
+  'bleach'
+], function ($, render, imagesLoaded, Tile, bleach) {
 
   var HackableTile = function (target, options) {
     var self = this;
@@ -55,6 +56,36 @@ define([
   };
 
   HackableTile.prototype = new Tile();
+
+  /**
+   * Store options for bleach submodule
+   */
+  HackableTile.prototype.bleachOptions = {
+    strip: true,
+    tags: [
+      'a',
+      'abbr',
+      'acronym',
+      'b',
+      'blockquote',
+      'code',
+      'em',
+      'i',
+      'img',
+      'li',
+      'ol',
+      'strong',
+      'ul'
+    ],
+    attributes: {
+      'a': ['href', 'title'],
+      'abbr': ['title'],
+      'acronym': ['title'],
+      'img': ['src', 'alt']
+
+    },
+    styles: []
+  };
 
   /**
    * Enter edit mode
@@ -187,14 +218,12 @@ define([
     } else {
       self.$hackedContent.hide();
     }
-
-    self.$hackedContent.html(html);
-    self.$textarea.val(html);
-
+    var bleachText = bleach.clean(html, self.bleachOptions);
+    self.$hackedContent.html(bleachText);
+    self.$textarea.val(bleachText);
     // This method extends Tile's update method
     // Calling here so that events fire after updates have actually occurred
-    Tile.prototype.update.call(self, html);
-
+    Tile.prototype.update.call(self, bleachText);
   };
 
   return HackableTile;
