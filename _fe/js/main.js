@@ -1,6 +1,7 @@
 requirejs.config({
   baseUrl: '../bower_components',
   paths: {
+    bleach: 'bleach/lib/bleach',
     config: '../_fe/js/config',
     getUserMedia: 'getUserMedia/getusermedia.bundle',
     gifJS: 'gif-js/dist/gif',
