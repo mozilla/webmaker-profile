@@ -49,7 +49,7 @@ define([
      * Internal save function, set to batch data every 5 seconds
      * @return {undefined}
      */
-    _save: $.debounce(5000, function () {
+    _save: $.debounce(1000, function () {
       $.ajax({
         xhrFields: {
           withCredentials: true
