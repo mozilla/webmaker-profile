@@ -506,7 +506,11 @@ define([
   tiles.storeOrder = function () {
     var self = this;
 
-    db.set('tileOrder', self.calculateOrder());
+    // Don't store order if layout is still being done
+    // This will prevent data corruption from calculateOrder
+    if (!self.isLayingOut) {
+      db.set('tileOrder', self.calculateOrder());
+    }
   };
 
   /**
