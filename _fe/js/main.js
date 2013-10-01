@@ -52,12 +52,13 @@ require([
         username: db.get('username')
       }));
 
-      initPersona();
-
       $body.append($tileContainer);
+      $body.append(render('footer'));
 
       tiles.init($tileContainer);
       tiles.render(db.get('makes'));
+
+      initPersona();
     }
   }
 
