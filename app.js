@@ -7,6 +7,11 @@ app.use(express.static(path.resolve(__dirname)));
 
 var port = process.env.PORT || 5050;
 
-app.listen(port, function(){
-  console.log("Now listening on port " + port);
+var grunt = require('grunt');
+require('./Gruntfile')(grunt);
+
+grunt.tasks(['build'], { force: true }, function() {
+  app.listen(port, function(){
+    console.log("Now listening on port " + port);
+  });
 });
