@@ -27,9 +27,8 @@ define([
     options = options || {};
 
     var defaults = {
-      maxFrames: 5,
-      delay: 200,
-      speed: 10
+      maxFrames: 10,
+      speed: 83 // ~12 FPS
     };
 
     for (var option in options) {
@@ -46,10 +45,12 @@ define([
     self.$firstFrame = $('.first-frame', container);
     self.$photoContainer = $('.photo-container', container);
     self.$canvas = $('canvas', container);
-    self.$startbtn = $('.trigger', container);
+    self.$camerabtn = $('.trigger', container);
     self.$editbtn = $('.edit', container);
-    self.$progress = $('.progress', container);
+    self.$donebtn = $('.done', container);
     self.$statusMessage = $('.status', container);
+    self.$progressContainer = $('.progress-bar', container);
+    self.$progressBar = $('.progress-bar .bar', container);
 
     // Setup ------------------------------------------------------------------
 
@@ -61,38 +62,194 @@ define([
     self.width = 0;
     self.height = 0;
     self.frames = [];
+    self.framesCaptured = 0;
     self.isCapturing = false;
 
+    // Event Delegation -------------------------------------------------------
+
+    function onClick() {
+      if (!self.isCapturing) {
+        self.enterCaptureMode();
+      }
+
+      self.snapPicture();
+    }
+
+    self.$camerabtn.on('click', onClick);
+    self.$video.on('click', onClick);
+
+    self.$donebtn.on('click', function () {
+      self.exitCaptureMode();
+      self.constructGif();
+    });
+
+    // Set up edit button
+    self.$editbtn.on('click', function () {
+      self.enterCaptureMode();
+    });
+
+    self.$video.on('play', function () {
+      // Accomodate for race condition with video height
+      var heightCheck = setInterval(function () {
+        if (self.$video.height()) {
+          clearInterval(heightCheck);
+          self.fire('resize');
+        }
+      }, 1);
+    });
   };
 
   Photobooth.prototype = new Tile();
 
+  /**
+   * Initialize video stream
+   * @return {undefined}
+   */
+  Photobooth.prototype.init = function () {
+    var self = this;
+
+    /**
+     * Setup UI post-stream load and track stream
+     * @param  {Object} cameraStream Stream object
+     * @return {undefined}
+     */
+
+    function onStreamLoaded(cameraStream) {
+      if (cameraStream) {
+        stream = window.URL.createObjectURL(cameraStream);
+      }
+
+      self.width = self.$video.width();
+
+      // TODO : This is NaN for some reason (although everything seems to work regardless?)
+      //        Could be a race condition.
+      self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
+
+      self.$statusMessage.remove();
+      self.$camerabtn.show();
+      self.$progressContainer.show();
+
+      self.$video.attr('width', self.width);
+      self.$video.attr('height', self.height);
+      self.$video[0].src = stream;
+      self.$video[0].play();
+    }
+
+    if (stream) {
+      onStreamLoaded();
+    } else {
+      getUserMedia({
+          video: true,
+          audio: false
+        },
+        function (err, cameraStream) {
+          // if the browser doesn't support user media
+          // or the user says "no" show an error message
+          if (err) {
+            if (err.name === 'PERMISSION_DENIED') {
+              self.$statusMessage.html(strings.get('denied'));
+            } else if (err.name === 'NOT_SUPPORTED_ERROR') {
+              self.$statusMessage.html(strings.get('sucky-browser'));
+            } else {
+              self.$statusMessage.html(strings.get('mystery-error'));
+            }
+          } else {
+            onStreamLoaded(cameraStream);
+          }
+        });
+    }
+  };
+
+  /**
+   * Display UI for Profile global edit mode
+   * @return {undefined}
+   */
   Photobooth.prototype.enterEditMode = function () {
     var self = this;
 
-    self.$editbtn.show();
-    self.enableEditing();
     self.showDeleteButton();
+    self.$video.removeClass('hidden');
+    self.$camerabtn.show();
+    self.$progressContainer.show();
+
+    if (!self.isCapturing) {
+      self.$editbtn.show();
+    }
   };
 
+  /**
+   * Configure UI visibility for Profile preview mode
+   * @return {undefined}
+   */
   Photobooth.prototype.exitEditMode = function () {
     var self = this;
 
-    self.$editbtn.hide();
     self.hideDeleteButton();
-  };
+    self.$video.addClass('hidden');
+    self.$camerabtn.hide();
+    self.$progressContainer.hide();
 
-  Photobooth.prototype.onErr = function (err) {
-    var self = this;
-
-    if (err.name === 'PERMISSION_DENIED') {
-      self.$statusMessage.html(strings.get('denied'));
-    } else if (err.name === 'NOT_SUPPORTED_ERROR') {
-      self.$statusMessage.html(strings.get('sucky-browser'));
-    } else {
-      self.$statusMessage.html(strings.get('mystery-error'));
+    if (!self.isCapturing) {
+      self.$editbtn.hide();
     }
   };
+
+  /**
+   * Enter GIF capture mode
+   * @return {undefined}
+   */
+  Photobooth.prototype.enterCaptureMode = function () {
+    var self = this;
+
+    self.frames = []; // Erase all frames
+
+    self.width = self.$video.width();
+    self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
+
+    self.$video.attr('width', self.width);
+    self.$video.attr('height', self.height);
+
+    self.$canvas.attr('width', self.width);
+    self.$canvas.attr('height', self.height);
+
+    self.$video.removeAttr('width');
+    self.$video.removeAttr('height');
+
+    self.$camerabtn.show();
+    self.$donebtn.show();
+    self.$progressContainer.show();
+    self.$editbtn.hide();
+    self.$video.removeClass('hidden');
+
+    // Get rid of old images
+    self.$photo.removeAttr('src');
+    self.$firstFrame.removeAttr('src');
+
+    self.isCapturing = true;
+    self.fire('resize');
+  };
+
+  /**
+   * Exit GIF capture mode
+   * @return {undefined}
+   */
+  Photobooth.prototype.exitCaptureMode = function () {
+    var self = this;
+
+    self.$camerabtn.hide();
+    self.$donebtn.hide();
+    self.$progressContainer.hide();
+    self.$progressBar.css('width', 0);
+    self.$editbtn.show();
+    self.$video.addClass('hidden');
+
+    self.framesCaptured = 0;
+    self.isCapturing = false;
+
+    self.fire('resize');
+  };
+
+  // TODO - merge makeGif and constructGif ?
 
   Photobooth.prototype.makeGif = function (callback) {
     var self = this;
@@ -125,16 +282,32 @@ define([
 
     animatedGIF.on('finished', function (blob) {
       blobToBase64(blob, function (base64EncodedImage) {
-        var animatedImage = document.createElement('img');
-        animatedImage.src = 'data:image/gif;base64,' + base64EncodedImage;
         self.persistToServer(base64EncodedImage);
-        callback(animatedImage);
+        callback('data:image/gif;base64,' + base64EncodedImage);
       });
     });
 
     animatedGIF.render();
   };
 
+  Photobooth.prototype.constructGif = function () {
+    var self = this;
+
+    self.makeGif(function (src) {
+      var firstFrame = self.frames[0].src;
+
+      self.update({
+        gif: src,
+        firstFrame: firstFrame
+      });
+    });
+  };
+
+  /**
+   * Save GIF to server
+   * @param  {String} base64 Base 64 encoded GIF
+   * @return {undefined}
+   */
   Photobooth.prototype.persistToServer = function (base64) {
     var self = this;
 
@@ -163,125 +336,31 @@ define([
       });
   };
 
-  Photobooth.prototype.attachClickListener = function () {
-    var self = this;
-    var interval;
-    var count = 0;
-
-    function snapPicture() {
-      var img = document.createElement('img');
-      self.$startbtn.off('click', onClick);
-      self.$progress.removeClass('off');
-      self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
-      img.src = self.$canvas[0].toDataURL('image/gif');
-      self.frames.push(img);
-      // Hide the photo button
-      self.$startbtn.addClass('off');
-      count++;
-
-      if (count >= self.options.maxFrames) {
-        clearInterval(interval);
-        self.makeGif(function (gif) {
-          var firstFrame = self.frames[0].src;
-          self.update({
-            gif: gif.src,
-            firstFrame: firstFrame
-          });
-          // Allow editing
-          self.enableEditing();
-        });
-        count = 0;
-        self.$startbtn.on('click', onClick);
-        self.isCapturing = false;
-      }
-    }
-
-    function onClick() {
-      if (!self.isCapturing) {
-        self.isCapturing = true;
-
-        self.width = self.$video.width();
-        self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
-
-        self.$video.attr('width', self.width);
-        self.$video.attr('height', self.height);
-        self.$canvas.attr('width', self.width);
-        self.$canvas.attr('height', self.height);
-
-        interval = setInterval(snapPicture, self.options.delay);
-
-        self.$video.removeAttr('width');
-        self.$video.removeAttr('height');
-      }
-    }
-
-    self.$startbtn.on('click', onClick);
-  };
-
-  Photobooth.prototype.enableEditing = function () {
+  /**
+   * Capture a frame to add to the GIF
+   * @return {undefined}
+   */
+  Photobooth.prototype.snapPicture = function () {
     var self = this;
 
-    self.$editbtn.removeClass('off');
-    self.$video.addClass('hidden');
-    self.$progress.addClass('off');
-    self.frames = [];
-  };
+    self.framesCaptured++;
+    var img = document.createElement('img');
+    self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
+    img.src = self.$canvas[0].toDataURL('image/gif');
+    self.frames.push(img);
+    self.$progressBar.css('width', self.framesCaptured * (100 / self.options.maxFrames) + '%');
 
-  Photobooth.prototype.onStreamLoaded = function (cameraStream) {
-    var self = this;
-    if (cameraStream) {
-      stream = window.URL.createObjectURL(cameraStream);
+    if (self.framesCaptured === self.options.maxFrames) {
+      self.constructGif();
+      self.exitCaptureMode();
     }
-
-    self.width = self.$video.width();
-    self.height = self.$video[0].videoHeight / (self.$video[0].videoWidth / self.width);
-
-    self.$statusMessage.remove();
-    self.$startbtn.removeClass('off');
-
-    self.$video.attr('width', self.width);
-    self.$video.attr('height', self.height);
-    self.$video[0].src = stream;
-    self.$video[0].play();
-    self.attachClickListener();
   };
 
-  Photobooth.prototype.init = function () {
-    var self = this;
-
-    if (stream) {
-      self.onStreamLoaded();
-    } else {
-      getUserMedia({
-          video: true,
-          audio: false
-        },
-        function (err, cameraStream) {
-          // if the browser doesn't support user media
-          // or the user says "no" the error gets passed
-          // as the first argument.
-          if (err) {
-            self.onErr(err);
-          } else {
-            self.onStreamLoaded(cameraStream);
-          }
-        });
-    }
-
-    // Set up edit button
-    self.$editbtn.on('click', function () {
-      self.$editbtn.addClass('off');
-      self.$startbtn.removeClass('off');
-      self.$video.removeClass('hidden');
-    });
-
-    // Set up resize
-    self.$video.on('playing', function () {
-      self.fire('resize');
-    });
-
-  };
-
+  /**
+   * Update contents of the tile
+   * @param  {Object} content Contains 2 img sources for poster frame and gif
+   * @return {undefined}
+   */
   Photobooth.prototype.update = function (content) {
     var self = this;
 
@@ -292,10 +371,14 @@ define([
     self.$photo.attr('src', content.gif).removeClass('hidden');
     self.$firstFrame.attr('src', content.firstFrame).removeClass('hidden');
 
-    // Fire events
+    // Fire standard Tile update events
     Tile.prototype.update.call(self, content);
   };
 
+  /**
+   * Get the SRC of the current GIF (if it exists)
+   * @return {String|null}
+   */
   Photobooth.prototype.getContent = function () {
     var self = this;
 
