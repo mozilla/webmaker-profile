@@ -1,10 +1,15 @@
 {
   "aboutMe": "About Me",
   "add": "Add",
+  "confirmDelete": "Are you sure you want to delete this tile?",
   "denied": "Looks like you denied us permission to use your camera!<br/><br/><h1>:{</h1>",
   "edit": "Edit",
   "hackable": "Hackable",
   "Likes": "Likes",
+  "Likes": "Likes",
+  "login": "Login",
+  "logout": "Logout",
+  "Makes": "Makes",
   "Makes": "Makes",
   "mystery-error": "Something went horribly wrong...",
   "permission": "Please allow us to access your webcam",
@@ -12,9 +17,5 @@
   "persistFail": "Failed to persist image to server.",
   "photo": "GIF",
   "save": "Save",
-  "sucky-browser": "Sorry, but your browser doesn't currently support getUserMedia!<br/><br/><h1>:{</h1>",
-  "Likes": "Likes",
-  "Makes": "Makes",
-  "login": "Login",
-  "logout": "Logout"
+  "sucky-browser": "Sorry, but your browser doesn't currently support getUserMedia!<br/><br/><h1>:{</h1>"
 }

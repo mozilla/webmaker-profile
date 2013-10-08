@@ -1,4 +1,10 @@
-define(['jquery', 'komponent', 'js/device'], function ($, Komponent, device) {
+define([
+  'jquery',
+  'komponent',
+  'js/device',
+  'js/localstrings',
+  'config'
+], function ($, Komponent, device, localStrings, config) {
   var Tile = function () {};
 
   Tile.prototype = new Komponent();
@@ -48,7 +54,9 @@ define(['jquery', 'komponent', 'js/device'], function ($, Komponent, device) {
     });
 
     self.$btnDelete.on('click', function () {
-      self.destroy();
+      if (!config.confirmDelete || window.confirm(localStrings.get('confirmDelete'))) {
+        self.destroy();
+      }
     });
 
     device.on('resize', function (event) {
