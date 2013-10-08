@@ -1,6 +1,7 @@
 define(['jquery'], function ($) {
   var defaults = {
-    serviceURL: 'http://localhost:10179'
+    serviceURL: 'http://localhost:10179',
+    confirmDelete: true
   };
 
   var config;
