@@ -46,7 +46,7 @@ define([
 
     // Element references -----------------------------------------------------
 
-    self.$container = $(target);
+    self.$container = $(target).find('.tiles');
     self.$tiles = $('.tiles');
     self.$editButton = $('.edit-mode');
 
@@ -345,7 +345,7 @@ define([
     self.dynamicTiles[UUID] = photoBooth;
 
     // Set up in DOM
-    self.$tiles.prepend($photoBooth);
+    self.$tiles.append($photoBooth);
     self.addAndBindDraggable($photoBooth[0], true);
     $photoBooth.data('id', UUID); // For order tracking purposes
 
