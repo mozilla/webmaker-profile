@@ -36,8 +36,9 @@ require([
   'js/database',
   'js/localstrings',
   'js/render',
-  'persona'
-], function (device, $, tiles, db, localStrings, render, initPersona) {
+  'persona',
+  'config'
+], function (device, $, tiles, db, localStrings, render, initPersona, config) {
   var servicesToLoad = 2;
   var servicesLoaded = 0;
 
@@ -58,7 +59,12 @@ require([
       tiles.init($tileContainer);
       tiles.render(db.get('makes'));
 
-      initPersona();
+      if (config.usePersona) {
+        initPersona();
+      } else {
+        $('.edit-mode').show();
+        $('.login').hide();
+      }
     }
   }
 
