@@ -1,9 +1,8 @@
 // Global styles (Header, Footer, Content wrapper)
 
 body > header {
-  background: @green;
+  background: @white;
   padding: 10px;
-  border-bottom: 1px solid fade(darken(@backgroundcolor, 20%), 90%);
   font-size: 0.5em;
   display: -webkit-box;
   .flex-display;
@@ -11,7 +10,7 @@ body > header {
   .justify-content(center);
   -webkit-box-pack: center;
   .align-items(center);
-  color: @white;
+  color: #555;
   letter-spacing: 0.15em;
   z-index: 2;
   position: relative;
@@ -21,7 +20,7 @@ body > header {
     width: 0; // safari 6 flexbox workaround
     margin-right: 3%;
     border: 3px solid fade(@grey, 30%);
-    background: @green;
+    background: @violet;
     border-radius: 50%;
     overflow: hidden;
 
@@ -50,16 +49,15 @@ body > header {
   }
 
   .full-name {
-    font-weight: 100;
+    font-weight: 300;
   }
   .username {
     font-size: 2.33em;
-    font-weight: 100;
+    font-weight: 300;
   }
   .edit-mode,
   .login,
   .logout {
-    font-size: 3em;
     &.hidden {
       display: none;
     }

@@ -216,7 +216,7 @@ define([
   tiles.showTileSelector = function () {
     var self = this;
 
-    self.$tileSelector.css('top', '0');
+    self.$tileSelector.css('margin-top', '0');
   };
 
   /**
@@ -234,7 +234,7 @@ define([
         clearTimeout(offsetReady);
         var offset = -1 * (self.$tileSelector.height() + parseInt(self.$tileSelector.css('padding-top'), 10));
         offset -= 10; // Move a little bit higher so UI doesn't peek through
-        self.$tileSelector.css('top', offset + 'px');
+        self.$tileSelector.css('margin-top', offset + 'px');
       }
     }, 1);
   };

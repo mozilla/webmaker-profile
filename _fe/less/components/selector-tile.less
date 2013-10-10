@@ -1,14 +1,26 @@
 .tile.selector {
-  background: none;
+  background: #243242;
   border: none;
   width: 100%;
-  padding: 1% 1% 0 1%;
   z-index: 1;
   position: relative;
-  top: -999999px;
-  transition: top 200ms ease-in-out;
+  margin-top: -999999px;
+  transition: margin 200ms ease-in-out;
+
+  .button-wrapper {
+    padding: 2% 1%;
+    text-align: center;
+  }
 
   button {
-    padding-left: 10px;
+    span {
+      margin-right: 3px;
+    }
+    padding: 15px 20px;
+    background: lighten(#243242, 20%);
+    &:hover {
+      background: @blue;
+    }
+    margin-right: 10px;
   }
 }
