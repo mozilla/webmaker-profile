@@ -64,6 +64,8 @@ define([
     self.frames = [];
     self.framesCaptured = 0;
     self.isCapturing = false;
+    self.justSnapped = false;
+    self.makingGif = false;
 
     // Event Delegation -------------------------------------------------------
 
@@ -201,6 +203,8 @@ define([
   Photobooth.prototype.enterCaptureMode = function () {
     var self = this;
 
+    self.fire('enterCaptureMode');
+
     self.frames = []; // Erase all frames
 
     self.width = self.$video.width();
@@ -236,6 +240,8 @@ define([
   Photobooth.prototype.exitCaptureMode = function () {
     var self = this;
 
+    self.fire('exitCaptureMode');
+
     self.$camerabtn.hide();
     self.$donebtn.hide();
     self.$progressContainer.hide();
@@ -266,28 +272,33 @@ define([
       reader.readAsDataURL(blob);
     }
 
-    var animatedGIF = new Gif({
-      workers: 2,
-      workerScript: '/bower_components/gif-js/dist/gif.worker.js',
-      quality: 10,
-      width: self.width,
-      height: self.height
-    });
+    if (!self.makingGif) {
+      self.makingGif = true;
 
-    for (var i = 0; i < self.frames.length; i++) {
-      animatedGIF.addFrame(self.frames[i], {
-        delay: self.options.speed
+      var animatedGIF = new Gif({
+        workers: 2,
+        workerScript: '/bower_components/gif-js/dist/gif.worker.js',
+        quality: 10,
+        width: self.width,
+        height: self.height
       });
+
+      for (var i = 0; i < self.frames.length; i++) {
+        animatedGIF.addFrame(self.frames[i], {
+          delay: self.options.speed
+        });
+      }
+
+      animatedGIF.on('finished', function (blob) {
+        blobToBase64(blob, function (base64EncodedImage) {
+          self.persistToServer(base64EncodedImage);
+          callback('data:image/gif;base64,' + base64EncodedImage);
+          self.makingGif = false;
+        });
+      });
+
+      animatedGIF.render();
     }
-
-    animatedGIF.on('finished', function (blob) {
-      blobToBase64(blob, function (base64EncodedImage) {
-        self.persistToServer(base64EncodedImage);
-        callback('data:image/gif;base64,' + base64EncodedImage);
-      });
-    });
-
-    animatedGIF.render();
   };
 
   Photobooth.prototype.constructGif = function () {
@@ -343,16 +354,24 @@ define([
   Photobooth.prototype.snapPicture = function () {
     var self = this;
 
-    self.framesCaptured++;
-    var img = document.createElement('img');
-    self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
-    img.src = self.$canvas[0].toDataURL('image/gif');
-    self.frames.push(img);
-    self.$progressBar.css('width', self.framesCaptured * (100 / self.options.maxFrames) + '%');
+    if (!self.justSnapped && !self.makingGif) {
+      self.justSnapped = true;
+      self.framesCaptured++;
+      var img = document.createElement('img');
+      self.$canvas[0].getContext('2d').drawImage(self.$video[0], 0, 0, self.width, self.height);
+      img.src = self.$canvas[0].toDataURL('image/gif');
+      self.frames.push(img);
+      self.$progressBar.css('width', self.framesCaptured * (100 / self.options.maxFrames) + '%');
 
-    if (self.framesCaptured === self.options.maxFrames) {
-      self.constructGif();
-      self.exitCaptureMode();
+      if (self.framesCaptured === self.options.maxFrames) {
+        self.constructGif();
+        self.exitCaptureMode();
+      }
+
+      // Debounce capturing for super fast tappers/clickers
+      setTimeout(function () {
+        self.justSnapped = false;
+      }, 250);
     }
   };
 

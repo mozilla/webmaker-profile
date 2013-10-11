@@ -264,7 +264,7 @@ define([
       draggie.disable();
     });
 
-    return element;
+    return draggie;
   };
 
   /**
@@ -336,8 +336,15 @@ define([
     // Track a reference for API usage later
     self.dynamicTiles[UUID] = photoBooth;
 
+<<<<<<< HEAD
     self.$container.append($photoBooth);
     self.addAndBindDraggable($photoBooth[0], true);
+=======
+    // Set up in DOM
+    self.$tiles.append($photoBooth);
+    var draggie = self.addAndBindDraggable($photoBooth[0], true);
+    $photoBooth.data('id', UUID); // For order tracking purposes
+>>>>>>> UI tweaks for rapid clicking; no drag on edit
 
     photoBooth.init();
 
@@ -355,6 +362,7 @@ define([
       self.storeOrder();
     });
 
+<<<<<<< HEAD
     self.doCommonTileSetup(photoBooth, $photoBooth, UUID, undefined);
 
     return photoBooth;
@@ -423,6 +431,14 @@ define([
         id: UUID,
         isPrivate: event.isPrivate
       });
+=======
+    photoBooth.on('enterCaptureMode', function () {
+      draggie.disable();
+    });
+
+    photoBooth.on('exitCaptureMode', function () {
+      draggie.enable();
+>>>>>>> UI tweaks for rapid clicking; no drag on edit
     });
   };
 

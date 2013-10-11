@@ -63,11 +63,18 @@
       display: inline-block;
     }
     margin-bottom: 10px;
+    overflow: hidden;
   }
+
   .trigger {
     &:after {
       .icon(@camera);
     }
+  }
+
+  .edit,
+  .done {
+    float: right;
   }
 
   .progress-bar {

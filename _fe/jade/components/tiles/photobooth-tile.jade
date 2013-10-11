@@ -3,6 +3,7 @@ include ../privacy-toggle
 
 .tile.photobooth
   include ../delete-button
+  button.button-grey.edit.off #{__edit}
   .status #{__permission}
     span #{__permissionHelp}
   .photobooth-container
@@ -11,7 +12,7 @@ include ../privacy-toggle
     img.first-frame
     img.gif
   .button-container
-    button.button-grey.edit.off #{__edit}
+
     button.trigger.off
     button.done.off #{__Done}
   .progress-bar.off
