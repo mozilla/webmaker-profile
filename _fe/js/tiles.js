@@ -453,7 +453,7 @@ define([
     // Render HTML for tiles
     data.forEach(function (tile) {
       if (tile.type === 'popcorn' || tile.type === 'thimble') {
-        var $tile = $(render(tile.type + '-tile', tile));
+        var $tile = $(render('static-tile', tile));
 
         $tile.data('id', tile.id);
         self.$container.append($tile);
