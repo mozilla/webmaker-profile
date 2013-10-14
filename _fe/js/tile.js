@@ -28,6 +28,7 @@ define([
     self.$btnUp = self.$target.find('.tile-up');
     self.$btnDown = self.$target.find('.tile-down');
     self.$btnDelete = self.$target.find('.delete');
+    self.$privacyCheckbox = self.$target.find('.privacyToggle .privacy');
 
     // Properties -------------------------------------------------------------
 
@@ -66,6 +67,39 @@ define([
         self.hideReorderButtons();
       }
     });
+
+    self.$privacyCheckbox.on('change', function () {
+      if (self.$privacyCheckbox[0].checked) {
+        self.setPrivacy(true);
+      } else {
+        self.setPrivacy(false);
+      }
+    });
+  };
+  /**
+   * Toggle the privacy of a tile
+   * @param {Boolean} isPrivate Target privacy mode for tile
+   * @return {undefined}
+   */
+  Tile.prototype.setPrivacy = function (isPrivate) {
+    var self = this;
+
+    if (typeof isPrivate === 'boolean') {
+      self.fire('privacyChange', {
+        isPrivate: isPrivate
+      });
+
+      // Update UI (if necessary)
+      if (self.$privacyCheckbox[0].checked !== isPrivate) {
+        self.$privacyCheckbox.attr('checked', isPrivate);
+      }
+
+      if (isPrivate) {
+        self.$target.addClass('private');
+      } else {
+        self.$target.removeClass('private');
+      }
+    }
   };
   /**
    * Common code to run when a tile content is updated
