@@ -34,6 +34,7 @@ define([
 
     self.areReorderButtonsVisible = false;
     self.isDeleteButtonVisible = false;
+    self.isPrivate = undefined;
 
     // Setup ------------------------------------------------------------------
 
@@ -99,6 +100,8 @@ define([
       } else {
         self.$target.removeClass('private');
       }
+
+      self.isPrivate = isPrivate;
     }
   };
   /**

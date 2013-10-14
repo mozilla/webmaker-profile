@@ -1,3 +1,11 @@
+/*
+
+  TODO
+
+  - consolidate commonalities between various tile adding methods into shared method (DRY)
+
+ */
+
 define([
   'jquery',
   'js/render',
@@ -41,7 +49,7 @@ define([
 
     self.callbacks = {};
     self.dynamicTiles = {};
-    self.tiles = {};
+    self.tiles = {}; // unused
     self.userInfo = {};
 
     // Element references -----------------------------------------------------
@@ -274,17 +282,15 @@ define([
    *  (or recreate stored tile)
    *
    * @param {object} tile Tile record from DB
-   * @return {undefined}
+   * @return {object} Hackable tile instance
    */
 
   tiles.addHackableTile = function (tile) {
     var self = this;
-
-    // TODO - eliminate this HTML string; use jade
-    var $hackableTile = $('<div class="tile hackable"></div>');
-    var hackableTile = new HackableTile($hackableTile);
-
     var UUID = (typeof tile !== 'undefined' ? tile.id : db.generateFakeUUID());
+    var $hackableTile = $('<div class="tile hackable"></div>'); // TODO - eliminate this HTML string; use jade
+    var hackableTile = new HackableTile($hackableTile, UUID);
+
     self.dynamicTiles[UUID] = hackableTile;
     self.$container.append($hackableTile);
 
@@ -297,21 +303,7 @@ define([
       self.exitEditMode();
     }
 
-    // For order tracking purposes
-    $hackableTile.data('id', UUID);
-
-    self.doLayout();
-
     // Event Delegation -------------------------------------------------------
-
-    // Reflow Packery when the hackable tile's layout changes
-    hackableTile.on('resize', function () {
-      self.doLayout();
-    });
-
-    hackableTile.on('destroy', function () {
-      self.destroyTile($hackableTile);
-    });
 
     hackableTile.on('update', function (event) {
       // Don't persist empty tiles
@@ -320,7 +312,8 @@ define([
           id: UUID,
           content: event.content,
           tool: 'profile',
-          type: 'hackable'
+          type: 'hackable',
+          isPrivate: hackableTile.isPrivate
         });
       } else {
         db.destroyTileMake(UUID);
@@ -328,11 +321,15 @@ define([
 
       self.storeOrder();
     });
+
+    self.doCommonTileSetup(hackableTile, $hackableTile, UUID, tile);
+
+    return hackableTile;
   };
 
   /**
    * Create a photo tile and append it
-   * @return {undefined}
+   * @return {Object} Photo tile instance
    */
 
   tiles.addPhotoBooth = function () {
@@ -344,31 +341,89 @@ define([
     // Track a reference for API usage later
     self.dynamicTiles[UUID] = photoBooth;
 
-    // Set up in DOM
-    self.$tiles.append($photoBooth);
+    self.$container.append($photoBooth);
     self.addAndBindDraggable($photoBooth[0], true);
-    $photoBooth.data('id', UUID); // For order tracking purposes
 
     photoBooth.init();
-    self.doLayout();
 
-    photoBooth.on('resize', function () {
-      self.doLayout();
-    });
-
-    photoBooth.on('destroy', function () {
-      self.destroyTile($photoBooth);
-    });
+    // Event Delegation -------------------------------------------------------
 
     photoBooth.on('imageStored', function (event) {
       db.storeTileMake({
         id: UUID,
         content: '<img src="' + event.href + '">',
         tool: 'profile',
-        type: 'hackable' // Photo tiles become hackable tiles in next session (bad?)
+        type: 'hackable', // Photo tiles become hackable tiles in next session (bad?)
+        isPrivate: photoBooth.isPrivate
       });
 
       self.storeOrder();
+    });
+
+    self.doCommonTileSetup(photoBooth, $photoBooth, UUID, undefined);
+
+    return photoBooth;
+  };
+
+  /**
+   * Add a static tile (Popcorn or Thimble make)
+   * @param {Object} tile Tile data
+   * @return {Object} Tile instance
+   */
+
+  tiles.addStaticTile = function (tile) {
+    var self = this;
+    var $tile = $(render('static-tile', tile));
+    var staticTile = new Tile();
+
+    self.$container.append($tile);
+    self.addAndBindDraggable($tile[0]);
+
+    staticTile.init();
+    staticTile.bindCommonUI($tile);
+
+    self.doCommonTileSetup(staticTile, $tile, tile.id, tile);
+
+    return staticTile;
+  };
+
+  /**
+   * Perform setup tasks common to all tiles
+   * @param  {Object} tile  Tile instance
+   * @param  {Object} $tile jQuery Tile container element reference
+   * @param  {String} UUID  UUID for tile
+   * @param  {Object} data  Tile data
+   * @return {undefined}
+   */
+
+  tiles.doCommonTileSetup = function (tile, $tile, UUID, data) {
+    var self = this;
+
+    if (typeof data !== 'undefined' && (typeof data.isPrivate === 'undefined' || data.isPrivate)) {
+      tile.setPrivacy(true);
+    } else {
+      tile.setPrivacy(false);
+    }
+
+    $tile.data('id', UUID); // For order tracking purposes
+    self.doLayout();
+
+    // Event Delegation -------------------------------------------------------
+
+    // Reflow Packery when the hackable tile's layout changes
+    tile.on('resize', function () {
+      self.doLayout();
+    });
+
+    tile.on('destroy', function () {
+      self.destroyTile($tile);
+    });
+
+    tile.on('privacyChange', function (event) {
+      db.storeTileMake({
+        id: UUID,
+        isPrivate: event.isPrivate
+      });
     });
   };
 
@@ -447,32 +502,24 @@ define([
       data = sortedData;
     }
 
-    // Add user info tile first
-    self.addUserInfo();
-
-    // Render HTML for tiles
-    data.forEach(function (tile) {
-      if (tile.type === 'popcorn' || tile.type === 'thimble') {
-        var $tile = $(render('static-tile', tile));
-
-        $tile.data('id', tile.id);
-        self.$container.append($tile);
-        self.addAndBindDraggable($tile[0]);
-
-        var genericTile = new Tile();
-        genericTile.init();
-        genericTile.bindCommonUI($tile);
-      } else if (tile.type === 'hackable') {
-        self.addHackableTile(tile);
-      }
-    });
-
     // Run packery layout after all images have loaded
     var imgLoaded = imagesLoaded(self.$container[0]);
 
     imgLoaded.on('always', function () {
       $('.loader').hide();
       self.doLayout();
+    });
+
+    // Add user info tile first
+    self.addUserInfo();
+
+    // Render HTML for tiles
+    data.forEach(function (tile) {
+      if (tile.type === 'popcorn' || tile.type === 'thimble') {
+        self.addStaticTile(tile);
+      } else if (tile.type === 'hackable') {
+        self.addHackableTile(tile);
+      }
     });
   };
 

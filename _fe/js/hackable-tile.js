@@ -6,7 +6,7 @@ define([
   'bleach'
 ], function ($, render, imagesLoaded, Tile, bleach) {
 
-  var HackableTile = function (target, options) {
+  var HackableTile = function (target, UUID, options) {
     var self = this;
     var defaults;
     var option;
@@ -31,7 +31,9 @@ define([
     // Element references -----------------------------------------------------
 
     self.$wrapper = $(target);
-    self.$tileContent = $(render('hackable-tile'));
+    self.$tileContent = $(render('hackable-tile', {
+      id: UUID
+    }));
     self.$textarea = self.$tileContent.filter('textarea');
     self.$hackedContent = self.$tileContent.filter('.hacked-content');
     self.$hackButton = self.$tileContent.filter('.hack');
