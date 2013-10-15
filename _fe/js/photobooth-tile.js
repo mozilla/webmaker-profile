@@ -51,6 +51,7 @@ define([
     self.$statusMessage = $('.status', container);
     self.$progressContainer = $('.progress-bar', container);
     self.$progressBar = $('.progress-bar .bar', container);
+    self.$spinner = $('.spinner', container);
 
     // Setup ------------------------------------------------------------------
 
@@ -293,10 +294,12 @@ define([
         blobToBase64(blob, function (base64EncodedImage) {
           self.persistToServer(base64EncodedImage);
           callback('data:image/gif;base64,' + base64EncodedImage);
+          self.hideSpinner();
           self.makingGif = false;
         });
       });
 
+      self.showSpinner();
       animatedGIF.render();
     }
   };
@@ -312,6 +315,32 @@ define([
         firstFrame: firstFrame
       });
     });
+  };
+
+  /**
+   * Show spinner
+   * @return {undefined}
+   */
+  Photobooth.prototype.showSpinner = function () {
+    var self = this;
+
+    // Center the spinner
+    self.$spinner.css({
+      top: (self.height - 50) / 2,
+      left: (self.width - 50) / 2
+    });
+
+    self.$spinner.show();
+  };
+
+  /**
+   * Hide spinner
+   * @return {undefined}
+   */
+  Photobooth.prototype.hideSpinner = function () {
+    var self = this;
+
+    self.$spinner.hide();
   };
 
   /**
