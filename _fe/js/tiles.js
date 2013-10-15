@@ -1,11 +1,3 @@
-/*
-
-  TODO
-
-  - consolidate commonalities between various tile adding methods into shared method (DRY)
-
- */
-
 define([
   'jquery',
   'js/render',
@@ -49,7 +41,6 @@ define([
 
     self.callbacks = {};
     self.dynamicTiles = {};
-    self.tiles = {}; // unused
     self.userInfo = {};
 
     // Element references -----------------------------------------------------
@@ -83,7 +74,8 @@ define([
     self.packery = new Packery(self.$container[0], {
       columnWidth: '.grid-sizer',
       gutter: '.gutter-sizer',
-      itemSelector: '.tile'
+      itemSelector: '.tile',
+      transitionDuration: '0.3s'
     });
 
     self.hideTileSelector();
@@ -577,20 +569,24 @@ define([
   tiles.doLayout = function () {
     var self = this;
 
-    // Prevent calls to layout when a layout is already in progress
-    if (!self.isLayingOut) {
+    // Rate limit layout calls and also queue up overflow into a single deferred call
+
+    if (!self.doLayoutCalledRecently) {
       self.isLayingOut = true;
       self.packery.layout();
+      self.doLayoutCalledRecently = true;
+      self.doLayout.layoutOverflows = 0;
     } else {
-
-      // TODO: This is gross. Need to reduce calls to doLayout significantly!
-
-      // Try to do layout again later
-      // This will repeat until it is successful
-      setTimeout(function () {
-        self.doLayout();
-      }, 10);
+      self.doLayout.layoutOverflows++;
     }
+
+    setTimeout(function () {
+      self.doLayoutCalledRecently = false;
+
+      if (self.doLayout.layoutOverflows) {
+        self.doLayout();
+      }
+    }, 500);
   };
 
   return tiles;
