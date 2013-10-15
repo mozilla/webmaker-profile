@@ -1,8 +1,10 @@
 {
   "aboutMe": "About Me",
   "add": "Add",
+  "betaWarning": "Webmaker Profile is currently in alpha and may behave erratically. We welcome <a href=\"https://github.com/mozilla/webmaker-profile/issues\" target=\"_blank\">issues</a> (or better yet, pull requests!) on <a href=\"https://github.com/mozilla/webmaker-profile\" target=\"_blank\">GitHub</a>.",
   "confirmDelete": "Are you sure you want to delete this tile?",
   "denied": "Looks like you denied us permission to use your camera!<br/><br/><h1>:{</h1>",
+  "dust": "Pardon Our Dust",
   "edit": "Edit",
   "hackable": "Hackable",
   "Likes": "Likes",
