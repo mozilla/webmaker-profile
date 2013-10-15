@@ -24,6 +24,9 @@ define([
         // $edit.addClass('hidden');
         $edit.removeClass('hidden');
       },
+      loggingIn: function () {
+        $login.addClass('hidden');
+      },
       loggedInOwner: function () {
         $logout.removeClass('hidden');
         $edit.removeClass('hidden');
@@ -41,6 +44,7 @@ define([
 
     navigator.id.watch({
       onlogin: function (assertion) {
+        uiState.loggingIn();
         $.ajax(config.serviceURL + '/persona/verify', {
           type: 'POST',
           ContentType: 'application/json',
