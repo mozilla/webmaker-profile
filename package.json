@@ -7,10 +7,10 @@
     "test": "grunt travis --verbose"
   },
   "dependencies": {
+    "bower": "1.2.6",
     "express": "3.4.0"
   },
   "devDependencies": {
-    "bower": "1.2.6",
     "grunt": "0.4.1",
     "grunt-cli": "0.1.9",
     "grunt-contrib-connect": "0.5.0",
