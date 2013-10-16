@@ -20,9 +20,7 @@ define([
       loggedIn: function () {
         $logout.removeClass('hidden');
         $login.addClass('hidden');
-        // until auth is properly implemented, show the edit button
-        // $edit.addClass('hidden');
-        $edit.removeClass('hidden');
+        $edit.addClass('hidden');
       },
       loggedInOwner: function () {
         $logout.removeClass('hidden');
@@ -49,10 +47,7 @@ define([
           },
           success: function (res) {
             if (res && res.status === 'okay') {
-              // csrf.set(res.data.csrf);
-              // Eventually we'll need to figure out if
-              // the logged in user owns the page so that they can edit.
-              if (false) {
+              if (res.user.username === window.location.search.split('=')[1]) {
                 uiState.loggedInOwner();
               } else {
                 uiState.loggedIn();
@@ -73,7 +68,6 @@ define([
         $.ajax(config.serviceURL + '/persona/logout', {
           type: 'POST',
           success: function () {
-            // csrf.set('');
             uiState.loggedOut();
           },
           error: function (jqxhr, txtStatus, err) {
