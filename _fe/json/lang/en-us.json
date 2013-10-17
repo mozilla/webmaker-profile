@@ -19,6 +19,7 @@
   "persistFail": "Failed to persist image to server.",
   "photo": "GIF",
   "poweredBy": "Powered by <a href=\"http://www.webmaker.org\" target=\"_blank\">Webmaker</a>",
+  "Private": "Private",
   "save": "Save",
   "sucky-browser": "Sorry, but your browser doesn't currently support getUserMedia!<br/><br/><h1>:{</h1>"
 }

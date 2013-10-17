@@ -1,7 +1,7 @@
 .tiles-wrapper {
-  background: @white;
-  padding: 0 @gutter @gutter @gutter;
-  min-height: 600px;
+  background-color: @lightgrey;
+  padding: 0 @gutter 20px @gutter;
+  min-height: 300px;
 }
 
 .tiles {
@@ -24,6 +24,14 @@
     font-weight: 200;
     padding: 10px;
     border: 1px solid @white;
+
+    &.private {
+      display: none;
+    }
+
+    body.edit-mode &.private {
+      display: block;
+    }
 
     @media (min-width: @width-small) {
       body.edit-mode & {

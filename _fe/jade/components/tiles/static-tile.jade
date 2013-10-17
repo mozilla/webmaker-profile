@@ -1,13 +1,13 @@
 //- Used for displaying Thimble and Popcorn makes
 
 include ../arrow-container
-include ../loader
+include ../privacy-toggle
 
-div(class="tile static")
+.tile.static
   h3.handle.title
     a(href=url, target="_blank") #{title}
   a(href=url, target="_blank")
     img.thumbnail(src=thumbnail)
   p.description #{description}
   mixin arrowtainer
-  mixin loader
+  mixin privacyToggle

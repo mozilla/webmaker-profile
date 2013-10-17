@@ -2,7 +2,6 @@ define([
   'jquery',
   'js/render',
   'packery/js/packery',
-  'imagesloaded',
   'draggabilly/draggabilly',
   'js/tile',
   'js/user-info',
@@ -16,7 +15,6 @@ define([
   $,
   render,
   Packery,
-  imagesLoaded,
   Draggabilly,
   Tile,
   UserInfo,
@@ -41,7 +39,6 @@ define([
 
     self.callbacks = {};
     self.dynamicTiles = {};
-    self.tiles = {};
     self.userInfo = {};
 
     // Element references -----------------------------------------------------
@@ -60,6 +57,7 @@ define([
     self.isEditMode = false;
     self.isLayingOut = false;
     self.tileOrder = [];
+    self.layoutOverflows = 0;
 
     // Setup ------------------------------------------------------------------
 
@@ -75,7 +73,8 @@ define([
     self.packery = new Packery(self.$container[0], {
       columnWidth: '.grid-sizer',
       gutter: '.gutter-sizer',
-      itemSelector: '.tile'
+      itemSelector: '.tile',
+      transitionDuration: '0.3s'
     });
 
     self.hideTileSelector();
@@ -97,10 +96,6 @@ define([
       self.tileOrder = newOrder;
     });
 
-    self.packery.on('layoutComplete', function () {
-      self.isLayingOut = false;
-    });
-
     self.on('tileOrderChange', function () {
       self.storeOrder();
     });
@@ -108,10 +103,12 @@ define([
     self.$editButton.on('click', function (event) {
       event.preventDefault();
 
-      if (self.isEditMode) {
-        self.exitEditMode();
-      } else {
-        self.enterEditMode();
+      if (!self.layoutOverflows) {
+        if (self.isEditMode) {
+          self.exitEditMode();
+        } else {
+          self.enterEditMode();
+        }
       }
     });
 
@@ -123,6 +120,7 @@ define([
     });
 
     // TODO - use Tile's bindCommonUI to handle DOM events for Tile UI (?)
+    // TODO - Not DRY
 
     self.$tiles.on('click', '.tile-up', function (e) {
       var currentTile = $(e.target).parents('.tile')[0];
@@ -274,18 +272,21 @@ define([
    *  (or recreate stored tile)
    *
    * @param {object} tile Tile record from DB
-   * @return {undefined}
+   * @return {object} Hackable tile instance
    */
 
   tiles.addHackableTile = function (tile) {
     var self = this;
-
-    // TODO - eliminate this HTML string; use jade
-    var $hackableTile = $('<div class="tile hackable"></div>');
-    var hackableTile = new HackableTile($hackableTile);
-
     var UUID = (typeof tile !== 'undefined' ? tile.id : db.generateFakeUUID());
+    var $hackableTile = $('<div class="tile hackable"></div>'); // TODO - eliminate this HTML string; use jade
+    var hackableTile = new HackableTile($hackableTile, UUID);
+
     self.dynamicTiles[UUID] = hackableTile;
+
+    hackableTile.on('rendered', function () {
+      self.doLayout();
+    });
+
     self.$container.append($hackableTile);
 
     if (typeof tile === 'undefined') {
@@ -297,21 +298,7 @@ define([
       self.exitEditMode();
     }
 
-    // For order tracking purposes
-    $hackableTile.data('id', UUID);
-
-    self.doLayout();
-
     // Event Delegation -------------------------------------------------------
-
-    // Reflow Packery when the hackable tile's layout changes
-    hackableTile.on('resize', function () {
-      self.doLayout();
-    });
-
-    hackableTile.on('destroy', function () {
-      self.destroyTile($hackableTile);
-    });
 
     hackableTile.on('update', function (event) {
       // Don't persist empty tiles
@@ -320,7 +307,8 @@ define([
           id: UUID,
           content: event.content,
           tool: 'profile',
-          type: 'hackable'
+          type: 'hackable',
+          isPrivate: hackableTile.isPrivate
         });
       } else {
         db.destroyTileMake(UUID);
@@ -328,11 +316,15 @@ define([
 
       self.storeOrder();
     });
+
+    self.doCommonTileSetup(hackableTile, $hackableTile, UUID, tile);
+
+    return hackableTile;
   };
 
   /**
    * Create a photo tile and append it
-   * @return {undefined}
+   * @return {Object} Photo tile instance
    */
 
   tiles.addPhotoBooth = function () {
@@ -344,31 +336,93 @@ define([
     // Track a reference for API usage later
     self.dynamicTiles[UUID] = photoBooth;
 
-    // Set up in DOM
-    self.$tiles.append($photoBooth);
+    self.$container.append($photoBooth);
     self.addAndBindDraggable($photoBooth[0], true);
-    $photoBooth.data('id', UUID); // For order tracking purposes
 
     photoBooth.init();
-    self.doLayout();
 
-    photoBooth.on('resize', function () {
-      self.doLayout();
-    });
-
-    photoBooth.on('destroy', function () {
-      self.destroyTile($photoBooth);
-    });
+    // Event Delegation -------------------------------------------------------
 
     photoBooth.on('imageStored', function (event) {
       db.storeTileMake({
         id: UUID,
         content: '<img src="' + event.href + '">',
         tool: 'profile',
-        type: 'hackable' // Photo tiles become hackable tiles in next session (bad?)
+        type: 'hackable', // Photo tiles become hackable tiles in next session (bad?)
+        isPrivate: photoBooth.isPrivate
       });
 
       self.storeOrder();
+    });
+
+    self.doCommonTileSetup(photoBooth, $photoBooth, UUID, undefined);
+
+    return photoBooth;
+  };
+
+  /**
+   * Add a static tile (Popcorn or Thimble make)
+   * @param {Object} tile Tile data
+   * @return {Object} Tile instance
+   */
+
+  tiles.addStaticTile = function (tile) {
+    var self = this;
+    var $tile = $(render('static-tile', tile));
+    var staticTile = new Tile();
+
+    staticTile.init();
+    staticTile.bindCommonUI($tile);
+
+    staticTile.on('rendered', function () {
+      self.doLayout();
+    });
+
+    self.$container.append($tile);
+    self.addAndBindDraggable($tile[0]);
+
+    self.doCommonTileSetup(staticTile, $tile, tile.id, tile);
+
+    return staticTile;
+  };
+
+  /**
+   * Perform setup tasks common to all tiles
+   * @param  {Object} tile  Tile instance
+   * @param  {Object} $tile jQuery Tile container element reference
+   * @param  {String} UUID  UUID for tile
+   * @param  {Object} data  Tile data
+   * @return {undefined}
+   */
+
+  tiles.doCommonTileSetup = function (tile, $tile, UUID, data) {
+    var self = this;
+
+    if (typeof data !== 'undefined' && (typeof data.isPrivate === 'undefined' || data.isPrivate)) {
+      tile.setPrivacy(true);
+    } else {
+      tile.setPrivacy(false);
+    }
+
+    $tile.data('id', UUID); // For order tracking purposes
+    self.doLayout();
+
+    // Event Delegation -------------------------------------------------------
+
+    // Reflow Packery when the hackable tile's layout changes
+    tile.on('resize', function () {
+      self.doLayout();
+    });
+
+    tile.on('destroy', function () {
+      self.destroyTile($tile);
+    });
+
+    tile.on('privacyChange', function (event) {
+      db.storeTileMake({
+        id: UUID,
+        isPrivate: event.isPrivate
+      });
     });
   };
 
@@ -453,26 +507,10 @@ define([
     // Render HTML for tiles
     data.forEach(function (tile) {
       if (tile.type === 'popcorn' || tile.type === 'thimble') {
-        var $tile = $(render('static-tile', tile));
-
-        $tile.data('id', tile.id);
-        self.$container.append($tile);
-        self.addAndBindDraggable($tile[0]);
-
-        var genericTile = new Tile();
-        genericTile.init();
-        genericTile.bindCommonUI($tile);
+        self.addStaticTile(tile);
       } else if (tile.type === 'hackable') {
         self.addHackableTile(tile);
       }
-    });
-
-    // Run packery layout after all images have loaded
-    var imgLoaded = imagesLoaded(self.$container[0]);
-
-    imgLoaded.on('always', function () {
-      $('.loader').hide();
-      self.doLayout();
     });
   };
 
@@ -510,6 +548,11 @@ define([
     // This will prevent data corruption from calculateOrder
     if (!self.isLayingOut) {
       db.set('tileOrder', self.calculateOrder());
+    } else {
+      // Try again later...
+      setTimeout(function () {
+        self.storeOrder();
+      }, 100);
     }
   };
 
@@ -530,19 +573,30 @@ define([
   tiles.doLayout = function () {
     var self = this;
 
-    // Prevent calls to layout when a layout is already in progress
-    if (!self.isLayingOut) {
+    // Rate limit layout calls and also queue up overflow into a single deferred call
+
+    if (!self.doLayoutCalledRecently) {
       self.isLayingOut = true;
-      self.packery.layout();
-    } else {
+      self.doLayoutCalledRecently = true;
 
-      // TODO: This is gross. Need to reduce calls to doLayout significantly!
-
-      // Try to do layout again later
-      // This will repeat until it is successful
       setTimeout(function () {
-        self.doLayout();
-      }, 10);
+        self.doLayoutCalledRecently = false;
+
+        if (self.layoutOverflows) {
+          self.layoutOverflows = 0;
+          self.doLayout();
+        }
+      }, 500);
+
+      self.packery.layout();
+
+      // HACKY, TODO - Packery doesn't always fire "layoutComplete",
+      //               so we'll assume it takes under 1 second...
+      setTimeout(function () {
+        self.isLayingOut = false;
+      }, 1000);
+    } else {
+      self.layoutOverflows++;
     }
   };
 
