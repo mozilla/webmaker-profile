@@ -2,7 +2,6 @@ define([
   'jquery',
   'js/render',
   'packery/js/packery',
-  'imagesloaded',
   'draggabilly/draggabilly',
   'js/tile',
   'js/user-info',
@@ -16,7 +15,6 @@ define([
   $,
   render,
   Packery,
-  imagesLoaded,
   Draggabilly,
   Tile,
   UserInfo,
@@ -59,6 +57,7 @@ define([
     self.isEditMode = false;
     self.isLayingOut = false;
     self.tileOrder = [];
+    self.layoutOverflows = 0;
 
     // Setup ------------------------------------------------------------------
 
@@ -97,10 +96,6 @@ define([
       self.tileOrder = newOrder;
     });
 
-    self.packery.on('layoutComplete', function () {
-      self.isLayingOut = false;
-    });
-
     self.on('tileOrderChange', function () {
       self.storeOrder();
     });
@@ -108,10 +103,12 @@ define([
     self.$editButton.on('click', function (event) {
       event.preventDefault();
 
-      if (self.isEditMode) {
-        self.exitEditMode();
-      } else {
-        self.enterEditMode();
+      if (!self.layoutOverflows) {
+        if (self.isEditMode) {
+          self.exitEditMode();
+        } else {
+          self.enterEditMode();
+        }
       }
     });
 
@@ -123,6 +120,7 @@ define([
     });
 
     // TODO - use Tile's bindCommonUI to handle DOM events for Tile UI (?)
+    // TODO - Not DRY
 
     self.$tiles.on('click', '.tile-up', function (e) {
       var currentTile = $(e.target).parents('.tile')[0];
@@ -284,6 +282,11 @@ define([
     var hackableTile = new HackableTile($hackableTile, UUID);
 
     self.dynamicTiles[UUID] = hackableTile;
+
+    hackableTile.on('rendered', function () {
+      self.doLayout();
+    });
+
     self.$container.append($hackableTile);
 
     if (typeof tile === 'undefined') {
@@ -368,11 +371,15 @@ define([
     var $tile = $(render('static-tile', tile));
     var staticTile = new Tile();
 
-    self.$container.append($tile);
-    self.addAndBindDraggable($tile[0]);
-
     staticTile.init();
     staticTile.bindCommonUI($tile);
+
+    staticTile.on('rendered', function () {
+      self.doLayout();
+    });
+
+    self.$container.append($tile);
+    self.addAndBindDraggable($tile[0]);
 
     self.doCommonTileSetup(staticTile, $tile, tile.id, tile);
 
@@ -494,14 +501,6 @@ define([
       data = sortedData;
     }
 
-    // Run packery layout after all images have loaded
-    var imgLoaded = imagesLoaded(self.$container[0]);
-
-    imgLoaded.on('always', function () {
-      $('.loader').hide();
-      self.doLayout();
-    });
-
     // Add user info tile first
     self.addUserInfo();
 
@@ -549,6 +548,11 @@ define([
     // This will prevent data corruption from calculateOrder
     if (!self.isLayingOut) {
       db.set('tileOrder', self.calculateOrder());
+    } else {
+      // Try again later...
+      setTimeout(function () {
+        self.storeOrder();
+      }, 100);
     }
   };
 
@@ -573,20 +577,27 @@ define([
 
     if (!self.doLayoutCalledRecently) {
       self.isLayingOut = true;
-      self.packery.layout();
       self.doLayoutCalledRecently = true;
-      self.doLayout.layoutOverflows = 0;
+
+      setTimeout(function () {
+        self.doLayoutCalledRecently = false;
+
+        if (self.layoutOverflows) {
+          self.layoutOverflows = 0;
+          self.doLayout();
+        }
+      }, 500);
+
+      self.packery.layout();
+
+      // HACKY, TODO - Packery doesn't always fire "layoutComplete",
+      //               so we'll assume it takes under 1 second...
+      setTimeout(function () {
+        self.isLayingOut = false;
+      }, 1000);
     } else {
-      self.doLayout.layoutOverflows++;
+      self.layoutOverflows++;
     }
-
-    setTimeout(function () {
-      self.doLayoutCalledRecently = false;
-
-      if (self.doLayout.layoutOverflows) {
-        self.doLayout();
-      }
-    }, 500);
   };
 
   return tiles;

@@ -1,10 +1,9 @@
 define([
   'jquery',
   'js/render',
-  'imagesloaded',
   'js/tile',
   'bleach'
-], function ($, render, imagesLoaded, Tile, bleach) {
+], function ($, render, Tile, bleach) {
 
   var HackableTile = function (target, UUID, options) {
     var self = this;
@@ -194,11 +193,6 @@ define([
     }
 
     if (html.length) {
-      // Fire resize when all inserted images load
-      imagesLoaded(self.$hackedContent, function () {
-        self.fire('resize');
-      });
-
       // Wrap Image URL in IMG tag
       if (html.match(/(.jpg|.png|.gif)$/)) {
         html = wrapImg(html);
@@ -220,12 +214,18 @@ define([
     } else {
       self.$hackedContent.hide();
     }
-    var bleachText = bleach.clean(html, self.bleachOptions);
-    self.$hackedContent.html(bleachText);
-    self.$textarea.val(bleachText);
+
+    var bleached = bleach.clean(html, self.bleachOptions);
+    var $bleached = $('<div>' + bleached + '</div>');
+
+    self.bindRender($bleached); // Fire 'rendered' events for any images
+
+    self.$hackedContent.empty().append($bleached);
+    self.$textarea.val(bleached);
+
     // This method extends Tile's update method
     // Calling here so that events fire after updates have actually occurred
-    Tile.prototype.update.call(self, bleachText);
+    Tile.prototype.update.call(self, bleached);
   };
 
   return HackableTile;
