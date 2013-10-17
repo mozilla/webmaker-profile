@@ -28,11 +28,14 @@ define([
     self.$btnUp = self.$target.find('.tile-up');
     self.$btnDown = self.$target.find('.tile-down');
     self.$btnDelete = self.$target.find('.delete');
+    self.$privacyToggle = self.$target.find('.privacyToggle');
+    self.$privacyCheckbox = self.$target.find('.privacyToggle .privacy');
 
     // Properties -------------------------------------------------------------
 
     self.areReorderButtonsVisible = false;
     self.isDeleteButtonVisible = false;
+    self.isPrivate = undefined;
 
     // Setup ------------------------------------------------------------------
 
@@ -41,6 +44,8 @@ define([
     } else {
       self.hideReorderButtons();
     }
+
+    self.bindRender();
 
     // Event Delegation -------------------------------------------------------
 
@@ -66,6 +71,83 @@ define([
         self.hideReorderButtons();
       }
     });
+
+    self.$privacyToggle.on('mousedown touchstart', function (event) {
+      event.stopPropagation();
+    });
+
+    self.$privacyCheckbox.on('change', function () {
+      if (self.$privacyCheckbox[0].checked) {
+        self.setPrivacy(true);
+      } else {
+        self.setPrivacy(false);
+      }
+    });
+  };
+
+  /**
+   * Fire a 'rendered' event when all a tiles contents are loaded.
+   * @param  {Object} contents Either native element or jQuery collection
+   *                           to parse and find imgs to bind load events to.
+   * @return {undefined}
+   */
+  Tile.prototype.bindRender = function (contents) {
+    var self = this;
+
+    var $images;
+
+    if (contents) {
+      // Grab images at any level of the tree
+      $images = $(contents).filter('img').add($(contents).find('img'));
+    } else {
+      // Look inside tile container if no contents are specified
+      $images = self.$target.find('img');
+    }
+
+    var imageCount = $images.length;
+    var imagesLoaded = 0;
+
+    if (imageCount) {
+      $images.each(function () {
+        $(this).bind('load', function () {
+          imagesLoaded++;
+
+          if (imagesLoaded === imageCount) {
+            self.fire('rendered');
+          }
+        });
+      });
+    } else {
+      self.fire('rendered');
+    }
+  };
+
+  /**
+   * Toggle the privacy of a tile
+   * @param {Boolean} isPrivate Target privacy mode for tile
+   * @return {undefined}
+   */
+  Tile.prototype.setPrivacy = function (isPrivate) {
+    var self = this;
+
+    if (typeof isPrivate === 'boolean') {
+      self.fire('privacyChange', {
+        isPrivate: isPrivate
+      });
+
+      // Update UI (if necessary)
+      if (self.$privacyCheckbox[0].checked !== isPrivate) {
+        self.$privacyCheckbox.attr('checked', isPrivate);
+      }
+
+      if (isPrivate) {
+        self.$target.addClass('private');
+      } else {
+        self.$target.removeClass('private');
+      }
+
+      self.isPrivate = isPrivate;
+    }
   };
   /**
    * Common code to run when a tile content is updated

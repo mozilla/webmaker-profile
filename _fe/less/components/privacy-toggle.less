@@ -1,0 +1,21 @@
+.privacyToggle {
+  display: none;
+  padding-top: 9px;
+  border-top: 1px solid @lightgrey;
+
+  body.edit-mode & {
+    display: block;
+  }
+
+  & > * {
+    line-height: 2em;
+    vertical-align: middle;
+    display: inline-block;
+  }
+  input {
+    margin-right: 10px
+  }
+  label {
+    font-size: 1.33em;
+  }
+}
