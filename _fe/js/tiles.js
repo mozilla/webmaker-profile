@@ -264,7 +264,7 @@ define([
       draggie.disable();
     });
 
-    return element;
+    return draggie;
   };
 
   /**
@@ -337,7 +337,7 @@ define([
     self.dynamicTiles[UUID] = photoBooth;
 
     self.$container.append($photoBooth);
-    self.addAndBindDraggable($photoBooth[0], true);
+    var draggie = self.addAndBindDraggable($photoBooth[0], true);
 
     photoBooth.init();
 
@@ -353,6 +353,14 @@ define([
       });
 
       self.storeOrder();
+    });
+
+    photoBooth.on('enterCaptureMode', function () {
+      draggie.disable();
+    });
+
+    photoBooth.on('exitCaptureMode', function () {
+      draggie.enable();
     });
 
     self.doCommonTileSetup(photoBooth, $photoBooth, UUID, undefined);

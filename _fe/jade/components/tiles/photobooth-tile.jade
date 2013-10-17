@@ -3,16 +3,20 @@ include ../privacy-toggle
 
 .tile.photobooth
   include ../delete-button
+  button.button-grey.edit.off #{__edit}
   .status #{__permission}
     span #{__permissionHelp}
   .photobooth-container
+    .spinner.off
     canvas
     video.input-video
     img.first-frame
     img.gif
   .button-container
-    button.button-grey.edit.off #{__edit}
     button.trigger.off
-    span.progress.icon-spin.icon-spinner.off
+    button.done.off #{__Done}
+  .progress-bar.off
+    .bar
+
   mixin arrowtainer
   mixin privacyToggle

@@ -1,4 +1,8 @@
 .tile.photobooth {
+  .delete {
+    margin-bottom: 10px;
+  }
+
   // Helpers
   .off {
     display: none;
@@ -22,7 +26,7 @@
   }
   .photobooth-container {
     position: relative;
-    margin-top: 10px;
+    margin-bottom: 7px; // TODO - make 10px; extra 3px coming from somewhere!?
   }
 
   // Video
@@ -31,6 +35,7 @@
     position: relative;
     z-index: 2;
     transition: all 0.2s linear;
+    cursor: pointer;
   }
   canvas {
     position: absolute;
@@ -53,20 +58,39 @@
   }
 
   // Buttons
-  .progress {
-    font-size: 30px;
-  }
   .button-container {
-    float: left;
-    margin-top: 10px;
-    text-align: center;
+    .button {
+      display: inline-block;
+    }
+    margin-bottom: 10px;
+    overflow: hidden;
   }
-  .button-container .button {
-    float: left;
-  }
+
   .trigger {
     &:after {
       .icon(@camera);
+    }
+  }
+
+  .edit,
+  .done {
+    float: right;
+  }
+
+  .spinner {
+    position: absolute;
+  }
+
+  .progress-bar {
+    border: 1px solid @lightgrey;
+    height: 25px;
+    margin-bottom: 10px;
+
+    .bar {
+      height: 100%;
+      width: 0;
+      background: @midgrey;
+      transition: width 200ms ease-out;
     }
   }
 }
