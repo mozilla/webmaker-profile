@@ -72,7 +72,7 @@ require([
   });
 
   // TODO - Sniff locale instead of hard coding
-  localStrings.init('en-us');
+  localStrings.init();
 
   // Initialize database
   db.on('load', function () {
