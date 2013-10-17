@@ -1,7 +1,8 @@
 define(['jquery'], function ($) {
   var defaults = {
     serviceURL: 'http://localhost:10179',
-    confirmDelete: true
+    confirmDelete: true,
+    usePersona: true
   };
 
   var config;
@@ -12,7 +13,7 @@ define(['jquery'], function ($) {
     async: false
   })
     .done(function (data) {
-      config = data;
+      config = $.extend(defaults, data);
     })
     .fail(function () {
       config = false;
