@@ -12,10 +12,11 @@ html
     - else
       link(href='_fe/compiled/app.min.css', rel='stylesheet', type='text/css', media='all')
   body
-    script(src='https://login.persona.org/include.js')
     //- Load individual JS files for dev and one concat file for prod
     - if (typeof dev !== 'undefined' && dev === true)
       script(data-main='_fe/js/main', src='bower_components/requirejs/require.js')
     - else
       script(src='bower_components/requirejs/require.js')
       script(src='_fe/compiled/app.min.js')
+
+    script(src='https://login.persona.org/include.js')

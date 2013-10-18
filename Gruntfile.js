@@ -88,6 +88,8 @@ module.exports = function (grunt) {
     requirejs: {
       compile: {
         options: {
+          optimize: 'uglify2',
+          preserveLicenseComments: false,
           baseUrl: './bower_components',
           mainConfigFile: '_fe/js/main.js',
           include: ['main'],
