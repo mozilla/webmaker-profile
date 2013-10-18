@@ -6,7 +6,7 @@ define([
   'jquery',
   'config'
 ], function ($, config) {
-  return function initPersona() {
+  return function initPersona(username) {
     var $login = $('button.login'),
       $logout = $('button.logout'),
       $edit = $('button.edit-mode');
@@ -18,19 +18,17 @@ define([
         $edit.addClass('hidden');
       },
       loggedIn: function () {
-        $logout.removeClass('hidden');
         $login.addClass('hidden');
-        // until auth is properly implemented, show the edit button
-        // $edit.addClass('hidden');
-        $edit.removeClass('hidden');
+        $logout.removeClass('hidden');
+        $edit.addClass('hidden');
       },
       loggingIn: function () {
         $login.addClass('hidden');
       },
       loggedInOwner: function () {
+        $login.addClass('hidden');
         $logout.removeClass('hidden');
         $edit.removeClass('hidden');
-        $login.addClass('hidden');
       }
     };
 
@@ -47,16 +45,14 @@ define([
         uiState.loggingIn();
         $.ajax(config.serviceURL + '/persona/verify', {
           type: 'POST',
-          ContentType: 'application/json',
           data: {
             assertion: assertion
           },
           success: function (res) {
             if (res && res.status === 'okay') {
               // csrf.set(res.data.csrf);
-              // Eventually we'll need to figure out if
-              // the logged in user owns the page so that they can edit.
-              if (false) {
+              // TODO Remove this hack before mozfest
+              if (username === res.user.username || username === 'reanimator') {
                 uiState.loggedInOwner();
               } else {
                 uiState.loggedIn();
