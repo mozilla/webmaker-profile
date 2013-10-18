@@ -15,11 +15,15 @@ requirejs.config({
     lodash: 'lodash/lodash',
     main: '../_fe/js/main',
     persona: '../_fe/js/persona',
+    pris: 'pris/pris',
     templates: '../_fe/compiled/jade-templates',
     text: 'text/text',
     uuid: 'node-uuid/uuid'
   },
   shim: {
+    'pris': {
+      exports: 'PRIS'
+    },
     'gifJS': {
       exports: 'GIF'
     },
@@ -36,8 +40,9 @@ require([
   'js/database',
   'js/localstrings',
   'js/render',
-  'persona'
-], function (device, $, tiles, db, localStrings, render, initPersona) {
+  'persona',
+  'pris'
+], function (device, $, tiles, db, localStrings, render, initPersona, pris) {
   var servicesToLoad = 2;
   var servicesLoaded = 0;
 
@@ -71,8 +76,7 @@ require([
     initUI();
   });
 
-  // TODO - Sniff locale instead of hard coding
-  localStrings.init();
+  localStrings.init(pris.get('lang'));
 
   // Initialize database
   db.on('load', function () {

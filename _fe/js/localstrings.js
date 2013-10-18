@@ -1,6 +1,6 @@
 define(['jquery', 'komponent'], function ($, Komponent) {
   var LocalStrings = {
-    init: function () {
+    init: function (language) {
       var self = this;
 
       // Navigator language polyfill
@@ -8,7 +8,7 @@ define(['jquery', 'komponent'], function ($, Komponent) {
         (navigator.userLanguage && navigator.userLanguage.replace(/-[a-z]{2}$/, String.prototype.toUpperCase)) ||
         'en';
 
-      var language = navigator.language.split('-')[0];
+      language = language || navigator.language.split('-')[0];
 
       function buildStrings(json) {
         self.allStrings = json;
