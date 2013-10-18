@@ -58,7 +58,7 @@ require([
       tiles.init($tileContainer);
       tiles.render(db.get('makes'));
 
-      initPersona();
+      initPersona(username);
     }
   }
 
