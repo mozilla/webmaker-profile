@@ -50,10 +50,10 @@ body > header {
     width: 0; // safari 6 flexbox workaround
     line-height: 0;
     margin-right: 3%;
-    border: 3px solid fade(@grey, 30%);
     background: @green;
-    border-radius: 50%;
-    overflow: hidden;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
 
     @media (min-width: @width-large) {
       .flex(1);
@@ -62,6 +62,11 @@ body > header {
     img {
       max-width: 100%;
       height: auto;
+      border: 3px solid fade(@grey, 30%);
+      border-radius: 50%;
+      -moz-background-clip: padding;
+      -webkit-background-clip: padding-box;
+      background-clip: padding-box;
     }
   }
 
