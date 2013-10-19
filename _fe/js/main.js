@@ -63,7 +63,12 @@ require([
       tiles.init($tileContainer);
       tiles.render(db.get('makes'));
 
-      initPersona(username);
+      var navigatorIDReady = setInterval(function () {
+        if (navigator.id) {
+          clearInterval(navigatorIDReady);
+          initPersona(username);
+        }
+      }, 100);
     }
   }
 
