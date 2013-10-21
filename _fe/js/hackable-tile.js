@@ -86,7 +86,7 @@ define([
       'ul'
     ],
     attributes: {
-      'a': ['href', 'title'],
+      'a': ['href', 'target', 'title'],
       'abbr': ['title'],
       'acronym': ['title'],
       'img': ['src', 'alt']
@@ -118,19 +118,6 @@ define([
     self.$hackButton.hide();
   };
 
-  /**
-   * Show the tile editor UI
-   * @return {undefined}
-   */
-  HackableTile.prototype.showEditor = function () {
-    var self = this;
-
-    self.$hackButton.addClass('disabled');
-    self.$textarea.show();
-    self.$saveButton.show();
-    self.$textarea.focus();
-    self.fire('resize');
-  };
   /**
    * Show the tile editor UI
    * @return {undefined}
@@ -224,6 +211,7 @@ define([
 
     var bleached = bleach.clean(html, self.bleachOptions);
     var $bleached = $('<div>' + bleached + '</div>');
+    $bleached.find('a').attr('target', '_blank'); // links should open in new tab/window
 
     self.bindRender($bleached); // Fire 'rendered' events for any images
 
