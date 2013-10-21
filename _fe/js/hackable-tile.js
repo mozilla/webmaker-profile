@@ -70,6 +70,7 @@ define([
       'b',
       'blockquote',
       'code',
+      'div',
       'em',
       'h1',
       'h2',
@@ -78,6 +79,7 @@ define([
       'h5',
       'h6',
       'i',
+      'iframe',
       'img',
       'li',
       'ol',
@@ -89,6 +91,8 @@ define([
       'a': ['href', 'target', 'title'],
       'abbr': ['title'],
       'acronym': ['title'],
+      'div': ['class'],
+      'iframe': ['type', 'src', 'width', 'height'],
       'img': ['src', 'alt']
 
     },
@@ -191,13 +195,23 @@ define([
       if (html.match(/(.jpg|.png|.gif)$/)) {
         html = wrapImg(html);
       } else if (html.match(/youtube/)) {
-        html = wrapYoutube(html)[0];
+        if(html.match(/^<div/)) {
+          html = $(html)[0];
+        }
+        else {
+          html = wrapYoutube(html)[0];
+        }
 
         $(html).data('aspectRatio', html.height / html.width)
           .removeAttr('height')
           .removeAttr('width');
       } else if (html.match(/vimeo/)) {
-        html = wrapVimeo(html);
+        if(html.match(/^<div/)) {
+          html = $(html)[0];
+        }
+        else {
+          html = wrapVimeo(html)[0];
+        }
 
         $(html).data('aspectRatio', html.height / html.width)
           .removeAttr('height')
@@ -209,8 +223,8 @@ define([
       self.$hackedContent.hide();
     }
 
-    var bleached = bleach.clean(html, self.bleachOptions);
-    var $bleached = $('<div>' + bleached + '</div>');
+    var bleached = bleach.clean(html.outerHTML, self.bleachOptions);
+    var $bleached = $(bleached);
     $bleached.find('a').attr('target', '_blank'); // links should open in new tab/window
 
     self.bindRender($bleached); // Fire 'rendered' events for any images
