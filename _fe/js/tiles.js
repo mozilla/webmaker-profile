@@ -514,11 +514,14 @@ define([
 
     // Render HTML for tiles
     data.forEach(function (tile) {
-      if (tile.type === 'popcorn' || tile.type === 'thimble') {
-        self.addStaticTile(tile);
-      } else if (tile.type === 'hackable') {
-        self.addHackableTile(tile);
+      if (tile && tile.type) {
+        if (tile.type === 'popcorn' || tile.type === 'thimble') {
+          self.addStaticTile(tile);
+        } else if (tile.type === 'hackable') {
+          self.addHackableTile(tile);
+        }
       }
+      // TODO - else case to log data corruption
     });
   };
 
