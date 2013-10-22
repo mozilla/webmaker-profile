@@ -195,10 +195,9 @@ define([
       if (html.match(/(.jpg|.png|.gif)$/)) {
         html = wrapImg(html);
       } else if (html.match(/youtube/)) {
-        if(html.match(/^<div/)) {
+        if (html.match(/^<div/)) {
           html = $(html)[0];
-        }
-        else {
+        } else {
           html = wrapYoutube(html)[0];
         }
 
@@ -206,10 +205,9 @@ define([
           .removeAttr('height')
           .removeAttr('width');
       } else if (html.match(/vimeo/)) {
-        if(html.match(/^<div/)) {
+        if (html.match(/^<div/)) {
           html = $(html)[0];
-        }
-        else {
+        } else {
           html = wrapVimeo(html)[0];
         }
 
