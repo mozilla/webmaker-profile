@@ -4,13 +4,15 @@ define([
   'uuid',
   'komponent',
   'config',
+  'js/csrf',
   'jquery-debounce'
 ], function (
   $,
   _,
   uuid,
   Komponent,
-  config
+  config,
+  csrf
 ) {
 
   var storage = {}; // Session-only storage
@@ -53,6 +55,9 @@ define([
       $.ajax({
         xhrFields: {
           withCredentials: true
+        },
+        beforeSend: function(request) {
+          request.setRequestHeader('X-CSRF-Token', csrf.get());
         },
         url: config.serviceURL + '/user-data/' + this.username,
         type: 'POST',
