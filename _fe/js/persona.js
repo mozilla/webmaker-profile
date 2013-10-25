@@ -4,8 +4,9 @@
 
 define([
   'jquery',
-  'config'
-], function ($, config) {
+  'config',
+  'js/csrf'
+], function ($, config, csrf) {
   return function initPersona(username) {
     var $login = $('button.login'),
       $logout = $('button.logout'),
@@ -42,43 +43,51 @@ define([
 
     navigator.id.watch({
       onlogin: function (assertion) {
-        uiState.loggingIn();
-        $.ajax(config.serviceURL + '/persona/verify', {
-          type: 'POST',
-          data: {
-            assertion: assertion
-          },
-          success: function (res) {
-            if (res && res.status === 'okay') {
-              // csrf.set(res.data.csrf);
-              // TODO Remove this hack before mozfest
-              if (username === res.user.username || username === 'reanimator') {
-                uiState.loggedInOwner();
+        csrf.get(function(csrfToken) {
+          uiState.loggingIn();
+          $.ajax(config.serviceURL + '/persona/verify', {
+            type: 'POST',
+            data: {
+              assertion: assertion
+            },
+            beforeSend: function(request) {
+              request.setRequestHeader('X-CSRF-Token', csrfToken);
+            },
+            success: function (res) {
+              if (res && res.status === 'okay') {
+                // TODO Remove this hack before mozfest
+                if (username === res.user.username || username === 'reanimator') {
+                  uiState.loggedInOwner();
+                } else {
+                  uiState.loggedIn();
+                }
               } else {
-                uiState.loggedIn();
+                console.log('An error Occured: ' + res.reason);
+                navigator.id.logout();
               }
-            } else {
-              console.log('An error Occured: ' + res.reason);
+            },
+            error: function (jqxhr, txtStatus, err) {
+              console.error('Error: ' + txtStatus + err ? ' - ' + err : '');
+              uiState.loggedOut();
               navigator.id.logout();
             }
-          },
-          error: function (jqxhr, txtStatus, err) {
-            console.error('Error: ' + txtStatus + err ? ' - ' + err : '');
-            uiState.loggedOut();
-            navigator.id.logout();
-          }
-        }, false);
+          }, false);
+        });
       },
       onlogout: function () {
-        $.ajax(config.serviceURL + '/persona/logout', {
-          type: 'POST',
-          success: function () {
-            // csrf.set('');
-            uiState.loggedOut();
-          },
-          error: function (jqxhr, txtStatus, err) {
-            console.error('Error: ' + txtStatus + err ? ' - ' + err : '');
-          }
+        csrf.get(function(csrfToken) {
+          $.ajax(config.serviceURL + '/persona/logout', {
+            type: 'POST',
+            beforeSend: function(request) {
+              request.setRequestHeader('X-CSRF-Token', csrfToken);
+            },
+            success: function () {
+              uiState.loggedOut();
+            },
+            error: function (jqxhr, txtStatus, err) {
+              console.error('Error: ' + txtStatus + err ? ' - ' + err : '');
+            }
+          });
         });
       }
     });

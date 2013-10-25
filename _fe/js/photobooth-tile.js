@@ -4,14 +4,16 @@ define([
   'gifJS',
   'getUserMedia',
   'js/localstrings',
-  'config'
+  'config',
+  'js/csrf'
 ], function (
   $,
   Tile,
   Gif,
   getUserMedia,
   strings,
-  config
+  config,
+  csrf
 ) {
 
   // We're caching the stream here so all instances of Photobooth can use it once it is set
@@ -358,6 +360,9 @@ define([
       contentType: 'application/json',
       xhrFields: {
         withCredentials: true
+      },
+      beforeSend: function(request) {
+        request.setRequestHeader('X-CSRF-Token', csrf.get());
       },
       data: JSON.stringify({
         image: base64

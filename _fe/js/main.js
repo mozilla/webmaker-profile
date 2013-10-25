@@ -45,7 +45,6 @@ require([
 ], function (device, $, tiles, db, localStrings, render, initPersona, pris) {
   var servicesToLoad = 2;
   var servicesLoaded = 0;
-
   function initUI() {
     if (servicesLoaded === servicesToLoad) {
       var $body = $('body');
