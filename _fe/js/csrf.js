@@ -2,7 +2,7 @@
 
 define(['jquery'], function ($) {
   var csrfToken = false,
-      onCSRF = false;
+    onCSRF = false;
 
   var csrfHandler = {
     get: function (callback) {
@@ -27,13 +27,13 @@ define(['jquery'], function ($) {
 
   $.ajax({
     url: '/getcsrf',
-    success: function(data) {
+    success: function (data) {
       if (!data.csrfToken) {
         throw new Error('no CSRF token found on the csrf route response');
       }
       csrfHandler.set(data.csrfToken);
     },
-    error: function(data) {
+    error: function (data) {
       throw new Error(data);
     }
   });

@@ -147,6 +147,7 @@ module.exports = function (grunt) {
 
   // Recompile Jade and Less on filechange for dev
   grunt.registerTask('default', [
+    'clean',
     'less:development',
     'jade:compileJSTemplates',
     'jade:development',

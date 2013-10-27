@@ -56,7 +56,7 @@ define([
         xhrFields: {
           withCredentials: true
         },
-        beforeSend: function(request) {
+        beforeSend: function (request) {
           request.setRequestHeader('X-CSRF-Token', csrf.get());
         },
         url: config.serviceURL + '/user-data/' + this.username,

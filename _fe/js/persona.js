@@ -43,14 +43,14 @@ define([
 
     navigator.id.watch({
       onlogin: function (assertion) {
-        csrf.get(function(csrfToken) {
+        csrf.get(function (csrfToken) {
           uiState.loggingIn();
           $.ajax(config.serviceURL + '/persona/verify', {
             type: 'POST',
             data: {
               assertion: assertion
             },
-            beforeSend: function(request) {
+            beforeSend: function (request) {
               request.setRequestHeader('X-CSRF-Token', csrfToken);
             },
             success: function (res) {
@@ -75,10 +75,10 @@ define([
         });
       },
       onlogout: function () {
-        csrf.get(function(csrfToken) {
+        csrf.get(function (csrfToken) {
           $.ajax(config.serviceURL + '/persona/logout', {
             type: 'POST',
-            beforeSend: function(request) {
+            beforeSend: function (request) {
               request.setRequestHeader('X-CSRF-Token', csrfToken);
             },
             success: function () {
