@@ -18,8 +18,9 @@ module.exports = function (grunt) {
     less: {
       development: {
         options: {
-          // Pre V3 source annotations for FireSass
-          dumpLineNumbers: 'mediaquery'
+          sourceMap: true,
+          sourceMapFilename: '_fe/compiled/app.debug.map',
+          sourceMapRootpath: '../../'
         },
         files: {
           '_fe/compiled/app.debug.css': '_fe/less/main.less'
