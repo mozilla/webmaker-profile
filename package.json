@@ -21,6 +21,7 @@
     "grunt-contrib-less": "0.8.1",
     "grunt-contrib-requirejs": "0.4.1",
     "grunt-nodemon": "0.1.1",
-    "grunt-jsbeautifier": "0.2.2"
+    "grunt-jsbeautifier": "0.2.2",
+    "grunt-contrib-cssmin": "0.7.0"
   }
 }
