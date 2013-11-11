@@ -5,15 +5,18 @@
     "requirejs": true,
     "require": true
   },
+  "bitwise": true,
   "browser": true,
   "curly": true,
   "eqeqeq": true,
+  "freeze": true,
+  "immed": true,
+  "indent": 2,
   "latedef": true,
   "newcap": true,
   "noempty": true,
-  "nonew": true,
   "quotmark": "single",
+  "trailing": true,
   "undef": true,
-  "unused": true,
-  "trailing": true
+  "unused": "vars"
 }
