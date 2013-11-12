@@ -18,19 +18,12 @@ module.exports = function (grunt) {
     less: {
       development: {
         options: {
-          // Pre V3 source annotations for FireSass
-          dumpLineNumbers: 'mediaquery'
+          sourceMap: true,
+          sourceMapFilename: '_fe/compiled/app.debug.map',
+          sourceMapRootpath: '../../'
         },
         files: {
           '_fe/compiled/app.debug.css': '_fe/less/main.less'
-        }
-      },
-      production: {
-        options: {
-          yuicompress: true
-        },
-        files: {
-          '_fe/compiled/app.min.css': '_fe/less/main.less'
         }
       }
     },
@@ -74,7 +67,7 @@ module.exports = function (grunt) {
     watch: {
       less: {
         files: ['_fe/less/**/*.less'],
-        tasks: ['less:development']
+        tasks: ['less']
       },
       jade: {
         files: ['_fe/jade/**/*.jade'],
@@ -126,6 +119,16 @@ module.exports = function (grunt) {
         }
       }
     },
+    cssmin: {
+      production: {
+        options: {
+          keepSpecialComments: 0
+        },
+        files: {
+          '_fe/compiled/app.min.css': ['_fe/compiled/app.debug.css']
+        }
+      }
+    },
     nodemon: {
       development: {
         options: {
@@ -143,14 +146,13 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jade');
   grunt.loadNpmTasks('grunt-contrib-requirejs');
   grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-nodemon');
 
   // Recompile Jade and Less on filechange for dev
   grunt.registerTask('default', [
-    'clean',
-    'less:development',
-    'jade:compileJSTemplates',
-    'jade:development',
+    'less',
+    'jade',
     'connect',
     'watch'
   ]);
@@ -158,11 +160,9 @@ module.exports = function (grunt) {
   // Compile Jade, Less and JS for production
   grunt.registerTask('build', [
     'jshint',
-    'less:production',
-    'less:development',
-    'jade:compileJSTemplates',
-    'jade:production',
-    'jade:development',
+    'less',
+    'cssmin',
+    'jade',
     'requirejs'
   ]);
 
