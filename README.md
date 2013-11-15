@@ -3,7 +3,7 @@
 
 # Webmaker Profile
 
-*USERNAME.makes.org*
+**USERNAME.makes.org**
 
 ## Build Dependencies
 
