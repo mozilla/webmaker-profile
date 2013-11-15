@@ -362,7 +362,7 @@ define([
         withCredentials: true
       },
       beforeSend: function (request) {
-        request.setRequestHeader('X-CSRF-Token', csrf.get());
+        request.setRequestHeader('X-CSRF-Token', csrf.get()); // express.js uses a non-standard name for csrf-token
       },
       data: JSON.stringify({
         image: base64

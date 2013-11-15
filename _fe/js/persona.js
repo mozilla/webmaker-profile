@@ -51,7 +51,7 @@ define([
               assertion: assertion
             },
             beforeSend: function (request) {
-              request.setRequestHeader('X-CSRF-Token', csrfToken);
+              request.setRequestHeader('X-CSRF-Token', csrfToken); // express.js uses a non-standard name for csrf-token
             },
             success: function (res) {
               if (res && res.status === 'okay') {
@@ -79,7 +79,7 @@ define([
           $.ajax(config.serviceURL + '/persona/logout', {
             type: 'POST',
             beforeSend: function (request) {
-              request.setRequestHeader('X-CSRF-Token', csrfToken);
+              request.setRequestHeader('X-CSRF-Token', csrfToken); // express.js uses a non-standard name for csrf-token
             },
             success: function () {
               uiState.loggedOut();
