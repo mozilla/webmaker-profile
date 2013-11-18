@@ -17,7 +17,7 @@ define(['jquery'], function ($) {
     },
     set: function (val) {
       csrfToken = val;
-      $('meta[name=\'X-CSRF-TOKEN\']').attr('content', csrfToken);
+      $('meta[name=\'csrf-token\']').attr('content', csrfToken);
       if (onCSRF) {
         onCSRF(csrfToken);
         onCSRF = false;
