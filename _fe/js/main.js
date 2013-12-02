@@ -12,7 +12,7 @@ requirejs.config({
     js: '../_fe/js',
     json: '../_fe/json',
     komponent: 'komponent/komponent',
-    lodash: 'lodash/lodash',
+    lodash: 'lodash/dist/lodash',
     main: '../_fe/js/main',
     persona: '../_fe/js/persona',
     pris: 'pris/pris',
