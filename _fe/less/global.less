@@ -1,14 +1,15 @@
 // Global styles (Header, Footer, Content wrapper)
 
-// TODO - Delete this once we're out of alpha
+// TODO - Delete this block once we're out of alpha
 .beta-warning {
   padding: 5px 2%;
-  background: #666;
+  background: #555;
   color: #eee;
   border-bottom: 1px solid #333;
 
   header {
     display: none;
+    margin-bottom: 5px;
 
     @media (min-width: @width-medium) {
       font-size: 1.5em;
@@ -19,12 +20,17 @@
   }
 
   p {
-    margin-bottom: 0;
+    margin-bottom: 5px;
+    margin-right: 10px;
     display: inline-block;
 
     a {
       font-weight: 900;
       color: #fff;
+
+      &:hover {
+        color: #ddd;
+      }
     }
   }
 }
