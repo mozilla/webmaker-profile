@@ -18,7 +18,8 @@ requirejs.config({
     pris: 'pris/pris',
     templates: '../_fe/compiled/jade-templates',
     text: 'text/text',
-    uuid: 'node-uuid/uuid'
+    uuid: 'node-uuid/uuid',
+    webmakerAuthClient: 'webmaker-auth-client/webmaker-auth-client'
   },
   shim: {
     'pris': {

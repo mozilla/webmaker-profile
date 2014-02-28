@@ -5,8 +5,14 @@
 define([
   'jquery',
   'config',
-  'js/csrf'
+  'js/csrf',
+  'webmakerAuthClient'
 ], function ($, config, csrf) {
+
+  var auth = new webmakerAuthClient({
+    
+  });
+
   return function initPersona(username) {
     var $login = $('button.login'),
       $logout = $('button.logout'),
