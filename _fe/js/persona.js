@@ -5,91 +5,65 @@
 define([
   'jquery',
   'config',
-  'js/csrf'
-], function ($, config, csrf) {
+  'js/csrf',
+  'webmaker-auth-client/webmaker-auth-client'
+], function ($, config, csrf, WebmakerAuthClient) {
+
   return function initPersona(username) {
-    var $login = $('button.login'),
-      $logout = $('button.logout'),
-      $edit = $('button.edit-mode');
 
-    var uiState = {
-      loggedOut: function () {
-        $login.removeClass('hidden');
-        $logout.addClass('hidden');
-        $edit.addClass('hidden');
-      },
-      loggedIn: function () {
-        $login.addClass('hidden');
-        $logout.removeClass('hidden');
-        $edit.addClass('hidden');
-      },
-      loggingIn: function () {
-        $login.addClass('hidden');
-      },
-      loggedInOwner: function () {
-        $login.addClass('hidden');
-        $logout.removeClass('hidden');
-        $edit.removeClass('hidden');
-      }
-    };
+    csrf.get(function (csrfToken) {
+      var auth = new WebmakerAuthClient({
+        host: config.serviceURL,
+        csrfToken: csrfToken
+      });
 
-    $login.click(function () {
-      navigator.id.request();
+      var $login = $('button.login'),
+        $logout = $('button.logout'),
+        $edit = $('button.edit-mode');
+
+      var uiState = {
+        loggedOut: function () {
+          $login.removeClass('hidden');
+          $logout.addClass('hidden');
+          $edit.addClass('hidden');
+        },
+        loggedIn: function () {
+          $login.addClass('hidden');
+          $logout.removeClass('hidden');
+          $edit.addClass('hidden');
+        },
+        loggingIn: function () {
+          $login.addClass('hidden');
+        },
+        loggedInOwner: function () {
+          $login.addClass('hidden');
+          $logout.removeClass('hidden');
+          $edit.removeClass('hidden');
+        }
+      };
+
+      $login.click(auth.login);
+      $logout.click(auth.logout);
+
+      auth.on('login', function (user) {
+        if (username === user.username) {
+          uiState.loggedInOwner();
+        } else {
+          uiState.loggedIn();
+        }
+      });
+
+      auth.on('logout', function () {
+        uiState.loggedOut();
+      });
+
+      auth.on('error', function (err) {
+        console.error('Error: ' + err);
+      });
+
+      auth.verify();
+
     });
 
-    $logout.click(function () {
-      navigator.id.logout();
-    });
-
-    navigator.id.watch({
-      onlogin: function (assertion) {
-        csrf.get(function (csrfToken) {
-          uiState.loggingIn();
-          $.ajax(config.serviceURL + '/persona/verify', {
-            type: 'POST',
-            data: {
-              assertion: assertion
-            },
-            beforeSend: function (request) {
-              request.setRequestHeader('X-CSRF-Token', csrfToken); // express.js uses a non-standard name for csrf-token
-            },
-            success: function (res) {
-              if (res && res.status === 'okay') {
-                // TODO Remove this hack before mozfest
-                if (username === res.user.username || username === 'reanimator') {
-                  uiState.loggedInOwner();
-                } else {
-                  uiState.loggedIn();
-                }
-              } else {
-                console.log('An error Occured: ' + res.reason);
-                navigator.id.logout();
-              }
-            },
-            error: function (jqxhr, txtStatus, err) {
-              console.error('Error: ' + txtStatus + err ? ' - ' + err : '');
-              uiState.loggedOut();
-              navigator.id.logout();
-            }
-          }, false);
-        });
-      },
-      onlogout: function () {
-        csrf.get(function (csrfToken) {
-          $.ajax(config.serviceURL + '/persona/logout', {
-            type: 'POST',
-            beforeSend: function (request) {
-              request.setRequestHeader('X-CSRF-Token', csrfToken); // express.js uses a non-standard name for csrf-token
-            },
-            success: function () {
-              uiState.loggedOut();
-            },
-            error: function (jqxhr, txtStatus, err) {
-              console.error('Error: ' + txtStatus + err ? ' - ' + err : '');
-            }
-          });
-        });
-      }
-    });
   };
 });

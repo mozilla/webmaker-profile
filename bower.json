@@ -19,6 +19,7 @@
     "gif-js": "https://github.com/jnordberg/gif.js.git",
     "jquery-throttle-debounce": "cowboy/jquery-throttle-debounce",
     "bleach": "https://github.com/mozilla-b2g/bleach.js.git",
-    "pris": "0.3.1"
+    "pris": "0.3.1",
+    "webmaker-auth-client": "0.0.23"
   }
 }
