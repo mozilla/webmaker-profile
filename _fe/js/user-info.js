@@ -42,6 +42,13 @@ define([
       self.addLink();
     });
 
+    // Add links when user presses enter inside link input
+    self.$linkInput.on('keypress', function (event) {
+      if (event.keyCode === 13) {
+        self.addLink();
+      }
+    });
+
     // Event Delegation -------------------------------------------------------
   };
 
