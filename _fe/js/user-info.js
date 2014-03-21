@@ -42,6 +42,13 @@ define([
       self.addLink();
     });
 
+    // Add links when user presses enter inside link input
+    self.$linkInput.on('keypress', function (event) {
+      if (event.keyCode === 13) {
+        self.addLink();
+      }
+    });
+
     // Event Delegation -------------------------------------------------------
   };
 
@@ -55,15 +62,47 @@ define([
   };
 
   UserInfo.prototype.checkUrl = function (url) {
-    // TODO: Check url, choose icon/title based on type
-    // var REGEX_MAP = {
-    //   twitter: 'twitter\.com/[\d[a-zA-Z0-9_]+',
-    //   tumblr: 'tumblr\.com'
-    // };
+    // Assume http if no protocol is specified
+    if (!url.match('http://') && !url.match('https://')) {
+      url = 'http://' + url;
+    }
+
+    // Create a short title for a URL
+
+    function shortName(targetURL) {
+      var title = targetURL.split('//')[1];
+
+      var socialMediaRegex = {
+        twitter: /^(?:www.)?twitter.com\//,
+        tumblr: /^[a-zA-Z]*.tumblr.com/,
+        facebook: /^(?:www.)?facebook.com\//,
+        googlePlus: /^plus.google.com\//
+      };
+
+      if (title.match(socialMediaRegex.twitter)) {
+        return 'Twitter';
+      }
+
+      if (title.match(socialMediaRegex.tumblr)) {
+        return 'Tumblr';
+      }
+
+      if (title.match(socialMediaRegex.facebook)) {
+        return 'Facebook';
+      }
+
+      if (title.match(socialMediaRegex.googlePlus)) {
+        return 'Google+';
+      }
+
+      // If the URL doesn't match common social services, just use it verbatim
+      return title;
+    }
+
     return {
       icon: 'icon-link',
       url: url,
-      title: url
+      title: shortName(url)
     };
   };
 

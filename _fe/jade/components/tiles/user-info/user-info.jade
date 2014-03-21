@@ -1,9 +1,9 @@
 .tile.user-info
   h3 #{__aboutMe}
   p.description-output.description(data-view-only)
-  textarea.description(data-editor-only, name="description")
+  textarea.description(placeholder="#{__writeAboutYoSelf}", data-editor-only, name="description")
   .info
-    .col.stats
+    .stats
       ul
         li
           span.number.makes-number
@@ -11,7 +11,7 @@
         li
           span.number.likes-number
           span.word #{__Likes}
-    .col.links
+    .links
       ul.link-list
-      input(name="link-url", data-editor-only)
-      button.add(data-editor-only): span #{__add}
+      input(name="link-url", placeholder="#{__pasteYoURL}", data-editor-only)
+      button.add(data-editor-only): span + #{__add}

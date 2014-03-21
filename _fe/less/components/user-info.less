@@ -1,6 +1,4 @@
 .tile.user-info {
-  display: none; // TEMP - Revisit in R2
-
   font-size: 15px;
   &:not(.editing) {
     [data-editor-only] {
@@ -16,14 +14,11 @@
     font-size:1.3em;
     color: @midgrey;
   }
-  @media (min-width: @width-large) {
-    width: ((100% - @gutter) / 2); // 2 cols
-  }
   .editing-buttons {
     margin-top: 1em;
   }
   .description {
-    font-size: 1.6em;
+    font-size: 1.33em;
     line-height: 1.3;
     margin: 0;
   }
@@ -38,21 +33,15 @@
   }
   .info {
     .clearfix;
-  }
-  .col {
-    font-size: 16px;
-    margin-top: 1em;
-    @media (min-width: @width-large) {
-      float: left;
-      margin-right: @gutter;
-      width: ((100% - @gutter) / 2);
-      &:last-of-type {
-        margin-right: 0;
-      }
+
+    > div {
+      margin: 10px 0;
+      overflow: hidden;
     }
   }
   .links {
-    line-height: 40px;
+    line-height: 30px;
+    word-break: break-all;
     .icon {
       font-size: 20px;
       display: inline-block;
@@ -61,10 +50,23 @@
     .add {
       font-size: 16px;
     }
+    .link-list {
+      overflow: hidden;
+
+      .link-item a {
+        float: left;
+        width: 90%;
+        display: block;
+      }
+    }
+
+    input {
+      margin: 10px 0;
+    }
   }
   .buttons {
     float: right;
-    line-height: 40px;
+    line-height: 30px;
     button {
       display: inline-block;
       width: 20px;
@@ -77,6 +79,12 @@
   .stats {
     color: @green;
     line-height: 40px;
+
+    li {
+      float: left;
+      width: 50%;
+    }
+
     .number {
       display: inline-block;
       line-height: 30px;

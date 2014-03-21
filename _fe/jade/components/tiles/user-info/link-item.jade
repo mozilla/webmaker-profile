@@ -1,6 +1,4 @@
-
-li.link-item: a(href="#{link.url}")
-  span(class="icon #{link.icon}")
-  |  #{link.title}
+li.link-item
+  a(href="#{link.url}", target="_blank") #{link.title}
   .buttons(data-editor-only)
     button.remove: span.icon-remove
