@@ -51,6 +51,8 @@ require([
       var $body = $('body');
       var $tileContainer = $(render('tile-container'));
 
+      $('title').text(username + ' | ' + localStrings.get('Webmaker'));
+
       $body.append(render('header', {
         avatarSrc: db.get('avatarSrc'),
         name: db.get('realName'),
